@@ -1,0 +1,3 @@
+{
+  "extends": "./packages/devtools/eslint/.eslintrc.js"
+}

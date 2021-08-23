@@ -1,0 +1,24 @@
+{
+  "name": "@fakes/workspace",
+  "version": "0.1.0",
+  "description": "Fake hosts",
+  "main": "index.js",
+  "license": "MIT",
+  "private": true,
+  "workspaces": [
+    "packages/*",
+    "packages/devtools/*"
+  ],
+  "devDependencies": {
+    "@types/jest": "^27.0.1",
+    "@types/node": "^16.7.1",
+    "cross-env": "^7.0.3",
+    "lerna": "^4.0.0",
+    "prettier": "^2.3.2",
+    "typescript": "^4.3.5"
+  },
+  "scripts": {
+    "build": "lerna run --stream build",
+    "lint": "lerna run --stream lint --"
+  }
+}
