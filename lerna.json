@@ -3,7 +3,8 @@
     "npmClient": "yarn",
     "packages": [
         "packages/*",
-        "packages/devtools"
+        "packages/devtools",
+        "packages/utils"
     ],
     "useWorkspaces": true,
     "command": {

@@ -45,6 +45,5 @@
     "build": "yarn rollup -c && yarn tsc --emitDeclarationOnly",
     "lint": "eslint --ext .tsx --ext .ts src/",
     "typecheck": "tsc --noEmit"
-  },
-  "gitHead": "499e3d21b0507c5aee772dbb515c00b05b162481"
+  }
 }
