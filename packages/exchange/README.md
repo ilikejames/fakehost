@@ -1,1 +1,4 @@
-# @fakes/exchange
+# @fakehost/exchange
+
+Documentation coming soon.
+

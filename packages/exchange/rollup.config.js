@@ -1,2 +1,2 @@
-const { configuration } = require('@fakes/devtools-rollup');
+const { configuration } = require('@fakehost/devtools-rollup');
 module.exports = configuration;

@@ -1,6 +1,6 @@
 {
-  "name": "@fakes/devtools-eslint",
-  "version": "0.0.1",
+  "name": "@fakehost/devtools-eslint",
+  "version": "0.0.0",
   "main": "./.eslintrc.js",
   "private": true,
   "license": "MIT",
@@ -13,7 +13,6 @@
     "eslint-plugin-import": "^2.24.1",
     "eslint-plugin-no-only-tests": "^2.6.0",
     "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^5.1.0",
-    "lodash": "^4.17.21"
+    "eslint-plugin-promise": "^5.1.0"
   }
 }

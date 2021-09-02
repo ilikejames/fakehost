@@ -1,7 +1,4 @@
-import { Observable } from 'rxjs';
 import { ProtocolHandler } from '../ProtocolHandler';
-
-export type SubscriptionHandler<Request, Response> = (request: Request) => Observable<Response>;
 
 export interface Connection {
     close(): void;

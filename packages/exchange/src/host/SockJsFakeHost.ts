@@ -31,7 +31,7 @@ export class SockJsFakeHost extends BaseFakeHost {
         this.server = http.createServer();
         this.server.listen(port || 0, undefined, async () => {
             this.serverPort = (this.server.address() as AddressInfo).port;
-            console.info(colors.green(`Started FakeHost on ${await this.url}`));
+            console.info(colors.green(`Started SockJSFakeHost on ${await this.url}`));
         });
         this.echo.installHandlers(this.server, { prefix: this.path });
     }

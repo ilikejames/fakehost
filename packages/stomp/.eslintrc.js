@@ -1,1 +1,1 @@
-exports = require('@fakes/devtools-eslint');
+exports = require('@fakehost/devtools-eslint');

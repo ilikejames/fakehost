@@ -1,6 +1,6 @@
 {
-  "name": "@fakes/workspace",
-  "version": "0.1.0",
+  "name": "@fakehost/workspace",
+  "version": "0.0.0",
   "description": "Fake hosts",
   "main": "index.js",
   "license": "MIT",

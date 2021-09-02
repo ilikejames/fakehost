@@ -1,5 +1,5 @@
 {
-    "name": "@fakes/devtools-rollup",
+    "name": "@fakehost/devtools-rollup",
     "version": "0.0.1",
     "description": "Rollup configuration",
     "private": true,

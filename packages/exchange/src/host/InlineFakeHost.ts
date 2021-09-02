@@ -1,7 +1,7 @@
+import colors from 'colors';
 import { Server } from 'mock-socket';
 import { ProtocolHandler } from '../ProtocolHandler';
 import { BaseFakeHost, Connection } from './BaseFakeHost';
-import { FAKE_TOKEN } from './constants';
 
 export class InlineFakeHost extends BaseFakeHost {
     private server!: Server;
@@ -38,6 +38,8 @@ export class InlineFakeHost extends BaseFakeHost {
                 close: socket.close,
                 write: (raw: string) => socket.send(raw),
             };
+
+            console.info(colors.green(`Started InlineFakeHost on ${this.fakeUrl}`));
 
             super.onConnection(payload);
             socket.on('close', () => {

@@ -1,4 +1,4 @@
-# Stomp
+# @fakehost/stomp
 
 Supporting :
 

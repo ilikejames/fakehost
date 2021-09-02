@@ -1,5 +1,4 @@
 import colors from 'colors';
-import http from 'http';
 import { AddressInfo } from 'net';
 import WebSocket from 'ws';
 import { v4 as uuid } from 'uuid';
@@ -7,7 +6,6 @@ import { ProtocolHandler } from '../ProtocolHandler';
 import { BaseFakeHost, Connection } from './BaseFakeHost';
 
 export class WsFakeHost extends BaseFakeHost {
-    private server!: http.Server;
     private websocket!: WebSocket.Server;
     private serverPort?: number;
     private connections = new Map<string, WebSocket>();
@@ -22,7 +20,7 @@ export class WsFakeHost extends BaseFakeHost {
     }
 
     public start(port: number = 0) {
-        if (this.server && this.server.listening) {
+        if (this.websocket) {
             console.warn('Server already running.');
             return;
         }
@@ -32,18 +30,16 @@ export class WsFakeHost extends BaseFakeHost {
             path: this.path,
         });
 
-        console.log('Server address', this.websocket.address());
-
-        this.websocket.on('listening', (server: WebSocket.Server) => {
+        this.websocket.on('listening', () => {
             const address = this.websocket.address() as AddressInfo;
             this.serverPort = address.port;
-            console.info(colors.green(`Started FakeHost on ${address.port}`));
+            console.info(colors.green(`Started WsFakeHost on ${address.port}`));
         });
         this.websocket.on('connection', (socket, request) => {
             const id = uuid();
             this.connections.set(id, socket);
 
-            const payload: Connection = {
+            const connection: Connection = {
                 id,
                 close: () => {
                     socket.close();
@@ -53,14 +49,12 @@ export class WsFakeHost extends BaseFakeHost {
                 },
             };
 
-            this.onConnection(payload);
+            this.onConnection(connection);
 
-            socket.on('data', (raw: string) => {
-                this.onMessage(payload, raw);
+            socket.on('message', (raw: string | Buffer) => {
+                this.onMessage(connection, raw);
             });
-            socket.on('message', (raw: string) => {
-                this.onMessage(payload, raw);
-            });
+
             socket.on('close', () => {
                 this.onClose(id);
                 this.connections.delete(id);
@@ -90,7 +84,7 @@ export class WsFakeHost extends BaseFakeHost {
     async dispose(): Promise<void> {
         this.disconnect();
         return new Promise((resolve, reject) => {
-            this.server.close(err => {
+            this.websocket.close(err => {
                 return err ? reject() : resolve();
             });
         });
