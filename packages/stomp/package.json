@@ -1,0 +1,23 @@
+{
+  "name": "@fakes/stomp",
+  "version": "0.0.1",
+  "private": true,
+  "license": "UNLICENSED",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "@fakes/exchange": "^0.0.1"
+  },
+  "peerDependencies": {
+    "rxjs": "^6.5.3"
+  },
+  "scripts": {
+    "build": "yarn rollup -c",
+    "lint": "eslint --ext .tsx --ext .ts src/",
+    "typecheck": "tsc --noEmit"
+  }
+}

@@ -3,7 +3,7 @@
       "composite": false,
       "skipLibCheck": true,
       "strict": true,
-      "target": "esnext",
+      "target": "es5",
       "module": "esnext",
       "moduleResolution": "node",
       "esModuleInterop": true,
@@ -13,6 +13,5 @@
       "rootDir": ".",
       "baseUrl": ".",
     },
-    "include": [],
     "exclude": ["node_modules", "dist"],
   }

@@ -1,20 +1,19 @@
 {
-    "name": "@fakes/devtools-eslint",
-    "version": "0.1.0",
-    "main": "./.eslintrc.js",
-    "private": true,
-    "license": "MIT",
-    "devDependencies": {
-      "@typescript-eslint/eslint-plugin": "^4.29.2",
-      "@typescript-eslint/parser": "^4.29.2",
-      "babel-eslint": "^10.1.0",
-      "eslint": "^7.32.0",
-      "eslint-config-standard-with-typescript": "^20.0.0",
-      "eslint-plugin-import": "^2.24.1",
-      "eslint-plugin-node": "^11.1.0",
-      "eslint-plugin-no-only-tests": "^2.6.0",
-      "eslint-plugin-promise": "^5.1.0",
-      "lodash": "^4.17.21"
-    }
+  "name": "@fakes/devtools-eslint",
+  "version": "0.0.1",
+  "main": "./.eslintrc.js",
+  "private": true,
+  "license": "MIT",
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "^4.29.2",
+    "@typescript-eslint/parser": "^4.29.2",
+    "babel-eslint": "^10.1.0",
+    "eslint": "^7.32.0",
+    "eslint-config-standard-with-typescript": "^20.0.0",
+    "eslint-plugin-import": "^2.24.1",
+    "eslint-plugin-no-only-tests": "^2.6.0",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^5.1.0",
+    "lodash": "^4.17.21"
   }
-  
+}

@@ -3,3 +3,4 @@ yarn-*
 dist/
 .DS_Store
 .cache
+tsconfig.tsbuildinfo
