@@ -23,6 +23,7 @@ export abstract class BaseFakeHost implements FakeHost {
 
     protected onConnection(connection: Connection) {
         this._connections.unshift(connection);
+        this.protocolHandler.onConnection && this.protocolHandler.onConnection(connection);
     }
 
     public getConnections() {
