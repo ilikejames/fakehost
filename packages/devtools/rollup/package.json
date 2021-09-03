@@ -1,6 +1,6 @@
 {
     "name": "@fakehost/devtools-rollup",
-    "version": "0.0.2",
+    "version": "0.0.3",
     "description": "Rollup configuration",
     "private": true,
     "license": "UNLICENSED",
