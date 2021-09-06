@@ -1,6 +1,6 @@
 {
   "name": "@fakehost/exchange",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": false,
   "license": "ISC",
   "files": [
@@ -23,8 +23,6 @@
     "ts-node": "^9.1.1",
     "uuid": "^8.3.2",
     "ws": "^8.2.0"
-  },
-  "peerDependencies": {
   },
   "devDependencies": {
     "@types/async-retry": "^1.2.0",
