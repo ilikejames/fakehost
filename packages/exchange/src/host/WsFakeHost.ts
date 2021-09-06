@@ -58,6 +58,7 @@ export class WsFakeHost extends BaseFakeHost {
             socket.on('close', () => {
                 this.onClose(id);
                 this.connections.delete(id);
+                super.onClose(id);
             });
         });
     }
