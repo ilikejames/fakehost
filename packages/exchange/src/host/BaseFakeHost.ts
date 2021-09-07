@@ -22,7 +22,10 @@ export abstract class BaseFakeHost implements FakeHost {
     constructor(private protocolHandler: ProtocolHandler<unknown, unknown>) {}
 
     protected onConnection(connection: Connection) {
-        this._connections.unshift(connection);
+        this._connections.unshift({
+            ...connection,
+            isClosed: false,
+        });
         this.protocolHandler.onConnection && this.protocolHandler.onConnection(connection);
     }
 
