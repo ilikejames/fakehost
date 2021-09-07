@@ -8,7 +8,10 @@ export class InlineFakeHost extends BaseFakeHost {
     public server!: Server;
     private connection?: Connection;
 
-    constructor(protocolHandler: ProtocolHandler<unknown, unknown>, url: string = 'ws://fake:80') {
+    constructor(
+        protocolHandler: ProtocolHandler<unknown, unknown>,
+        url: string = 'ws://localhost:5555',
+    ) {
         super(protocolHandler);
         this.fakeUrl = url;
         this.start();
