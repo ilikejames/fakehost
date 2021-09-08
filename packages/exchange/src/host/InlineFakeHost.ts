@@ -24,9 +24,7 @@ export class InlineFakeHost extends BaseFakeHost {
 
     dispose(): Promise<void> {
         if (!this.server) return Promise.resolve();
-        this.server.close();
         this.server.stop();
-        this.server = undefined;
         this.connection && super.onClose(this.connection!.id);
         return Promise.resolve();
     }
@@ -40,8 +38,14 @@ export class InlineFakeHost extends BaseFakeHost {
     }
 
     start() {
-        if (this.server) return;
+        if (this.server) {
+            this.server.start();
+            console.info(colors.green(`Restarted InlineFakeHost on ${this.fakeUrl}`));
+            return;
+        }
         this.server = new Server(this.fakeUrl, {});
+        console.info(colors.green(`Started InlineFakeHost on ${this.fakeUrl}`));
+
         this.server.on('connection', socket => {
             const connectionId = `fake-${Date.now().toString()}`;
             this.connection = {
@@ -50,9 +54,8 @@ export class InlineFakeHost extends BaseFakeHost {
                 write: (raw: string) => socket.send(raw),
             };
 
-            console.info(colors.green(`Started InlineFakeHost on ${this.fakeUrl}`));
-
             super.onConnection(this.connection);
+
             socket.on('close', () => {
                 super.onClose(connectionId);
             });
