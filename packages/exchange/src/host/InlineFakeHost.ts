@@ -36,11 +36,11 @@ export class InlineFakeHost extends BaseFakeHost {
     }
 
     start() {
-        if (this.server) {
-            this.server.start();
-            console.info(colors.green(`Restarted InlineFakeHost on ${this.fakeUrl}`));
-            return;
-        }
+        // if (this.server) {
+        //     this.server.start();
+        //     console.info(colors.green(`Restarted InlineFakeHost on ${this.fakeUrl}`));
+        //     return;
+        // }
         this.server = new Server(this.fakeUrl, {});
         console.info(colors.green(`Started InlineFakeHost on ${this.fakeUrl}`));
 
