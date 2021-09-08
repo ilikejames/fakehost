@@ -1,6 +1,6 @@
 {
   "name": "@fakehost/devtools-eslint",
-  "version": "0.0.10",
+  "version": "0.0.11",
   "main": "./.eslintrc.js",
   "private": true,
   "license": "MIT",
