@@ -7,7 +7,7 @@ export class InlineFakeHost extends BaseFakeHost {
     private fakeUrl!: string;
     private server?: Server;
     private connection?: Connection;
-    public websocket = MockedSocket;
+    public socket?: MockedSocket;
 
     constructor(
         protocolHandler: ProtocolHandler<unknown, unknown>,
@@ -25,16 +25,13 @@ export class InlineFakeHost extends BaseFakeHost {
     dispose(): Promise<void> {
         if (!this.server) return Promise.resolve();
         this.server.stop();
+        this.socket?.close();
         this.connection && super.onClose(this.connection!.id);
         return Promise.resolve();
     }
 
     disconnect() {
-        // As we are embedded within a browser, we can't just kill the connection.
-        // Instead, lets tear down the service...
-        this.dispose();
-        // ...and restart it 5 seconds later
-        setTimeout(this.start, 5000);
+        this.socket?.close();
     }
 
     start() {
@@ -47,6 +44,7 @@ export class InlineFakeHost extends BaseFakeHost {
         console.info(colors.green(`Started InlineFakeHost on ${this.fakeUrl}`));
 
         this.server.on('connection', socket => {
+            this.socket = socket;
             const connectionId = `fake-${Date.now().toString()}`;
             this.connection = {
                 id: connectionId,
