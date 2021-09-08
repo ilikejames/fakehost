@@ -5,7 +5,7 @@ import { BaseFakeHost, Connection } from './BaseFakeHost';
 
 export class InlineFakeHost extends BaseFakeHost {
     private fakeUrl!: string;
-    private server!: Server;
+    private server?: Server;
     private connection?: Connection;
     public websocket = MockedSocket;
 
@@ -23,8 +23,10 @@ export class InlineFakeHost extends BaseFakeHost {
     }
 
     dispose(): Promise<void> {
+        if (!this.server) return Promise.resolve();
         this.server.close();
         this.server.stop();
+        this.server = undefined;
         this.connection && super.onClose(this.connection!.id);
         return Promise.resolve();
     }
@@ -34,10 +36,11 @@ export class InlineFakeHost extends BaseFakeHost {
         // Instead, lets tear down the service...
         this.dispose();
         // ...and restart it 5 seconds later
-        this.start();
+        setTimeout(this.start, 5000);
     }
 
     start() {
+        if (this.server) return;
         this.server = new Server(this.fakeUrl, {});
         this.server.on('connection', socket => {
             const connectionId = `fake-${Date.now().toString()}`;
