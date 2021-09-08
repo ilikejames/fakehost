@@ -1,12 +1,13 @@
 import colors from 'colors';
-import { Server } from 'mock-socket';
+import { Server, WebSocket as MockedSocket } from 'mock-socket';
 import { ProtocolHandler } from '../ProtocolHandler';
 import { BaseFakeHost, Connection } from './BaseFakeHost';
 
 export class InlineFakeHost extends BaseFakeHost {
     private fakeUrl!: string;
-    public server!: Server;
+    private server!: Server;
     private connection?: Connection;
+    public websocket = MockedSocket;
 
     constructor(
         protocolHandler: ProtocolHandler<unknown, unknown>,
@@ -24,7 +25,7 @@ export class InlineFakeHost extends BaseFakeHost {
     dispose(): Promise<void> {
         this.server.close();
         this.server.stop();
-        super.onClose(this.connection!.id);
+        this.connection && super.onClose(this.connection!.id);
         return Promise.resolve();
     }
 
