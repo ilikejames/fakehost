@@ -7,7 +7,8 @@ export class InlineFakeHost extends BaseFakeHost {
     private fakeUrl!: string;
     private server?: Server;
     private connection?: Connection;
-    public socket?: MockedSocket;
+    private socket?: MockedSocket;
+    public Websocket = MockedSocket;
 
     constructor(
         protocolHandler: ProtocolHandler<unknown, unknown>,
