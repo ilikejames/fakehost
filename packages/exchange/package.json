@@ -10,7 +10,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "dependencies": {
-    "chalk": "^5.0.0",
+    "chalk": "^4.0.0",
     "lodash": "^4.17.21",
     "mock-socket": "9.0.3",
     "sockjs": "^0.3.24",
