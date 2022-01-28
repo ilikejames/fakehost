@@ -1,4 +1,4 @@
-import colors from 'colors';
+import chalk from 'chalk';
 import { Server, WebSocket as MockedSocket } from 'mock-socket';
 import { ProtocolHandler } from '../ProtocolHandler';
 import { BaseFakeHost, Connection } from './BaseFakeHost';
@@ -36,13 +36,8 @@ export class InlineFakeHost extends BaseFakeHost {
     }
 
     start() {
-        // if (this.server) {
-        //     this.server.start();
-        //     console.info(colors.green(`Restarted InlineFakeHost on ${this.fakeUrl}`));
-        //     return;
-        // }
         this.server = new Server(this.fakeUrl, {});
-        console.info(colors.green(`Started InlineFakeHost on ${this.fakeUrl}`));
+        console.info(chalk.green(`Started InlineFakeHost on ${this.fakeUrl}`));
 
         this.server.on('connection', socket => {
             this.socket = socket;

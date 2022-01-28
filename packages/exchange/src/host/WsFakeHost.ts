@@ -1,4 +1,4 @@
-import colors from 'colors';
+import chalk from 'chalk';
 import { AddressInfo } from 'net';
 import WebSocket from 'ws';
 import { v4 as uuid } from 'uuid';
@@ -33,7 +33,7 @@ export class WsFakeHost extends BaseFakeHost {
         this.websocket.on('listening', () => {
             const address = this.websocket.address() as AddressInfo;
             this.serverPort = address.port;
-            console.info(colors.green(`Started WsFakeHost on ${address.port}`));
+            console.info(chalk.green(`Started WsFakeHost on ${address.port}`));
         });
         this.websocket.on('connection', (socket, request) => {
             const id = uuid();
@@ -86,12 +86,14 @@ export class WsFakeHost extends BaseFakeHost {
         this.disconnect();
         return new Promise((resolve, reject) => {
             this.websocket.close(err => {
+                console.log(chalk.red('Disposed.'));
                 return err ? reject() : resolve();
             });
         });
     }
 
     disconnect() {
+        console.log(chalk.yellow('Disconnecting clients.'));
         this.connections.forEach(connection => {
             connection.close();
         });

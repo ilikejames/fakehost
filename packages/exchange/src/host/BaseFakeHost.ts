@@ -5,7 +5,7 @@ export interface Connection {
     readonly id: string;
     write(message: string): void;
     isClosed?: boolean;
-    query?: { [key: string]: string | string[] };
+    query?: Record<string, string | string[] | undefined>;
 }
 
 export interface FakeHost {
