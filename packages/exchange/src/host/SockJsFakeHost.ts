@@ -1,5 +1,6 @@
 import chalk from 'chalk';
 import http from 'http';
+import { connect } from 'http2';
 import { AddressInfo } from 'net';
 import sockjs, { Connection as InboundConnection, Server } from 'sockjs';
 import Url from 'url';
@@ -38,6 +39,11 @@ export class SockJsFakeHost extends BaseFakeHost {
 
     private onLocalConnection(connection: InboundConnection) {
         if (!connection) {
+            return;
+        }
+        if (this.refuseNewConnections) {
+            console.log('Refusing new connection');
+            connection.close();
             return;
         }
         this.connections.set(connection.id, connection);

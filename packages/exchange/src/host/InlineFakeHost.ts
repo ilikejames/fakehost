@@ -40,6 +40,11 @@ export class InlineFakeHost extends BaseFakeHost {
         console.info(chalk.green(`Started InlineFakeHost on ${this.fakeUrl}`));
 
         this.server.on('connection', socket => {
+            if (this.refuseNewConnections) {
+                console.log('Refusing new connection');
+                socket.close();
+                return;
+            }
             this.socket = socket;
             const connectionId = `fake-${Date.now().toString()}`;
             this.connection = {

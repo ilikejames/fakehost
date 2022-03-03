@@ -14,6 +14,7 @@ export interface FakeHost {
     disconnect(): void;
     getConnections(): Connection[];
     start(port?: number): void;
+    refuseNewConnections: boolean;
 }
 
 export abstract class BaseFakeHost implements FakeHost {
@@ -32,6 +33,8 @@ export abstract class BaseFakeHost implements FakeHost {
     public getConnections() {
         return this._connections;
     }
+
+    refuseNewConnections = false;
 
     abstract get url(): Promise<string>;
 

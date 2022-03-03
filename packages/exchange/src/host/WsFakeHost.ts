@@ -35,7 +35,14 @@ export class WsFakeHost extends BaseFakeHost {
             this.serverPort = address.port;
             console.info(chalk.green(`Started WsFakeHost on ${address.port}`));
         });
-        this.websocket.on('connection', (socket, request) => {
+
+        this.websocket.on('connection', socket => {
+            if (this.refuseNewConnections) {
+                console.log('Refusing new connection');
+                socket.close();
+                return;
+            }
+
             const id = uuid();
             this.connections.set(id, socket);
 
