@@ -38,7 +38,12 @@ connectToServer({
 
 ```ts
 import { startAppServer } from '@fakehost/utils/app-server'
-const host = startAppServer('../../public/', 3010, { appEnv: 'ws://localhost:5555' }, { 'feature-toggle1': 'true' });
+const host = startAppServer(
+    '../../public/', 
+    3010, 
+    { appEnv: 'ws://localhost:5555' },
+    { 'feature-toggle1': 'true' }
+);
 // ...
 // Static server on http://127.0.0.1:3010 hosting "/full/path/to/public"`
 // 
@@ -52,7 +57,12 @@ host.dispose()
 
 ```ts
 import { startAppServer } from '@fakehost/utils/app-server'
-const host = startAppServer(3000, 3010, { appEnv: 'ws://localhost:5555' }, { 'feature-toggle1': 'true' });
+const host = startAppServer(
+    3000, 
+    3010, 
+    { appEnv: 'ws://localhost:5555' }, 
+    { 'feature-toggle1': 'true' }
+);
 // ...
 // Proxying http://127.0.0.1:3000 -> http://127.0.0.1:3010
 // 
