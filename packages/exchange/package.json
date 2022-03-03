@@ -11,6 +11,7 @@
   "types": "dist/index.d.ts",
   "dependencies": {
     "chalk": "^4.0.0",
+    "debug": "^4.3.3",
     "lodash": "^4.17.21",
     "mock-socket": "9.0.3",
     "sockjs": "^0.3.24",
@@ -20,6 +21,7 @@
     "ws": "^8.4.2"
   },
   "devDependencies": {
+    "@types/debug": "^4.1.7",
     "@types/node": "^14.0.0",
     "@types/sockjs": "^0.3.33",
     "@types/sockjs-node": "^0.3.28",

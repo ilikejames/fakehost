@@ -2,6 +2,7 @@ import chalk from 'chalk';
 import { Server, WebSocket as MockedSocket } from 'mock-socket';
 import { ProtocolHandler } from '../ProtocolHandler';
 import { BaseFakeHost, Connection } from './BaseFakeHost';
+import { enableLogger, logger } from './logger';
 
 export class InlineFakeHost extends BaseFakeHost {
     private fakeUrl!: string;
@@ -13,10 +14,12 @@ export class InlineFakeHost extends BaseFakeHost {
     constructor(
         protocolHandler: ProtocolHandler<unknown, unknown>,
         url: string = 'ws://localhost:5555',
+        debug = false,
     ) {
         super(protocolHandler);
         this.fakeUrl = url;
         this.start();
+        debug && enableLogger();
     }
 
     get url(): Promise<string> {
@@ -37,11 +40,11 @@ export class InlineFakeHost extends BaseFakeHost {
 
     start() {
         this.server = new Server(this.fakeUrl, {});
-        console.info(chalk.green(`Started InlineFakeHost on ${this.fakeUrl}`));
+        console.log(chalk.green(`Started InlineFakeHost on ${this.fakeUrl}`));
 
         this.server.on('connection', socket => {
             if (this.refuseNewConnections) {
-                console.log('Refusing new connection');
+                logger('Refusing new connection');
                 socket.close();
                 return;
             }

@@ -6,6 +6,7 @@ import sockjs, { Connection as InboundConnection, Server } from 'sockjs';
 import Url from 'url';
 import { ProtocolHandler } from '../ProtocolHandler';
 import { BaseFakeHost, Connection } from './BaseFakeHost';
+import { enableLogger, logger } from './logger';
 
 export class SockJsFakeHost extends BaseFakeHost {
     private echo!: Server;
@@ -17,14 +18,16 @@ export class SockJsFakeHost extends BaseFakeHost {
         protocolHandler: ProtocolHandler<unknown, unknown>,
         port?: number,
         private path: string = '/ws',
+        debug = false,
     ) {
         super(protocolHandler);
         this.start(port);
+        debug && enableLogger();
     }
 
     public start(port?: number) {
         if (this.server && this.server.listening) {
-            console.warn('Server already running.');
+            logger('Server already running.');
             return;
         }
         this.echo = sockjs.createServer();
@@ -32,7 +35,7 @@ export class SockJsFakeHost extends BaseFakeHost {
         this.server = http.createServer();
         this.server.listen(port || 0, undefined, async () => {
             this.serverPort = (this.server.address() as AddressInfo).port;
-            console.info(chalk.green(`Started SockJSFakeHost on ${await this.url}`));
+            logger(chalk.green(`Started SockJSFakeHost on ${await this.url}`));
         });
         this.echo.installHandlers(this.server, { prefix: this.path });
     }
@@ -42,7 +45,7 @@ export class SockJsFakeHost extends BaseFakeHost {
             return;
         }
         if (this.refuseNewConnections) {
-            console.log('Refusing new connection');
+            logger('Refusing new connection');
             connection.close();
             return;
         }
