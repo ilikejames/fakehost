@@ -1,6 +1,6 @@
 import { green } from 'chalk';
 import express from 'express';
-import { default as expressProxy } from 'express-http-proxy';
+import expressProxy from 'express-http-proxy';
 import { startServer, getScriptPayload, logValues } from './helper';
 import { BootstrapServer, LocalStorage, RuntimeEnvironment } from './types';
 
@@ -12,7 +12,7 @@ import { BootstrapServer, LocalStorage, RuntimeEnvironment } from './types';
  */
 export const devServiceProxy = async (
     devserverPort: number,
-    proxyPort: number = 0,
+    proxyPort = 0,
     envVariables?: RuntimeEnvironment,
     localStorage?: LocalStorage,
 ): Promise<BootstrapServer> => {
@@ -29,12 +29,12 @@ export const devServiceProxy = async (
     console.info(green(`* You can now open http://127.0.0.1:${server.port} and: `));
     logValues(envVariables, localStorage);
 
-    const httpProxy = expressProxy('http://127.0.0.1:' + devserverPort, {
+    const httpProxy = expressProxy(`http://127.0.0.1:${devserverPort}`, {
         userResDecorator: (proxyRes, proxyResData) => {
             if (!isDynamicPage(proxyRes)) {
                 return proxyResData;
             }
-            const contents = proxyResData.toString('utf-8');
+            const contents = proxyResData.toString('utf-8') as string;
             const script = getScriptPayload(envVariables, localStorage);
             return contents + script;
         },
@@ -45,9 +45,9 @@ export const devServiceProxy = async (
     return server;
 };
 
-const isDynamicPage = (response: any) => {
+const isDynamicPage = (response: express.Response & { headers?: Record<string, string> }) => {
     try {
-        return response.headers['content-type'].includes('text/html');
+        return response.headers && response.headers['content-type'].includes('text/html');
     } catch (ex) {
         // swallow
         return false;

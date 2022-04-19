@@ -9,12 +9,12 @@ import { enableLogger, logger } from './logger';
 export class WsFakeHost extends BaseFakeHost {
     private websocket!: WebSocket.Server;
     private serverPort?: number;
-    private connections = new Map<string, WebSocket>();
+    private readonly connections = new Map<string, WebSocket>();
 
     constructor(
         protocolHandler: ProtocolHandler<unknown, unknown>,
         port?: number,
-        private path: string = '/json',
+        private readonly path: string = '/json',
         debug = false,
     ) {
         super(protocolHandler);
@@ -22,7 +22,7 @@ export class WsFakeHost extends BaseFakeHost {
         debug && enableLogger();
     }
 
-    public start(port: number = 0) {
+    public start(port = 0) {
         if (this.websocket) {
             logger('WARNING: Server already running.');
             return;
@@ -94,10 +94,10 @@ export class WsFakeHost extends BaseFakeHost {
 
     async dispose(): Promise<void> {
         this.disconnect();
-        return new Promise((resolve, reject) => {
+        return await new Promise((resolve, reject) => {
             this.websocket.close(err => {
                 logger(chalk.red('Disposed.'));
-                return err ? reject() : resolve();
+                return err != null ? reject() : resolve();
             });
         });
     }

@@ -1,9 +1,9 @@
-import debug from 'debug';
+import debug from 'debug'
 
-const loggerName = '@fakehost/exchange';
+const loggerName = '@fakehost/exchange'
 
-export const logger = debug(loggerName);
+export const logger = debug(loggerName)
 
 export const enableLogger = () => {
-    debug.enable(loggerName);
-};
+  debug.enable(loggerName)
+}

@@ -5,7 +5,7 @@ import { BaseFakeHost, Connection } from './BaseFakeHost';
 import { enableLogger, logger } from './logger';
 
 export class InlineFakeHost extends BaseFakeHost {
-    private fakeUrl!: string;
+    private readonly fakeUrl!: string;
     private server?: Server;
     private connection?: Connection;
     private socket?: MockedSocket;
@@ -13,7 +13,7 @@ export class InlineFakeHost extends BaseFakeHost {
 
     constructor(
         protocolHandler: ProtocolHandler<unknown, unknown>,
-        url: string = 'ws://localhost:5555',
+        url = 'ws://localhost:5555',
         debug = false,
     ) {
         super(protocolHandler);
@@ -26,12 +26,12 @@ export class InlineFakeHost extends BaseFakeHost {
         return Promise.resolve(this.fakeUrl);
     }
 
-    dispose(): Promise<void> {
-        if (!this.server) return Promise.resolve();
+    async dispose(): Promise<void> {
+        if (this.server == null) return await Promise.resolve();
         this.server.stop();
         this.socket?.close();
-        this.connection && super.onClose(this.connection!.id);
-        return Promise.resolve();
+        this.connection != null && super.onClose(this.connection.id);
+        return await Promise.resolve();
     }
 
     disconnect() {
@@ -63,8 +63,15 @@ export class InlineFakeHost extends BaseFakeHost {
             });
 
             socket.on('message', (data: string | Blob | ArrayBuffer | ArrayBufferView) => {
+                if (!this.connection) {
+                    return;
+                }
                 if (typeof data === 'string') {
-                    super.onMessage(this.connection!, data);
+                    super.onMessage(this.connection, data);
+                } else if (!(data instanceof Blob)) {
+                    super.onMessage(this.connection, data as Buffer);
+                } else {
+                    throw new Error('Unsupported type "Blob');
                 }
             });
         });

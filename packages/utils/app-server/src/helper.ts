@@ -3,15 +3,15 @@ import { Express } from 'express';
 import { AddressInfo } from 'net';
 import { BootstrapServer, LocalStorage, RuntimeEnvironment } from './types';
 
-export const startServer = (app: Express, port: number = 0): Promise<BootstrapServer> => {
+export const startServer = (app: Express, port = 0): Promise<BootstrapServer> => {
     return new Promise(resolve => {
         const server = app.listen(port, () => {
-            const addressInfo = server!.address() as AddressInfo;
+            const addressInfo = server.address() as AddressInfo;
             resolve({
                 url: `http://127.0.0.1:${addressInfo.port}`,
                 port: addressInfo.port,
                 dispose: () => {
-                    return new Promise(async (disposeResolve, disposeReject) => {
+                    return new Promise<void>((disposeResolve, disposeReject) => {
                         server.close(disposeErr => {
                             disposeErr ? disposeReject() : disposeResolve();
                         });
@@ -29,29 +29,24 @@ export const logValues = (envVariables?: RuntimeEnvironment, localStorage?: Loca
             : '';
         console.info(green(`* - window${namespace}.${key}="${val}"`));
     });
-    Object.entries(envVariables?.variables || {}).forEach(([key, val]) => {
+    Object.entries(localStorage || {}).forEach(([key, val]) => {
         console.info(green(`* - localStorage.getItem("${key}") // => ${JSON.stringify(val)}`));
     });
 };
 
-export const getScriptPayload = (environment?: RuntimeEnvironment, localStorage?: LocalStorage) => {
+export const getScriptPayload = (
+    environment?: RuntimeEnvironment,
+    localStorage: LocalStorage = {},
+) => {
     const bootstrapVariables = {
         ...(environment ? environment.variables : {}),
     };
 
-    const setupLocalStorage = Object.keys(localStorage || {}).map(key => {
-        return `localStorage.setItem('${key}', '${localStorage![key]}')`;
+    const setupLocalStorage = Object.keys(localStorage).map(key => {
+        return `localStorage.setItem('${key}', '${localStorage[key]}')`;
     });
 
     const namespace = environment?.windowVariableName ? `.${environment.windowVariableName}` : '';
-
-    let defineNamespace = new Array<string>();
-    'one.two.three'.split('.').forEach((name, i, orig) => {
-        const prev = orig.slice(0, i);
-        const nmspace = ['window', ...prev, name].join('.');
-        console.log(`${nmspace} = ${nmspace} || {};`);
-    });
-
     // namespace could require window.a.b.c = {...}
     // so ensure we have that depth defined on the window object
     const setupNamespace = (environment?.windowVariableName || '')
