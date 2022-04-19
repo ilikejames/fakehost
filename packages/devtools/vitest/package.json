@@ -1,0 +1,23 @@
+{
+  "name": "@fakehost/devtools-vitest",
+  "version": "0.0.18",
+  "description": "Vitest configuration",
+  "private": true,
+  "license": "UNLICENSED",
+  "main": "./src/index",
+  "dependencies": {
+    "happy-dom": "^2.55.0",
+    "vitest": "^0.9.3"
+  },
+  "peerDependencies": {
+    "typescript": "^4.5.5"
+  },
+  "devDependencies": {
+    "ts-node": "^10.4.0"
+  },
+  "scripts": {
+    "build": "tsc --project ./tsconfig.json --noEmit",
+    "lint": "eslint --ext .tsx --ext .ts src/",
+    "typecheck": "tsc --noEmit"
+  }
+}

@@ -8,9 +8,10 @@ Gives 3 types of fake host:
 2. `WsFakeHost` a W3C compliant websocket service for running in node.
 3. `SockJSFakeHost` a sockjs service as some clients require this.
 
-## Debug Logging
+### Debug Logging
 
-Debug logging can be enabled through the contructors, or via the environment variable: 
+
+Debug logging can be enabled through the constructors, or via the environment variable: 
 
 ```sh
 DEBUG=@fakehost/exchange
