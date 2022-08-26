@@ -16,6 +16,7 @@ export class WsFakeHost extends BaseFakeHost {
         port?: number,
         private path: string = '/json',
         debug = false,
+        private name = 'WsFakeHost',
     ) {
         super(protocolHandler);
         this.start(port);
@@ -24,7 +25,7 @@ export class WsFakeHost extends BaseFakeHost {
 
     public start(port: number = 0) {
         if (this.websocket) {
-            logger('WARNING: Server already running.');
+            logger(`${this.name}: WARNING already running.`);
             return;
         }
 
@@ -36,12 +37,12 @@ export class WsFakeHost extends BaseFakeHost {
         this.websocket.on('listening', () => {
             const address = this.websocket.address() as AddressInfo;
             this.serverPort = address.port;
-            console.log(chalk.green(`Started WsFakeHost on ${address.port}`));
+            console.log(chalk.green(`${this.name}: Started on ${address.port}`));
         });
 
         this.websocket.on('connection', socket => {
             if (this.refuseNewConnections) {
-                logger('Refusing new connection');
+                logger(`${this.name}: Refusing new connection`);
                 socket.close();
                 return;
             }
@@ -96,14 +97,14 @@ export class WsFakeHost extends BaseFakeHost {
         this.disconnect();
         return new Promise((resolve, reject) => {
             this.websocket.close(err => {
-                logger(chalk.red('Disposed.'));
+                logger(chalk.red(`${this.name}: Disposed.`));
                 return err ? reject() : resolve();
             });
         });
     }
 
     disconnect() {
-        logger(chalk.yellow('Disconnecting clients.'));
+        logger(chalk.yellow(`${this.name}: Disconnecting clients.`));
         this.connections.forEach(connection => {
             connection.close();
         });

@@ -10,7 +10,7 @@ Gives 3 types of fake host:
 
 ## Debug Logging
 
-Debug logging can be enabled through the contructors, or via the environment variable: 
+Debug logging can be enabled through the constructor, or via the environment variable: 
 
 ```sh
 DEBUG=@fakehost/exchange
