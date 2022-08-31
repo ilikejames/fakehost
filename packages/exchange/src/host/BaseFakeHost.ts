@@ -20,7 +20,7 @@ export interface FakeHost {
 export abstract class BaseFakeHost implements FakeHost {
     private _connections = new Array<Connection>();
 
-    constructor(private protocolHandler: ProtocolHandler<unknown, unknown>) {}
+    constructor(public readonly protocolHandler: ProtocolHandler<unknown, unknown>) {}
 
     protected onConnection(connection: Connection) {
         this._connections.unshift({
