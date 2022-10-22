@@ -12,13 +12,11 @@
   "dependencies": {
     "chalk": "^4.0.0",
     "debug": "^4.3.3",
-    "lodash": "^4.17.21",
-    "mock-socket": "9.0.3",
+    "mock-socket": "^9.1.5",
     "sockjs": "^0.3.24",
-    "ts-node": "^10.4.0",
     "url": "^0.11.0",
-    "uuid": "^8.3.2",
-    "ws": "^8.4.2"
+    "uuid": "^9.0.0",
+    "ws": "^8.9.0"
   },
   "devDependencies": {
     "@types/debug": "^4.1.7",
@@ -26,8 +24,9 @@
     "@types/sockjs": "^0.3.33",
     "@types/sockjs-node": "^0.3.28",
     "@types/uuid": "^8.3.4",
-    "@types/ws": "^8.2.2",
+    "@types/ws": "^8.5.3",
     "cross-env": "^7.0.3",
+    "ts-node": "^10.4.0",
     "typescript": "^4.5.5"
   },
   "scripts": {
