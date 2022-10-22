@@ -14,7 +14,7 @@
     "@types/jest": "^27.0.1",
     "@types/node": "^16.7.1",
     "cross-env": "^7.0.3",
-    "lerna": "^4.0.0",
+    "lerna": "^6.0.0",
     "prettier": "^2.3.2",
     "typescript": "^4.3.5"
   },
