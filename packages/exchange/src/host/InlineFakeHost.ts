@@ -1,72 +1,72 @@
-import chalk from 'chalk';
-import { Server, WebSocket as MockedSocket } from 'mock-socket';
-import { ProtocolHandler } from '../ProtocolHandler';
-import { BaseFakeHost, Connection } from './BaseFakeHost';
-import { enableLogger, logger } from './logger';
+import chalk from 'chalk'
+import { Client, Server, WebSocket as MockedSocket } from 'mock-socket'
+import { ProtocolHandler } from '../ProtocolHandler'
+import { BaseFakeHost, Connection, HostOptions } from './BaseFakeHost'
+import { enableLogger, logger } from './logger'
 
 export class InlineFakeHost extends BaseFakeHost {
-    private fakeUrl!: string;
-    private server?: Server;
-    private connection?: Connection;
-    private socket?: MockedSocket;
-    public Websocket = MockedSocket;
+    private readonly fakeUrl!: string
+    private server?: Server
+    private connection?: Connection
+    private client?: Client
+    public Websocket = MockedSocket
 
     constructor(
         protocolHandler: ProtocolHandler<unknown, unknown>,
-        url: string = 'ws://localhost:5555',
-        debug = false,
+        url = 'ws://localhost:5555',
+        private readonly options: HostOptions = { name: 'InlineFakeHost ' },
     ) {
-        super(protocolHandler);
-        this.fakeUrl = url;
-        this.start();
-        debug && enableLogger();
+        super(protocolHandler)
+        this.fakeUrl = url
+        this.start()
+        options.debug && enableLogger()
     }
 
     get url(): Promise<string> {
-        return Promise.resolve(this.fakeUrl);
+        return Promise.resolve(this.fakeUrl)
     }
 
-    dispose(): Promise<void> {
-        if (!this.server) return Promise.resolve();
-        this.server.stop();
-        this.socket?.close();
-        this.connection && super.onClose(this.connection!.id);
-        return Promise.resolve();
+    async dispose(): Promise<void> {
+        if (this.server == null) return await Promise.resolve()
+        this.server.stop()
+        this.client?.close()
+        this.connection != null && super.onClose(this.connection.id)
+        return await Promise.resolve()
     }
 
     disconnect() {
-        this.socket?.close();
+        this.client?.close()
     }
 
     start() {
-        this.server = new Server(this.fakeUrl, {});
-        console.log(chalk.green(`Started InlineFakeHost on ${this.fakeUrl}`));
+        this.server = new Server(this.fakeUrl, {})
+        console.log(chalk.green(`${this.options.name}: Started on ${this.fakeUrl}`))
 
-        this.server.on('connection', socket => {
+        this.server.on('connection', client => {
             if (this.refuseNewConnections) {
-                logger('Refusing new connection');
-                socket.close();
-                return;
+                logger(`${this.options.name}: Refusing new connection`)
+                client.close()
+                return
             }
-            this.socket = socket;
-            const connectionId = `fake-${Date.now().toString()}`;
+            this.client = client
+            const connectionId = `fake-${Date.now().toString()}`
             this.connection = {
                 id: connectionId,
-                close: socket.close,
-                write: (raw: string) => socket.send(raw),
-            };
+                close: client.close,
+                write: (raw: string) => client.send(raw),
+            }
 
-            super.onConnection(this.connection);
+            super.onConnection(this.connection)
 
-            socket.on('close', () => {
-                super.onClose(connectionId);
-            });
+            client.on('close', () => {
+                super.onClose(connectionId)
+            })
 
-            socket.on('message', (data: string | Blob | ArrayBuffer | ArrayBufferView) => {
-                if (typeof data === 'string') {
-                    super.onMessage(this.connection!, data);
+            client.on('message', (data: string | Blob | ArrayBuffer | ArrayBufferView) => {
+                if (typeof data === 'string' && this.connection) {
+                    super.onMessage(this.connection, data)
                 }
-            });
-        });
+            })
+        })
     }
 }

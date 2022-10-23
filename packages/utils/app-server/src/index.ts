@@ -1,3 +1,3 @@
-export * from './devserverProxy';
-export * from './staticServer';
-export * from './start';
+export * from './devserverProxy'
+export * from './staticServer'
+export * from './start'
