@@ -27,10 +27,12 @@ export class InlineFakeHost<I, O> extends BaseFakeHost<I, O> {
     }
 
     async dispose(): Promise<void> {
-        if (this.server == null) return await Promise.resolve()
+        if (!this.server) return await Promise.resolve()
         this.server.stop()
         this.client?.close()
-        this.connection != null && super.onClose(this.connection.id)
+        if (this.connection) {
+            super.onClose(this.connection.id)
+        }
         return await Promise.resolve()
     }
 
