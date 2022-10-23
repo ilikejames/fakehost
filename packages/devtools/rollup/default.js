@@ -1,12 +1,12 @@
-const autoExternal = require('rollup-plugin-auto-external');
-const esbuild = require('rollup-plugin-esbuild');
-const json = require('@rollup/plugin-json');
+const autoExternal = require('rollup-plugin-auto-external')
+const { default: esbuild } = require('rollup-plugin-esbuild')
+const json = require('@rollup/plugin-json')
 
 const defaults = {
     base64: false,
-};
+}
 
-module.exports = ({ base64 } = defaults) => ({
+module.exports = ({} = defaults) => ({
     input: 'src/index.ts',
     output: [
         {
@@ -21,7 +21,6 @@ module.exports = ({ base64 } = defaults) => ({
         json(),
         esbuild({
             sourcemap: true,
-            svg: true,
         }),
     ],
-});
+})
