@@ -2,7 +2,7 @@
 
 Host an existing app with injected runtime variables for running automated tests against. 
 
-Run a webserver hosting your app with extra variables written into the window object, and with localStorage items set. This can be run to serve either 
+Run a web server hosting your app with extra variables written into the window object, and with localStorage items set. This can be run to serve either 
 - a prebuilt static website
 - to proxy a running development server, e.g. `react-scripts start` or webpack dev server.
 
