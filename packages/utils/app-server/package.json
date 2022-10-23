@@ -7,7 +7,7 @@
     "files": [
         "dist"
     ],
-    "homepage": "https://github.com/ilikejames/fakes",
+    "homepage": "https://github.com/ilikejames/fakehost",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
     "dependencies": {

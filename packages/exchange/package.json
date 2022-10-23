@@ -6,18 +6,18 @@
   "files": [
     "dist"
   ],
-  "homepage": "https://github.com/ilikejames/fakes",
+  "homepage": "https://github.com/ilikejames/fakehost",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "dependencies": {
     "chalk": "^4.0.0",
     "debug": "^4.3.3",
     "mock-socket": "^9.1.5",
-    "sockjs": "^0.3.24",
     "url": "^0.11.0",
     "uuid": "^9.0.0",
     "ws": "^8.9.0"
   },
+  "peerDependencies": {},
   "devDependencies": {
     "@types/debug": "^4.1.7",
     "@types/node": "^14.0.0",
@@ -26,6 +26,7 @@
     "@types/uuid": "^8.3.4",
     "@types/ws": "^8.5.3",
     "cross-env": "^7.0.3",
+    "sockjs": "^0.3.0",
     "ts-node": "^10.4.0",
     "typescript": "^4.5.5"
   },
