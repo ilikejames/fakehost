@@ -20,6 +20,7 @@
   },
   "scripts": {
     "build": "lerna run --stream build",
-    "lint": "lerna run --stream lint --"
+    "lint": "lerna run --stream lint --",
+    "prepublish": "lerna run --stream build"
   }
 }
