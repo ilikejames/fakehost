@@ -1,6 +1,6 @@
 {
   "name": "@fakehost/exchange",
-  "version": "0.0.20",
+  "version": "0.1.1-alpha.0",
   "private": false,
   "license": "ISC",
   "files": [
@@ -17,7 +17,6 @@
     "uuid": "^9.0.0",
     "ws": "^8.9.0"
   },
-  "peerDependencies": {},
   "devDependencies": {
     "@types/debug": "^4.1.7",
     "@types/node": "^14.0.0",

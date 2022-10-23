@@ -1,6 +1,6 @@
 {
   "name": "@fakehost/stomp",
-  "version": "0.0.20",
+  "version": "0.1.1-alpha.0",
   "private": true,
   "license": "UNLICENSED",
   "files": [
@@ -10,7 +10,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "dependencies": {
-    "@fakehost/exchange": "^0.0.20"
+    "@fakehost/exchange": "^0.1.1-alpha.0"
   },
   "peerDependencies": {
     "rxjs": "^6.5.3"
