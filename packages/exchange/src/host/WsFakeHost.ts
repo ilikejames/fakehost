@@ -94,10 +94,10 @@ export class WsFakeHost<I, O> extends BaseFakeHost<I, O> {
 
     async dispose(): Promise<void> {
         this.disconnect()
-        return await new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             this.websocket.close(err => {
                 logger(chalk.red(`${this.options.name}: Disposed.`))
-                return err != null ? reject() : resolve()
+                return err ? reject(err.message) : resolve()
             })
         })
     }

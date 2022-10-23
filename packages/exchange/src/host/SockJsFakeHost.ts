@@ -95,9 +95,9 @@ export class SockJsFakeHost<I, O> extends BaseFakeHost<I, O> {
 
     async dispose(): Promise<void> {
         this.disconnect()
-        return await new Promise((resolve, reject) => {
+        return new Promise((resolve, reject) => {
             this.server.close(err => {
-                return err != null ? reject() : resolve()
+                return err ? reject() : resolve()
             })
         })
     }
