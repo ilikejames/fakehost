@@ -23,15 +23,12 @@ export interface FakeHost {
     getConnections: () => Connection[]
     start: (port?: number) => void
     refuseNewConnections: boolean
-    addEventListener: (event: EventType, handler: EventHandler) => void
-    removeEventListener: (event: EventType, handler: EventHandler) => void
 }
 
-export abstract class BaseFakeHost<I, O> implements FakeHost {
+export abstract class BaseFakeHost implements FakeHost {
     private readonly _connections = new Array<Connection>()
-    private eventHandlers = new Array<{ event: EventType; handler: EventHandler }>()
 
-    constructor(public readonly protocolHandler: ProtocolHandler<I, O>) {}
+    constructor(public readonly protocolHandler: ProtocolHandler<any, any>) {}
 
     protected onConnection(connection: Connection) {
         this._connections.unshift({
@@ -41,24 +38,6 @@ export abstract class BaseFakeHost<I, O> implements FakeHost {
         if (this.protocolHandler.onConnection != null) {
             this.protocolHandler.onConnection(connection)
         }
-        this.eventHandlers
-            .filter(x => x.event === 'connection')
-            .forEach(({ handler }) =>
-                handler({
-                    event: 'connection',
-                    id: connection.id,
-                }),
-            )
-    }
-
-    public addEventListener(event: EventType, handler: EventHandler) {
-        this.eventHandlers.push({ event, handler })
-    }
-
-    public removeEventListener(event: EventType, handler: EventHandler) {
-        this.eventHandlers = this.eventHandlers.filter(
-            x => !(x.event === event && x.handler === handler),
-        )
     }
 
     public getConnections() {
@@ -72,16 +51,10 @@ export abstract class BaseFakeHost<I, O> implements FakeHost {
     abstract dispose(): Promise<void>
 
     protected onClose(id: string) {
-        const listeners = this.eventHandlers.filter(x => x.event === 'disconnect')
         this._connections.forEach(x => {
             if (x.id === id) {
                 x.isClosed = true
-                listeners.forEach(({ handler }) =>
-                    handler({
-                        event: 'disconnect',
-                        id,
-                    }),
-                )
+                this.protocolHandler.onDisconnection && this.protocolHandler.onDisconnection(x)
             }
         })
     }
