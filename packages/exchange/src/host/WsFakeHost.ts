@@ -6,13 +6,13 @@ import { ProtocolHandler } from '../ProtocolHandler'
 import { BaseFakeHost, Connection, HostOptions } from './BaseFakeHost'
 import { enableLogger, logger } from './logger'
 
-export class WsFakeHost<I, O> extends BaseFakeHost<I, O> {
+export class WsFakeHost extends BaseFakeHost {
     private websocket!: WebSocket.Server
     private serverPort?: number
     private readonly connections = new Map<string, WebSocket>()
 
     constructor(
-        protocolHandler: ProtocolHandler<I, O>,
+        protocolHandler: ProtocolHandler<any, any>,
         port?: number,
         private readonly path: string = '/json',
         private readonly options: HostOptions = { name: 'WsFakeHost' },

@@ -4,7 +4,7 @@ import { ProtocolHandler } from '../ProtocolHandler'
 import { BaseFakeHost, Connection, HostOptions } from './BaseFakeHost'
 import { enableLogger, logger } from './logger'
 
-export class InlineFakeHost<I, O> extends BaseFakeHost<I, O> {
+export class InlineFakeHost extends BaseFakeHost {
     private readonly fakeUrl!: string
     private server?: Server
     private connection?: Connection
@@ -12,7 +12,7 @@ export class InlineFakeHost<I, O> extends BaseFakeHost<I, O> {
     public Websocket = MockedSocket
 
     constructor(
-        protocolHandler: ProtocolHandler<I, O>,
+        protocolHandler: ProtocolHandler<any, any>,
         url = 'ws://localhost:5555',
         private readonly options: HostOptions = { name: 'InlineFakeHost ' },
     ) {
