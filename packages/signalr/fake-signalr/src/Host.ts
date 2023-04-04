@@ -2,31 +2,26 @@ import * as WS from 'ws'
 import { createServer, Server } from 'http'
 import { v4 as uuid } from 'uuid'
 import { Connection } from '@fakehost/exchange'
-
-export interface ProtocolHandler<I = object, O = unknown> {
-    path: string
-    serialize: (message: O) => string
-    deserialize: (message: string | Buffer) => I
-    onConnection?: (connection: Connection) => void
-    onDisconnection?: (connection: Connection) => void
-    onMessage: (connection: Connection, message: I, host: Host<I, O>) => void
-}
+import { ProtocolHandler } from './protocolHandler'
 
 export type HostOptions = {
     port: number
     debug: boolean
 }
 
-export class Host<I = object, O = unknown> {
+export class Host {
     private http: Server
     private ws: WS.Server
     private connectionIds = new Set<string>()
     private connectionTokens = new Set<string>()
     private sockets = new Map<string, WS.WebSocket>()
-    public readonly connections = new Map<string, Connection & { path: string }>()
+    private readonly connections = new Map<string, Connection & { path: string }>()
     public readonly port: Promise<number>
 
-    constructor(private handlers: ProtocolHandler<I, O>[], options?: Partial<HostOptions>) {
+    constructor(
+        private handlers: ProtocolHandler<unknown, unknown>[],
+        options?: Partial<HostOptions>,
+    ) {
         this.http = createServer()
         this.ws = new WS.WebSocketServer({ server: this.http })
 
@@ -35,8 +30,6 @@ export class Host<I = object, O = unknown> {
             const connectionToken = uuid()
             this.connectionIds.add(connectionId)
             this.connectionTokens.add(connectionToken)
-
-            console.log('new request', connectionId, connectionToken)
 
             res.write(
                 JSON.stringify({
@@ -62,8 +55,6 @@ export class Host<I = object, O = unknown> {
         })
 
         this.ws.on('connection', async (socket, req) => {
-            console.log('headers =', req.headers)
-            console.log('url', req.url)
             const url = new URL(`http://localhost:${await this.port}${socket.url || req.url || ''}`)
             const connectionId = url.searchParams.get('id') || ''
             this.sockets.set(connectionId, socket)
@@ -94,7 +85,7 @@ export class Host<I = object, O = unknown> {
                 const handlers = this.handlers.filter(handler => handler.path === url.pathname)
                 handlers.forEach(handler => {
                     const message = handler.deserialize(raw)
-                    handler.onMessage(connection, message, self)
+                    handler.onMessage(connection, message)
                 })
             })
         })

@@ -1,11 +1,12 @@
 import { ITimeStreamHub } from '@fakehost/signalr-test-api'
-import { FakeSignalrHub } from '../FakeSignalrHub'
 import { map, timer } from 'rxjs'
+import { FakeSignalrHub } from '../FakeSignalrHub'
 import { observableToStreamResult } from './observableToStream'
+import { ConnectionId } from '../protocolHandler'
 
 export const timeHub = new FakeSignalrHub<ITimeStreamHub>('/timehub', {}, 'capitalize')
 
-const uploadedMessages = new Set<string>()
+const userMessages = new Map<ConnectionId, string[]>()
 
 const streamTimeAsync: ITimeStreamHub['streamTimeAsync'] = function (interval) {
     const result = observableToStreamResult(
@@ -14,11 +15,14 @@ const streamTimeAsync: ITimeStreamHub['streamTimeAsync'] = function (interval) {
     return result
 }
 
-const clientToServerStreaming: ITimeStreamHub['clientToServerStreaming'] = async function (stream) {
+const clientToServerStreaming: ITimeStreamHub['clientToServerStreaming'] = async function (
+    this: typeof timeHub.thisInstance,
+    stream,
+) {
     stream.subscribe({
         next: message => {
-            console.log('received', message.content)
-            uploadedMessages.add(message.content)
+            const existing = userMessages.get(this.Connection.id) ?? []
+            userMessages.set(this.Connection.id, existing.concat(message.content))
         },
         complete: () => {
             console.log('complete')
@@ -29,8 +33,10 @@ const clientToServerStreaming: ITimeStreamHub['clientToServerStreaming'] = async
     })
 }
 
-const getUploaded: ITimeStreamHub['getUploaded'] = async function () {
-    return Array.from(uploadedMessages.values())
+const getUploaded: ITimeStreamHub['getUploaded'] = async function (
+    this: typeof timeHub.thisInstance,
+) {
+    return Array.from(userMessages.get(this.Connection.id) ?? [])
 }
 
 timeHub.register('streamTimeAsync', streamTimeAsync)

@@ -25,7 +25,7 @@ const getPort = async (options?: Partial<HostOptions>): Promise<number> => {
         return parseInt(process.env.SIGNALR_REMOTE_PORT, 10)
     }
     if (options?.port) {
-        return await options.port!
+        return options.port
     }
     return 5002
 }
@@ -44,7 +44,6 @@ export const testSetup = async (mode: TestTarget): Promise<TestEnv> => {
         }
         case 'REMOTE': {
             const url = `http://localhost:${await getPort()}`
-            console.log('url =', url)
             return {
                 url,
                 dispose: () => undefined,
