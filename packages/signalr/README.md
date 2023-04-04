@@ -12,6 +12,7 @@ TODO:
 
 - [x] Have a getConnectionId on the `this`
 - [ ] Handle thrown errors from methods
+- [x] Implement `IHubCallerClients` methods
 - [x] Migrate into @fakehost
 - [x] Get a build (inc dotnet) running in CI
 - [ ] authentication on endpoints
