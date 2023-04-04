@@ -36,4 +36,41 @@ jobs:
 
       - name: Unit tests
         run: yarn test
+
+  test-signalr:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/setup-node@v3
+        with: 
+          node-version: '18.x'
+      - uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7.0.x'
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref }}
       
+      - name: Install tsrts
+        run: dotnet tool install --global TypedSignalR.Client.TypeScript.Generator
+      
+      - name: Install packages
+        run: yarn --frozen-lockfile
+
+      - name: Generate typescript definition for signalr service
+        run: yarn --cwd packages/signalr/signalr-test-api generate:api
+      
+      - name: Build signal-test-api
+        run: yarn --cwd packages/signalr/signalr-test-api build
+      
+      - name: Contact tests REMOTE
+        run: |
+          nohup dotnet run --urls=http://localhost:6002/ --project=packages/signalr/signalr-svc &
+          sleep 10 # enough time to startup?
+          SIGNALR_REMOTE_PORT=6002 yarn --cwd packages/signalr/fake-signalr test:contract
+
+      - name: Contract tests FAKE
+        run: yarn --cwd packages/signalr/fake-signalr test
+ 

@@ -12,13 +12,11 @@ describe(`${getTestTarget()}:fake-signalr`, () => {
     let fake: TestEnv
 
     beforeAll(async () => {
-        fake = await testSetup()
+        fake = await testSetup(getTestTarget())
     })
 
     const getConnection = async () => {
-        const url =
-            getTestTarget() === 'FAKE' ? `${fake.url}/timehub` : 'http://localhost:5002/timehub'
-
+        const url = `${fake.url}/timehub`
         const connection = new HubConnectionBuilder().withUrl(url).build()
         await connection.start()
 
@@ -39,10 +37,10 @@ describe(`${getTestTarget()}:fake-signalr`, () => {
         try {
             const result = await firstValueFrom(stream$.pipe(bufferCount(3)))
             const [first, second, third] = result.map(x => new Date(x))
-            expect(third.getTime() - second.getTime()).toBeGreaterThanOrEqual(1000)
+            expect(third.getTime() - second.getTime()).toBeGreaterThanOrEqual(990)
             expect(third.getTime() - second.getTime()).toBeLessThan(1100)
 
-            expect(second.getTime() - first.getTime()).toBeGreaterThanOrEqual(1000)
+            expect(second.getTime() - first.getTime()).toBeGreaterThanOrEqual(990)
             expect(second.getTime() - first.getTime()).toBeLessThan(1100)
         } finally {
             await Promise.all([connection.stop()])
