@@ -7,7 +7,14 @@
     "dist"
   ],
   "homepage": "https://github.com/ilikejames/fakehost",
-  "main": "dist/index.js",
+  "main": "dist/index.cjs",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
   "types": "dist/index.d.ts",
   "dependencies": {
     "chalk": "^4.0.0",
@@ -30,7 +37,7 @@
     "typescript": "^4.5.5"
   },
   "scripts": {
-    "build": "yarn rollup -c && yarn tsc --emitDeclarationOnly",
+    "build": "tsup src/index.ts --format cjs,esm --dts --sourcemap",
     "lint": "eslint --ext .tsx --ext .ts src/",
     "typecheck": "tsc --noEmit"
   }

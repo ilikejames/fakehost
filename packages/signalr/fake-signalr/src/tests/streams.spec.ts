@@ -1,6 +1,10 @@
-import { getHubProxyFactory, streamResultToObservable, ClientItem } from '@fakehost/signalr-test-api'
+import {
+    getHubProxyFactory,
+    streamResultToObservable,
+    ClientItem,
+} from '@fakehost/signalr-test-api'
 import { HubConnectionBuilder, Subject as SignalrSubject } from '@microsoft/signalr'
-import { Subject, bufferCount, firstValueFrom, skip, tap, timer } from 'rxjs'
+import { Subject, bufferCount, firstValueFrom, timer } from 'rxjs'
 import { describe, test, expect, beforeAll, afterAll } from 'vitest'
 import { testSetup, getTestTarget, TestEnv } from './testSetup'
 
@@ -12,7 +16,8 @@ describe(`${getTestTarget()}:fake-signalr`, () => {
     })
 
     const getConnection = async () => {
-        const url = getTestTarget() === 'FAKE' ? `${fake.url}/timehub` : 'http://localhost:5002/timehub'
+        const url =
+            getTestTarget() === 'FAKE' ? `${fake.url}/timehub` : 'http://localhost:5002/timehub'
 
         const connection = new HubConnectionBuilder().withUrl(url).build()
         await connection.start()
@@ -58,13 +63,21 @@ describe(`${getTestTarget()}:fake-signalr`, () => {
 
             await firstValueFrom(timer(500))
             const results = await proxy.getUploaded()
-            expect(results.sort()).toEqual(['count: 0', 'count: 1', 'count: 2', 'count: 3', 'count: 4', 'count: 5'])
+            expect(results.sort()).toEqual([
+                'count: 0',
+                'count: 1',
+                'count: 2',
+                'count: 3',
+                'count: 4',
+                'count: 5',
+            ])
         } finally {
             await connection.stop()
         }
     })
 
     const extendSubject = <T>(s: Subject<T>) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const a = s as any
         a.dispose = () => s.unsubscribe()
         return a as SignalrSubject<T>

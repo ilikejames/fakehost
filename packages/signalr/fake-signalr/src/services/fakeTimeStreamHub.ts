@@ -8,7 +8,9 @@ export const timeHub = new FakeSignalrHub<ITimeStreamHub>('/timehub', {}, 'capit
 const uploadedMessages = new Set<string>()
 
 const streamTimeAsync: ITimeStreamHub['streamTimeAsync'] = function (interval) {
-    const result = observableToStreamResult(timer(0, interval * 1000).pipe(map(() => new Date().toISOString())))
+    const result = observableToStreamResult(
+        timer(0, interval * 1000).pipe(map(() => new Date().toISOString())),
+    )
     return result
 }
 
@@ -18,8 +20,12 @@ const clientToServerStreaming: ITimeStreamHub['clientToServerStreaming'] = async
             console.log('received', message.content)
             uploadedMessages.add(message.content)
         },
-        complete: () => {},
-        error: () => {},
+        complete: () => {
+            console.log('complete')
+        },
+        error: err => {
+            console.log('error', err)
+        },
     })
 }
 

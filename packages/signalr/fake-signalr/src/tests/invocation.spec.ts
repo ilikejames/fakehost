@@ -22,7 +22,9 @@ describe(`${getTestTarget()}:fake-signalr`, () => {
 
             await proxy2.join('test-username2')
 
-            expect((await proxy1.getParticipants()).sort()).toEqual(['test-username', 'test-username2'].sort())
+            expect((await proxy1.getParticipants()).sort()).toEqual(
+                ['test-username', 'test-username2'].sort(),
+            )
             await proxy1.leave()
 
             expect(await proxy1.getParticipants()).toEqual(['test-username2'])
@@ -75,7 +77,8 @@ describe(`${getTestTarget()}:fake-signalr`, () => {
     }
 
     const getConnection = async (receivers?: Partial<Receivers>) => {
-        const url = getTestTarget() === 'FAKE' ? `${fake.url}/chathub` : 'http://localhost:5001/chathub'
+        const url =
+            getTestTarget() === 'FAKE' ? `${fake.url}/chathub` : 'http://localhost:5001/chathub'
 
         const connection = new HubConnectionBuilder().withUrl(url).build()
 
@@ -84,9 +87,12 @@ describe(`${getTestTarget()}:fake-signalr`, () => {
         const proxy = getHubProxyFactory('IChatHub').createHubProxy(connection)
 
         const notifier = getReceiverRegister('IChatReceiver').register(connection, {
-            onReceiveMessage: async message => {},
-            onLeave: async (username, dateTime) => {},
-            onJoin: async (username, dateTime) => {},
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+            onReceiveMessage: async () => {},
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+            onLeave: async () => {},
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
+            onJoin: async () => {},
             ...receivers,
         })
 
