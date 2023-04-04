@@ -3,7 +3,7 @@ import { createServer, Server } from 'http'
 import { v4 as uuid } from 'uuid'
 import { Connection } from '@fakehost/exchange'
 
-export interface ProtocolHandler<I extends {}, O> {
+export interface ProtocolHandler<I = object, O = unknown> {
     path: string
     serialize: (message: O) => string
     deserialize: (message: string | Buffer) => I
@@ -17,7 +17,7 @@ export type HostOptions = {
     debug: boolean
 }
 
-export class Host<I extends {}, O> {
+export class Host<I = object, O = unknown> {
     private http: Server
     private ws: WS.Server
     private connectionIds = new Set<string>()
@@ -26,7 +26,7 @@ export class Host<I extends {}, O> {
     public readonly connections = new Map<string, Connection & { path: string }>()
     public readonly port: Promise<number>
 
-    constructor(private handlers: ProtocolHandler<any, any>[], options?: Partial<HostOptions>) {
+    constructor(private handlers: ProtocolHandler<I, O>[], options?: Partial<HostOptions>) {
         this.http = createServer()
         this.ws = new WS.WebSocketServer({ server: this.http })
 
@@ -66,6 +66,7 @@ export class Host<I extends {}, O> {
             const connectionId = url.searchParams.get('id') || ''
             this.sockets.set(connectionId, socket)
 
+            // eslint-disable-next-line @typescript-eslint/no-this-alias
             const self = this
             const connection = {
                 close: () => this.close(connectionId),

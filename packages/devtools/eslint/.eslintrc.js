@@ -7,9 +7,10 @@ const rules = {
 }
 
 const result = {
-    plugins: ['no-only-tests'],
+    plugins: ['no-only-tests', '@typescript-eslint'],
     extends: ['plugin:@typescript-eslint/recommended'],
     rules,
+    parser: '@typescript-eslint/parser',
     parserOptions: {
         project: [join(process.cwd(), './tsconfig.json')],
     },

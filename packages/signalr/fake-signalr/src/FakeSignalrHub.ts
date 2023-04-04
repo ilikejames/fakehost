@@ -2,24 +2,24 @@ import { Connection } from '@fakehost/exchange'
 import { IStreamResult, ISubscription, Subject } from '@microsoft/signalr'
 import { Observable, Subscription } from 'rxjs'
 
-type All<T = {}> = {
+type All<T = object> = {
     [K in keyof T]: boolean
 }
 
-type Clients<T = {}> = {
+type Clients<T = object> = {
     All: {
         [K in keyof T]: T[K]
     }
 }
 
-type ConnectionState<State = {}> = {
+type ConnectionState<State = object> = {
     setState: <Key extends keyof State>(key: Key, value: State[Key]) => void
     getState: <Key extends keyof State>(key: Key) => State[Key] | undefined
 }
 
 export type ConnectionId = string & { __connectionId: never }
 
-type SignalrInstanceThis<Receiver = {}, State = {}> = {
+type SignalrInstanceThis<Receiver = object, State = object> = {
     Clients: Clients<Receiver>
     Connection: ConnectionState<State>
     get connectionId(): ConnectionId
@@ -35,7 +35,7 @@ enum MessageType {
     Close = 7,
 }
 
-type ProtocolHandler<Hub, Receiver = {}> = {
+type ProtocolHandler = {
     path: string | undefined
     serialize(message: unknown): string
     deserialize(message: string): unknown
@@ -68,21 +68,27 @@ const isHandshakeMessage = (message: unknown | HandshakeMessage): message is Han
     return (message as HandshakeMessage).protocol !== undefined
 }
 
-type FormatTarget<Hub extends {}, Receiver = {}> =
+type FormatTarget<Hub extends object, Receiver = object> =
     | 'capitalize'
     | undefined
     | ((s: keyof Hub | keyof Receiver) => string)
 
-export class FakeSignalrHub<Hub extends {}, Receiver = {}, State = {}> implements ProtocolHandler<Hub, Receiver> {
+export class FakeSignalrHub<Hub extends object, Receiver = object, State = object>
+    implements ProtocolHandler
+{
     // active connections to this hub
     private connections = new Map<string, Connection>()
     // state per connection
     private connectionState = new Map<string, Partial<State>>()
     // streams service -> client
-    private connectionSubscriptions = new Map<string, Map<string, ISubscription<unknown> | Subscription>>()
+    private connectionSubscriptions = new Map<
+        string,
+        Map<string, ISubscription<unknown> | Subscription>
+    >()
     // streams client -> service
     private connectionSubjects = new Map<string, Map<string, Subject<unknown>>>()
     // methods from Hub. Not typed due to casing of methods (camelCase in ts vs PascalCase in C#)
+    // eslint-disable-next-line @typescript-eslint/ban-types
     private handlers = new Map<string, Function>()
 
     constructor(
@@ -101,11 +107,11 @@ export class FakeSignalrHub<Hub extends {}, Receiver = {}, State = {}> implement
      * @param s
      * @returns
      */
-    private formatTarget(s: keyof Hub | keyof Receiver | string): string {
+    private formatTarget(s: keyof Hub | keyof Receiver): string {
         if (this.format === 'capitalize' && typeof s === 'string') {
             return this.capitalize(s)
         } else if (typeof this.format === 'function') {
-            return this.format(s as any)
+            return this.format(s as keyof (Hub | Receiver))
         } else {
             return s as string
         }
@@ -120,7 +126,9 @@ export class FakeSignalrHub<Hub extends {}, Receiver = {}, State = {}> implement
         this.connections.delete(connection.id)
 
         // dispose all subscriptions (service -> client)
-        this.connectionSubscriptions.get(connection.id)?.forEach(subscription => disposeSubscription(subscription))
+        this.connectionSubscriptions
+            .get(connection.id)
+            ?.forEach(subscription => disposeSubscription(subscription))
         this.connectionSubscriptions.delete(connection.id)
 
         // dispose all subjects (client -> service)
@@ -136,7 +144,10 @@ export class FakeSignalrHub<Hub extends {}, Receiver = {}, State = {}> implement
         return JSON.parse(message.toString().slice(0, -1))
     }
 
-    async onMessage(connection: Connection, message: InboundSignalrMessage<Hub> | HandshakeMessage) {
+    async onMessage(
+        connection: Connection,
+        message: InboundSignalrMessage<Hub> | HandshakeMessage,
+    ) {
         if (isHandshakeMessage(message)) {
             return connection.write(this.serialize({}))
         }
@@ -152,7 +163,10 @@ export class FakeSignalrHub<Hub extends {}, Receiver = {}, State = {}> implement
                         const subject = new Subject<unknown>()
                         this.connectionSubjects.set(
                             connection.id,
-                            (this.connectionSubjects.get(connection.id) ?? new Map()).set(streamId, subject),
+                            (this.connectionSubjects.get(connection.id) ?? new Map()).set(
+                                streamId,
+                                subject,
+                            ),
                         )
                         await handler?.apply(this.getSignalrInstance(connectionId), [subject])
                     })
@@ -160,7 +174,7 @@ export class FakeSignalrHub<Hub extends {}, Receiver = {}, State = {}> implement
                 }
                 const result = await handler?.apply(
                     this.getSignalrInstance(connectionId),
-                    message.arguments ?? ([] as any),
+                    message.arguments ?? [],
                 )
                 return connection.write(
                     this.serialize({
@@ -173,7 +187,7 @@ export class FakeSignalrHub<Hub extends {}, Receiver = {}, State = {}> implement
             case MessageType.StreamInvocation: {
                 const result: IStreamResult<unknown> | Observable<unknown> = await handler?.apply(
                     this.getSignalrInstance(connectionId),
-                    message.arguments ?? ([] as any),
+                    message.arguments ?? [],
                 )
                 // 🤔 will this always be an IStreamResult? Perhaps also handle Observable?
                 const subscription = result.subscribe({
@@ -215,14 +229,18 @@ export class FakeSignalrHub<Hub extends {}, Receiver = {}, State = {}> implement
                 return
             }
             case MessageType.StreamItem: {
-                const subject = this.connectionSubjects.get(connection.id)?.get(`${message.invocationId}`)
+                const subject = this.connectionSubjects
+                    .get(connection.id)
+                    ?.get(`${message.invocationId}`)
                 if (subject) {
                     subject.next(message.item)
                     return
                 }
             }
             case MessageType.CancelInvocation: {
-                const subscription = this.connectionSubscriptions.get(connection.id)?.get(`${message.invocationId}`)
+                const subscription = this.connectionSubscriptions
+                    .get(connection.id)
+                    ?.get(`${message.invocationId}`)
                 if (!subscription) {
                     return
                 }
@@ -238,7 +256,9 @@ export class FakeSignalrHub<Hub extends {}, Receiver = {}, State = {}> implement
                 return
             }
             case MessageType.Completion: {
-                const subject = this.connectionSubjects.get(connection.id)?.get(`${message.invocationId}`)
+                const subject = this.connectionSubjects
+                    .get(connection.id)
+                    ?.get(`${message.invocationId}`)
                 if (subject) {
                     subject.complete()
                     this.connectionSubjects.get(connection.id)?.delete(`${message.invocationId}`)
@@ -252,7 +272,10 @@ export class FakeSignalrHub<Hub extends {}, Receiver = {}, State = {}> implement
         }
     }
 
-    private getSignalrInstance(currentConnectionId: ConnectionId): SignalrInstanceThis<Receiver, State> {
+    private getSignalrInstance(
+        currentConnectionId: ConnectionId,
+    ): SignalrInstanceThis<Receiver, State> {
+        // eslint-disable-next-line @typescript-eslint/no-this-alias
         const self = this
         const signalrThis: SignalrInstanceThis<Receiver, State> = {
             get connectionId() {
@@ -279,7 +302,7 @@ export class FakeSignalrHub<Hub extends {}, Receiver = {}, State = {}> implement
                                 conn.write(
                                     self.serialize({
                                         type: MessageType.Invocation,
-                                        target: self.formatTarget(target),
+                                        target: self.formatTarget(target as keyof Receiver),
                                         arguments: args,
                                     }),
                                 )
@@ -296,35 +319,15 @@ export class FakeSignalrHub<Hub extends {}, Receiver = {}, State = {}> implement
 
     get thisInstance(): SignalrInstanceThis<Receiver, State> {
         throw new Error('Not callable. Used only for type inference.')
-        // const self = this
-        // return {
-        //     get connectionId() {
-        //         return 'unknown'
-        //     },
-        //     Connection: {
-        //         setState(key, value) {},
-        //         getState(key) {
-        //             return undefined
-        //         },
-        //     },
-        //     Clients: {
-        //         get All() {
-        //             const receivers = Object.keys(self.receivers)
-        //                 .map(self.capitalize)
-        //                 .reduce((acc, key) => {
-        //                     acc[key] = (...args: unknown[]) => {}
-        //                     return acc
-        //                 }, {} as Record<string, (...args: unknown[]) => void>)
-        //             return receivers as Receiver
-        //         },
-        //     },
-        // }
     }
 
-    register<Target extends keyof Hub>(target: Target, handler: Function) {
+    register<Target extends keyof Hub>(target: Target, handler: Handler) {
         this.handlers.set(this.formatTarget(target), handler)
     }
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type Handler = (...args: any[]) => any
 
 const disposeSubscription = (stream: ISubscription<unknown> | Subscription) => {
     if ('unsubscribe' in stream) {

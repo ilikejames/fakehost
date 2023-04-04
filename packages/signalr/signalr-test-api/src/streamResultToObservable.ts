@@ -7,7 +7,7 @@ export const streamResultToObservable = <T>(streamResult: IStreamResult<T>): Obs
             next: (value: T) => {
                 observer.next(value)
             },
-            error: (error: any) => {
+            error: (error: unknown) => {
                 observer.error(error)
             },
             complete: () => {

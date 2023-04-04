@@ -1,7 +1,7 @@
 import { InlineFakeHost, WsFakeHost } from '../host'
 import { ProtocolHandler, ServiceDefinition } from '../ProtocolHandler'
 
-export const setupBrowserBundled = <Req extends {}, Res>(
+export const setupBrowserBundled = <Req extends object, Res>(
     protocol: ProtocolHandler<Req, Res>,
     services: Array<ServiceDefinition<Partial<Req>>>,
     url: string,
@@ -13,7 +13,7 @@ export const setupBrowserBundled = <Req extends {}, Res>(
     return host
 }
 
-export const setupWsFakeHost = <Req extends {}, Res>(
+export const setupWsFakeHost = <Req = object, Res = unknown>(
     protocol: ProtocolHandler<Req, Res>,
     services: Array<ServiceDefinition<Partial<Req>>>,
     port?: number,

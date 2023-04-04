@@ -1,6 +1,6 @@
 import { Connection } from './host/BaseFakeHost'
 
-export interface ProtocolHandler<I extends {}, O> {
+export interface ProtocolHandler<I = object, O = unknown> {
     serialize: (message: O) => string
     deserialize: (message: string | Buffer) => I
     onConnection?: (connection: Connection) => void

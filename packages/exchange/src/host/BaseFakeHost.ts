@@ -20,10 +20,10 @@ export interface FakeHost {
     refuseNewConnections: boolean
 }
 
-export abstract class BaseFakeHost implements FakeHost {
+export abstract class BaseFakeHost<Req = object, Res = unknown> implements FakeHost {
     private readonly _connections = new Array<Connection>()
 
-    constructor(public readonly protocolHandler: ProtocolHandler<any, any>) {}
+    constructor(public readonly protocolHandler: ProtocolHandler<Req, Res>) {}
 
     protected onConnection(connection: Connection) {
         this._connections.unshift({

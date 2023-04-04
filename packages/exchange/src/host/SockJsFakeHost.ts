@@ -7,14 +7,14 @@ import { ProtocolHandler } from '../ProtocolHandler'
 import { BaseFakeHost, Connection, HostOptions } from './BaseFakeHost'
 import { enableLogger, logger } from './logger'
 
-export class SockJsFakeHost extends BaseFakeHost {
+export class SockJsFakeHost<Req = object, Res = unknown> extends BaseFakeHost<Req, Res> {
     private echo!: Server
     private server!: http.Server
     private serverPort?: number
     private readonly connections = new Map<string, InboundConnection>()
 
     constructor(
-        protocolHandler: ProtocolHandler<any, any>,
+        protocolHandler: ProtocolHandler<Req, Res>,
         port?: number,
         private readonly path: string = '/ws',
         private readonly options: HostOptions = { name: 'FakeSockJs' },
