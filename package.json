@@ -8,10 +8,10 @@
   "workspaces": [
     "packages/*",
     "packages/devtools/*",
+    "packages/signalr/*",
     "packages/utils/*"
   ],
   "devDependencies": {
-    "@types/jest": "^27.0.1",
     "@types/node": "^16.7.1",
     "cross-env": "^7.0.3",
     "lerna": "^6.0.0",
@@ -21,6 +21,6 @@
   "scripts": {
     "build": "lerna run --stream build",
     "lint": "lerna run --stream lint --",
-    "prepublish": "lerna run --stream build"
+    "test": "lerna run --stream test --"
   }
 }

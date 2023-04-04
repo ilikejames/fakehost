@@ -1,9 +1,10 @@
 {
-    "version": "0.2.0",
+    "version": "independent",
     "npmClient": "yarn",
     "packages": [
         "packages/*",
         "packages/devtools",
+        "packages/signalr",
         "packages/utils"
     ],
     "useWorkspaces": true,

@@ -1,0 +1,40 @@
+{
+    "name": "@fakehost/signalr",
+    "description": "A Fake Signalr Service for faking/mocking signalr hub services for testing purposes",
+    "keywords": ["fake", "signalr", "mock", "testing", "storybook", "react-native", "contact"],
+    "version": "1.0.0",
+    "private": false,
+    "main": "dist/index.cjs",
+    "type": "module",
+    "exports": {
+        ".": {
+        "import": "./dist/index.js",
+        "require": "./dist/index.cjs"
+        }
+    },
+    "types": "dist/index.d.ts",
+    "files": [
+        "dist"
+    ],
+    "license": "MIT",
+    "dependencies": {
+        "@fakehost/exchange": "^0.2.0",
+        "uuid": "^9.0.0",
+        "ws": "^8.13.0"
+    },
+    "devDependencies": {
+        "@fakehost/signalr-test-api": "*",
+        "@microsoft/signalr": "^7.0.4",
+        "@types/uuid": "^9.0.1",
+        "@types/ws":"^8.5.4",
+        "cross-env": "^7.0.3",
+        "rxjs": "^7.4.0",
+        "vitest": "^0.29.8"
+    },
+    "scripts": {
+        "build": "tsup src/index.ts --format cjs,esm --dts --sourcemap",
+        "lint": "eslint --ext .tsx --ext .ts src/",
+        "test": "cross-env TEST_TARGET=FAKE vitest --run",
+        "test:contract": "cross-env TEST_TARGET=REMOTE vitest --run"
+    }
+}
