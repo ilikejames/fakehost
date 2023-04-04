@@ -20,14 +20,35 @@ export type TestEnv = {
     dispose: () => void
 }
 
-export const testSetup = async (options?: HostOptions): Promise<TestEnv> => {
-    const host = new Host([chatHub, timeHub], options)
-    const url = `http://localhost:${await host.port}`
+const getPort = async (options?: Partial<HostOptions>): Promise<number> => {
+    if (process.env.SIGNALR_REMOTE_PORT) {
+        return parseInt(process.env.SIGNALR_REMOTE_PORT, 10)
+    }
+    if (options?.port) {
+        return await options.port!
+    }
+    return 5002
+}
 
-    return {
-        url,
-        dispose: () => {
-            host.dispose()
-        },
+export const testSetup = async (mode: TestTarget): Promise<TestEnv> => {
+    switch (mode) {
+        case 'FAKE': {
+            const host = new Host([chatHub, timeHub])
+            const url = `http://localhost:${await host.port}`
+            return {
+                url,
+                dispose: () => {
+                    host.dispose()
+                },
+            }
+        }
+        case 'REMOTE': {
+            const url = `http://localhost:${await getPort()}`
+            console.log('url =', url)
+            return {
+                url,
+                dispose: () => undefined,
+            }
+        }
     }
 }

@@ -7,7 +7,7 @@ describe(`${getTestTarget()}:fake-signalr`, () => {
     let fake: TestEnv
 
     beforeAll(async () => {
-        fake = await testSetup()
+        fake = await testSetup(getTestTarget())
     })
 
     afterAll(() => fake.dispose())
@@ -77,8 +77,7 @@ describe(`${getTestTarget()}:fake-signalr`, () => {
     }
 
     const getConnection = async (receivers?: Partial<Receivers>) => {
-        const url =
-            getTestTarget() === 'FAKE' ? `${fake.url}/chathub` : 'http://localhost:5001/chathub'
+        const url = `${fake.url}/chathub`
 
         const connection = new HubConnectionBuilder().withUrl(url).build()
 

@@ -62,6 +62,8 @@ export class Host<I = object, O = unknown> {
         })
 
         this.ws.on('connection', async (socket, req) => {
+            console.log('headers =', req.headers)
+            console.log('url', req.url)
             const url = new URL(`http://localhost:${await this.port}${socket.url || req.url || ''}`)
             const connectionId = url.searchParams.get('id') || ''
             this.sockets.set(connectionId, socket)
