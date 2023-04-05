@@ -1,9 +1,14 @@
 import { createServer } from 'http'
-import { Host, HostOptions } from '../Host'
+import { HostOptions } from '../Host'
 import { chatHub } from '../services/fakeChatHub'
 import { timeHub } from '../services/fakeTimeStreamHub'
 import { v4 as uuid } from 'uuid'
 import { ConnectionId } from '@fakehost/exchange'
+import { WsHost, enableLogger } from '@fakehost/host'
+
+enableLogger()
+
+const hubs = [chatHub, timeHub] as const
 
 export type TestTarget = 'FAKE' | 'REMOTE'
 
@@ -19,7 +24,7 @@ export const getTestTarget = (): TestTarget => {
 }
 
 export type TestEnv = {
-    url: string
+    url: URL
     dispose: () => void
 }
 
@@ -42,18 +47,26 @@ export const testSetup = async (mode: TestTarget): Promise<TestEnv> => {
                 res.end()
             })
             http.listen(0)
-            const host = new Host([chatHub, timeHub], { server: http })
-            const url = `http://localhost:${await host.port}`
+
+            const wsHost = new WsHost({ server: http })
+            hubs.forEach(hub => hub.setHost(wsHost))
+
+            const hostUrl = await wsHost.url
+            const url = new URL(
+                `http://${hostUrl.hostname}${hostUrl.port ? ':' + hostUrl.port : ''}`,
+            )
+
+            console.log('url =', url)
             return {
-                url,
+                url: url,
                 dispose: () => {
                     http.close()
-                    host.dispose()
+                    wsHost.dispose()
                 },
             }
         }
         case 'REMOTE': {
-            const url = `http://localhost:${await getPort()}`
+            const url = new URL(`http://localhost:${await getPort()}`)
             return {
                 url,
                 dispose: () => undefined,

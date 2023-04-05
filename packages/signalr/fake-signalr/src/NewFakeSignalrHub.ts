@@ -1,5 +1,5 @@
 import { IStreamResult, Subject } from '@microsoft/signalr'
-import { ProtocolHandler, Connection, ConnectionId } from '@fakehost/exchange'
+import { Connection, ConnectionId, Host } from '@fakehost/host'
 import { Observable } from 'rxjs'
 import { ClientState } from './ClientState'
 import { MessageType, InboundMessage, isHandshakeMessage } from './messageTypes'
@@ -33,19 +33,29 @@ type FormatTarget<Hub extends object, Receiver = object> =
     | undefined
     | ((s: keyof Hub | keyof Receiver) => string)
 
-export class FakeSignalrHub<Hub extends object, Receiver = object, State = object>
-    implements ProtocolHandler<InboundMessage<Hub>, unknown>
-{
+export class FakeSignalrHub<Hub extends object, Receiver = object, State = object> {
     // active client connections to this hub
     private clients = new Map<ConnectionId, ClientState<State>>()
     // methods from Hub. Not typed due to casing of methods (camelCase in ts vs PascalCase in C#)
     private handlers = new Map<string, Handler>()
+
+    private host: Host | undefined = undefined
 
     constructor(
         public readonly path: string,
         private receivers: AllKeys<Receiver>,
         private format?: FormatTarget<Hub, Receiver>,
     ) {}
+
+    setHost(host: Host) {
+        this.host = host
+        this.host.on('connection', e => this.onConnection.bind(this)(e.connection))
+        this.host.on('disconnection', e => this.onDisconnection.bind(this)(e.connection))
+        this.host.on('message', e => {
+            const message = this.deserialize(e.message)
+            this.onMessage.bind(this)(e.connection, message)
+        })
+    }
 
     /**
      * There can be differences in casing between the client typescript and the server handler methods in C#.
@@ -64,10 +74,12 @@ export class FakeSignalrHub<Hub extends object, Receiver = object, State = objec
     }
 
     onConnection(connection: Connection) {
+        if (connection.url.pathname !== this.path) return
         this.clients.set(connection.id, new ClientState(connection))
     }
 
     onDisconnection(connection: Connection) {
+        if (connection.url.pathname !== this.path) return
         this.clients.get(connection.id)?.dispose()
         this.clients.delete(connection.id)
     }
@@ -81,6 +93,8 @@ export class FakeSignalrHub<Hub extends object, Receiver = object, State = objec
     }
 
     async onMessage(connection: Connection, message: InboundMessage<Hub>) {
+        if (connection.url.pathname !== this.path) return
+
         if (isHandshakeMessage(message)) {
             return connection.write(this.serialize({}))
         }

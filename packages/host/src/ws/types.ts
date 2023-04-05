@@ -1,0 +1,37 @@
+import { URL } from 'url'
+
+export type ConnectionId = string & { __connectionId: never }
+
+export interface Connection {
+    url: URL
+    close: () => void
+    readonly id: ConnectionId
+    write: (message: string | Buffer) => void
+    isClosed?: boolean
+}
+
+export type EventTypes = 'connection' | 'disconnection' | 'message'
+
+interface ConnectionEvent {
+    type: 'connection'
+    connection: Connection
+}
+
+interface DisconnectionEvent {
+    type: 'disconnection'
+    connection: Connection
+}
+
+interface MessageEvent {
+    type: 'message'
+    connection: Connection
+    message: string | Buffer
+}
+
+export type EventMap = {
+    connection: ConnectionEvent
+    disconnection: DisconnectionEvent
+    message: MessageEvent
+}
+
+export type Event<T extends EventTypes> = EventMap[T]

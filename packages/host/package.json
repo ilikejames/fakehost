@@ -1,0 +1,42 @@
+{
+  "name": "@fakehost/host",
+  "version": "1.0.0",
+  "private": true,
+  "license": "ISC",
+  "files": [
+    "dist"
+  ],
+  "homepage": "https://github.com/ilikejames/fakehost",
+  "main": "dist/index.cjs",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "types": "dist/index.d.ts",
+  "dependencies": {
+    "blob-util": "^2.0.2",
+    "chalk": "^4.0.0",
+    "debug": "^4.3.3",
+    "mock-socket": "^9.1.5",
+    "url": "^0.11.0",
+    "uuid": "^9.0.0",
+    "ws": "^8.9.0"
+  },
+  "devDependencies": {
+    "@types/debug": "^4.1.7",
+    "@types/node": "^14.0.0",
+    "@types/uuid": "^8.3.4",
+    "@types/ws": "^8.5.3",
+    "isomorphic-ws": "^5.0.0",
+    "typescript": "^4.5.5",
+    "vitest": "^0.29.8"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts --sourcemap",
+    "lint": "eslint --ext .tsx --ext .ts src/",
+    "test": "vitest --run"
+  }
+}

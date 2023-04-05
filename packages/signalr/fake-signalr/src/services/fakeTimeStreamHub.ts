@@ -1,7 +1,7 @@
 import { ITimeStreamHub } from '@fakehost/signalr-test-api'
 import { ConnectionId } from '@fakehost/exchange'
 import { map, timer } from 'rxjs'
-import { FakeSignalrHub } from '../FakeSignalrHub'
+import { FakeSignalrHub } from '../NewFakeSignalrHub'
 import { observableToStreamResult } from './observableToStream'
 
 export const timeHub = new FakeSignalrHub<ITimeStreamHub>('/timehub', {}, 'capitalize')

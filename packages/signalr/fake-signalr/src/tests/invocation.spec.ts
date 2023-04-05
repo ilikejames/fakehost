@@ -77,7 +77,8 @@ describe(`${getTestTarget()}:fake-signalr`, () => {
     }
 
     const getConnection = async (receivers?: Partial<Receivers>) => {
-        const url = `${fake.url}/chathub`
+        const url = `${fake.url}chathub`
+        console.log('url tst =', url)
 
         const connection = new HubConnectionBuilder().withUrl(url).build()
 

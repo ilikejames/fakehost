@@ -21,6 +21,7 @@ export class Host {
         return this._port
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     constructor(private handlers: ProtocolHandler<any, any>[], options?: Partial<HostOptions>) {
         // this.http = createServer()
         // this.ws = new WS.WebSocketServer({ server: this.http })

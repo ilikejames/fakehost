@@ -12,6 +12,7 @@ export class WsFakeHost extends BaseFakeHost {
     private readonly connections = new Map<string, WebSocket>()
 
     constructor(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         protocolHandler: ProtocolHandler<any, any>,
         port?: number,
         private readonly path: string = '/json',
