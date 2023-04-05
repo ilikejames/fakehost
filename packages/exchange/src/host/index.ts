@@ -1,6 +1,4 @@
-import * as Base from './BaseFakeHost'
-export type FakeHost = Base.FakeHost
+export type { FakeHost, Connection, ConnectionId } from './BaseFakeHost'
 export * from './InlineFakeHost'
 export * from './SockJsFakeHost'
 export * from './WsFakeHost'
-export type Connection = Base.Connection

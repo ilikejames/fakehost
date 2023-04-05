@@ -1,10 +1,10 @@
 import chalk from 'chalk'
 import { Client, Server, WebSocket as MockedSocket } from 'mock-socket'
 import { ProtocolHandler } from '../ProtocolHandler'
-import { BaseFakeHost, Connection, HostOptions } from './BaseFakeHost'
+import { BaseFakeHost, Connection, HostOptions, ConnectionId } from './BaseFakeHost'
 import { enableLogger, logger } from './logger'
 
-export class InlineFakeHost<Req = object, Res = unknown> extends BaseFakeHost<Req, Res> {
+export class InlineFakeHost extends BaseFakeHost {
     private readonly fakeUrl!: string
     private server?: Server
     private connection?: Connection
@@ -12,7 +12,7 @@ export class InlineFakeHost<Req = object, Res = unknown> extends BaseFakeHost<Re
     public Websocket = MockedSocket
 
     constructor(
-        protocolHandler: ProtocolHandler<Req, Res>,
+        protocolHandler: ProtocolHandler<any, any>,
         url = 'ws://localhost:5555',
         private readonly options: HostOptions = { name: 'InlineFakeHost ' },
     ) {
@@ -51,7 +51,7 @@ export class InlineFakeHost<Req = object, Res = unknown> extends BaseFakeHost<Re
                 return
             }
             this.client = client
-            const connectionId = `fake-${Date.now().toString()}`
+            const connectionId = `fake-${Date.now().toString()}` as ConnectionId
             this.connection = {
                 id: connectionId,
                 close: client.close,

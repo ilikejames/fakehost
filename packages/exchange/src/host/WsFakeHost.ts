@@ -3,16 +3,16 @@ import { AddressInfo } from 'net'
 import WebSocket from 'ws'
 import { v4 as uuid } from 'uuid'
 import { ProtocolHandler } from '../ProtocolHandler'
-import { BaseFakeHost, Connection, HostOptions } from './BaseFakeHost'
+import { BaseFakeHost, Connection, ConnectionId, HostOptions } from './BaseFakeHost'
 import { enableLogger, logger } from './logger'
 
-export class WsFakeHost<Req = object, Res = unknown> extends BaseFakeHost<Req, Res> {
+export class WsFakeHost extends BaseFakeHost {
     private websocket!: WebSocket.Server
     private serverPort?: number
     private readonly connections = new Map<string, WebSocket>()
 
     constructor(
-        protocolHandler: ProtocolHandler<Req, Res>,
+        protocolHandler: ProtocolHandler<any, any>,
         port?: number,
         private readonly path: string = '/json',
         private readonly options: HostOptions = { name: 'WsFakeHost' },
@@ -46,7 +46,7 @@ export class WsFakeHost<Req = object, Res = unknown> extends BaseFakeHost<Req, R
                 return
             }
 
-            const id = uuid()
+            const id = uuid() as ConnectionId
             this.connections.set(id, socket)
 
             const connection: Connection = {

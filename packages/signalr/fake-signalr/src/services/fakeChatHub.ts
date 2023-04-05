@@ -1,6 +1,6 @@
 import { IChatHub, IChatReceiver } from '@fakehost/signalr-test-api'
+import { ConnectionId } from '@fakehost/exchange'
 import { FakeSignalrHub } from '../FakeSignalrHub'
-import { ConnectionId } from '../protocolHandler'
 
 type Username = string & { __username: never }
 

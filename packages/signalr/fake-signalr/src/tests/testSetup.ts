@@ -1,6 +1,9 @@
+import { createServer } from 'http'
 import { Host, HostOptions } from '../Host'
 import { chatHub } from '../services/fakeChatHub'
 import { timeHub } from '../services/fakeTimeStreamHub'
+import { v4 as uuid } from 'uuid'
+import { ConnectionId } from '@fakehost/exchange'
 
 export type TestTarget = 'FAKE' | 'REMOTE'
 
@@ -33,11 +36,18 @@ const getPort = async (options?: Partial<HostOptions>): Promise<number> => {
 export const testSetup = async (mode: TestTarget): Promise<TestEnv> => {
     switch (mode) {
         case 'FAKE': {
-            const host = new Host([chatHub, timeHub])
+            const http = createServer()
+            http.on('request', (_, res) => {
+                res.write(JSON.stringify(signalrHandshake(uuid() as ConnectionId)))
+                res.end()
+            })
+            http.listen(0)
+            const host = new Host([chatHub, timeHub], { server: http })
             const url = `http://localhost:${await host.port}`
             return {
                 url,
                 dispose: () => {
+                    http.close()
                     host.dispose()
                 },
             }
@@ -51,3 +61,14 @@ export const testSetup = async (mode: TestTarget): Promise<TestEnv> => {
         }
     }
 }
+
+const signalrHandshake = (connectionId: ConnectionId) => ({
+    negotiateVersion: 1,
+    connectionId: connectionId,
+    connectionToken: connectionId,
+    availableTransports: [
+        { transport: 'WebSockets', transferFormats: ['Text', 'Binary'] },
+        { transport: 'ServerSentEvents', transferFormats: ['Text'] },
+        { transport: 'LongPolling', transferFormats: ['Text', 'Binary'] },
+    ],
+})
