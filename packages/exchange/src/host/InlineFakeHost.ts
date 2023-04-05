@@ -12,6 +12,7 @@ export class InlineFakeHost extends BaseFakeHost {
     public Websocket = MockedSocket
 
     constructor(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         protocolHandler: ProtocolHandler<any, any>,
         url = 'ws://localhost:5555',
         private readonly options: HostOptions = { name: 'InlineFakeHost ' },

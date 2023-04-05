@@ -16,7 +16,7 @@ describe(`${getTestTarget()}:fake-signalr`, () => {
     })
 
     const getConnection = async () => {
-        const url = `${fake.url}/timehub`
+        const url = `${fake.url}timehub`
         const connection = new HubConnectionBuilder().withUrl(url).build()
         await connection.start()
 
