@@ -1,35 +1,35 @@
 import * as WS from 'ws'
-import { createServer, Server } from 'http'
-import { v4 as uuid } from 'uuid'
-import { Connection } from '@fakehost/exchange'
-import { ProtocolHandler } from './protocolHandler'
+import { Server } from 'http'
+import { Connection, ProtocolHandler, ConnectionId } from '@fakehost/exchange'
+import chalk from 'chalk'
 
 export type HostOptions = {
     port: number
     debug: boolean
+    name: string
+    server: WS.ServerOptions['server']
 }
 
 export class Host {
-    private http: Server
+    // private http: Server
     private ws: WS.Server
-    private connectionIds = new Set<string>()
-    private connectionTokens = new Set<string>()
-    private sockets = new Map<string, WS.WebSocket>()
-    private readonly connections = new Map<string, Connection & { path: string }>()
-    public readonly port: Promise<number>
+    private sockets = new Map<ConnectionId, WS.WebSocket>()
+    private readonly connections = new Map<ConnectionId, Connection>()
+    private _port: Promise<number>
 
-    constructor(
-        private handlers: ProtocolHandler<unknown, unknown>[],
-        options?: Partial<HostOptions>,
-    ) {
-        this.http = createServer()
-        this.ws = new WS.WebSocketServer({ server: this.http })
+    get port() {
+        return this._port
+    }
 
+    constructor(private handlers: ProtocolHandler<any, any>[], options?: Partial<HostOptions>) {
+        // this.http = createServer()
+        // this.ws = new WS.WebSocketServer({ server: this.http })
+        this.ws = new WS.WebSocketServer({ ...options })
+
+        /*
         this.http.on('request', (_, res) => {
-            const connectionId = uuid()
+            const connectionId = uuid() as ConnectionId
             const connectionToken = uuid()
-            this.connectionIds.add(connectionId)
-            this.connectionTokens.add(connectionToken)
 
             res.write(
                 JSON.stringify({
@@ -45,18 +45,40 @@ export class Host {
             )
             res.end()
         })
+        */
 
-        this.port = new Promise(resolve => {
-            this.http.listen(options?.port ?? 0, () => {
-                const addressInfo = this.http.address() as WS.AddressInfo
-                resolve(addressInfo.port)
-                console.log('listening on ', addressInfo.port)
+        // this.port = new Promise(resolve => {
+        //     this.http.listen(options?.port ?? 0, () => {
+        //         const addressInfo = this.http.address() as WS.AddressInfo
+        //         resolve(addressInfo.port)
+        //         console.log('listening on ', addressInfo.port)
+        //     })
+        // })
+
+        const resolveAddress = (
+            resolve: (value: number) => void,
+            source: { address: Server['address'] | WS.Server['address'] },
+        ) => {
+            const address = source.address && source.address()
+            if (address && typeof address === 'object' && 'port' in address) {
+                resolve(address.port as number)
+                const name = options?.name ?? 'WSHost'
+                console.log(chalk.green(`${name}: Started on ${address.port}`))
+            }
+        }
+
+        this._port = new Promise(resolve => {
+            if (options?.server && options.server) {
+                resolveAddress(resolve, options.server)
+            }
+            this.ws.on('listening', () => {
+                resolveAddress(resolve, this.ws)
             })
         })
 
         this.ws.on('connection', async (socket, req) => {
             const url = new URL(`http://localhost:${await this.port}${socket.url || req.url || ''}`)
-            const connectionId = url.searchParams.get('id') || ''
+            const connectionId = (url.searchParams.get('id') || '') as ConnectionId
             this.sockets.set(connectionId, socket)
 
             // eslint-disable-next-line @typescript-eslint/no-this-alias
@@ -91,7 +113,7 @@ export class Host {
         })
     }
 
-    close(connectionId: string) {
+    close(connectionId: ConnectionId) {
         const socket = this.sockets.get(connectionId)
         const connection = this.connections.get(connectionId)
         if (socket && connection) {
@@ -99,7 +121,6 @@ export class Host {
             this.handlers.forEach(handler => {
                 handler.onDisconnection && handler.onDisconnection(connection)
             })
-            this.connectionIds.delete(connectionId)
             this.sockets.delete(connectionId)
             this.connections.delete(connectionId)
         }
@@ -110,6 +131,6 @@ export class Host {
             client.close()
         })
         this.ws.close()
-        this.http.close()
+        //this.http.close()
     }
 }

@@ -1,3 +1,3 @@
 export * from './FakeSignalrHub'
 export * from './Host'
-export type { ConnectionId } from './protocolHandler'
+export type { ConnectionId } from '@fakehost/exchange'

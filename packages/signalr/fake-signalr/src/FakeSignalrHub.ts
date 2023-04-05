@@ -1,8 +1,8 @@
 import { IStreamResult, Subject } from '@microsoft/signalr'
+import { ProtocolHandler, Connection, ConnectionId, ServiceDefinition } from '@fakehost/exchange'
 import { Observable } from 'rxjs'
-import { MessageType, InboundMessage, isHandshakeMessage } from './messageTypes'
-import { Connection, ConnectionId, ProtocolHandler } from './protocolHandler'
 import { ClientState } from './ClientState'
+import { MessageType, InboundMessage, isHandshakeMessage } from './messageTypes'
 
 type AllKeys<T = object> = {
     [K in keyof T]: boolean

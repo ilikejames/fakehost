@@ -4,17 +4,17 @@ import { AddressInfo } from 'net'
 import sockjs, { Connection as InboundConnection, Server } from 'sockjs'
 import Url from 'url'
 import { ProtocolHandler } from '../ProtocolHandler'
-import { BaseFakeHost, Connection, HostOptions } from './BaseFakeHost'
+import { BaseFakeHost, Connection, ConnectionId, HostOptions } from './BaseFakeHost'
 import { enableLogger, logger } from './logger'
 
-export class SockJsFakeHost<Req = object, Res = unknown> extends BaseFakeHost<Req, Res> {
+export class SockJsFakeHost extends BaseFakeHost {
     private echo!: Server
     private server!: http.Server
     private serverPort?: number
     private readonly connections = new Map<string, InboundConnection>()
 
     constructor(
-        protocolHandler: ProtocolHandler<Req, Res>,
+        protocolHandler: ProtocolHandler<unknown, unknown>,
         port?: number,
         private readonly path: string = '/ws',
         private readonly options: HostOptions = { name: 'FakeSockJs' },
@@ -48,12 +48,13 @@ export class SockJsFakeHost<Req = object, Res = unknown> extends BaseFakeHost<Re
             connection.close()
             return
         }
-        this.connections.set(connection.id, connection)
+        const connectionId = connection.id as ConnectionId
+        this.connections.set(connectionId, connection)
 
         const url = Url.parse(connection.url, true)
 
         const payload: Connection = {
-            id: connection.id,
+            id: connectionId,
             query: url.query,
             close: () => {
                 connection.close()
@@ -69,7 +70,7 @@ export class SockJsFakeHost<Req = object, Res = unknown> extends BaseFakeHost<Re
             this.onMessage(payload, raw)
         })
         connection.on('close', () => {
-            this.onClose(connection.id)
+            this.onClose(connectionId)
             this.connections.delete(connection.id)
         })
     }
