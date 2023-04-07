@@ -5,6 +5,7 @@ export type Methods = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'HEAD' | 'OP
 export type Request<T extends string> = {
     method: Methods
     url: string
+    host: string
     query: ExtractQueryParams<RemoveParentheses<T>>
     params: ExtractRouteParams<RemoveParentheses<T>>
     headers: Record<string, string>
@@ -13,6 +14,7 @@ export type Request<T extends string> = {
 export type Response = {
     status: (code: number) => Response
     send: (data: object | string | number | unknown[]) => Response
+    json: (data: object | string | number | unknown[]) => Response
     end: () => void
 }
 
@@ -78,18 +80,7 @@ export type Route = {
 export type RestRouter = {
     get routes(): Route[]
     use: UseHandler<string> & UseRouter & UseRouterWithPath<string>
+    METHOD: <Path extends string>(method: Methods, path: Path, handler: Handler<Path>) => RestRouter
     get: <Path extends string>(path: Path, handler: Handler<Path>) => RestRouter
     post: <Path extends string>(path: Path, handler: Handler<Path>) => RestRouter
 }
-
-// const server = createServer()
-// server.get('/api/:username/:action', (req, res) => {
-//     console.log('username =', req.params.username)
-//     console.log('action =', req.params.action)
-//     ;(req.query as any).something
-// })
-// server.get('/api?param=:param&username=:username', (req, res) => {
-//     console.log('username =', req.query.username)
-//     console.log('param =', req.query.param)
-//     ;(req.params as any).somerthing
-// })

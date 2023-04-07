@@ -4,6 +4,7 @@ import { URL } from 'url'
 import { AddressInfo } from 'net'
 import { logger } from './logger'
 import { isHandler } from './createRouter'
+import chalk from 'chalk'
 
 type HttpRestServiceOptions = {
     name: string
@@ -41,7 +42,12 @@ export class HttpRestService {
         })
 
         this.server.listen(this.options.port)
-        this.server.on('request', (req, res) => {
+        this.server.on('listening', () => {
+            this.isOpen = true
+            const port: number = (this.server.address() as any).port
+            console.log(chalk.green(`${this.options.name}: listening on port ${port}`))
+        })
+        this.server.on('request', async (req, res) => {
             logger('->', req.method, req.url)
             if (!req.url) {
                 logger('request does not have a url.')
@@ -50,12 +56,13 @@ export class HttpRestService {
                 res.end()
                 return
             }
+            const requestUrl = new URL(req.url, await this.url)
             const matchingRoutes = this.router.routes.filter(route => {
                 if (!route.method) {
                     // middleware
-                    return route.regexp.test(req.url!)
+                    return route.regexp.test(requestUrl.pathname)
                 } else {
-                    return route.method === req.method && route.regexp.test(req.url!)
+                    return route.method === req.method && route.regexp.test(requestUrl.pathname)
                 }
             })
             logger(
@@ -76,11 +83,15 @@ export class HttpRestService {
                             res.write(data.toString())
                             break
                         case 'object':
-                            logger('sending json', 'with header')
-                            res.setHeader('Content-Type', 'application/json; charset=utf-8')
                             res.write(JSON.stringify(data))
                             break
                     }
+                    return response
+                },
+                json: data => {
+                    res.setHeader('Content-Type', 'application/json; charset=utf-8')
+                    res.write(JSON.stringify(data))
+                    res.end()
                     return response
                 },
                 end: () => {
@@ -89,7 +100,7 @@ export class HttpRestService {
             }
             // while(matchingRoutes.length) {
             const route = matchingRoutes.shift()!
-            const paramValues = route.regexp.exec(req.url!)
+            const paramValues = route.regexp.exec(requestUrl.pathname)
             const params = route.keys.reduce((acc, key, i) => {
                 acc[key.name] = paramValues![i + 1]
                 return acc
@@ -98,14 +109,17 @@ export class HttpRestService {
             const fullUrl = new URL(req.url!, `http://localhost`)
             const query = Object.fromEntries(fullUrl.searchParams.entries())
             const request: Request<string> = {
+                host: (await this.url).host,
                 params: params,
                 query: query,
                 headers: req.headers as Record<string, string>, // TODO: string | undefined | string[]
                 method: req.method! as Methods,
-                url: req.url!,
+                url: req.url,
             }
 
             const { handler } = route
+            // TODO: next should call next in the list...
+            // if no more, ensure that the response is ended.
             if (isHandler(handler)) {
                 handler(request, response, () => undefined)
                 return
@@ -117,27 +131,17 @@ export class HttpRestService {
         })
     }
 
+    private isOpen = false
     dispose() {
+        if (!this.isOpen) return Promise.resolve()
         return new Promise<void>((resolve, reject) => {
             this.server.close(err => {
                 if (err) {
                     return reject(err)
                 }
+                this.isOpen = false
                 resolve()
             })
         })
     }
 }
-
-// fake rest service.
-// create server and listen on port
-//
-// needs routing:
-//    server.get('/api/endpoint', (req, res) => {})
-//    server.post('/api/endpoint', (req, res) => {})
-//    server.get('/api/:username', (req, res) => {}) // gets username
-//    server.get('/api?username=:username', (req, res) => {}) // gets username from params
-//    server.use((req, res, next) => {}) // middleware on all routes
-//
-// res:
-//    res.status(200).send({ data: 'some data' }).end()

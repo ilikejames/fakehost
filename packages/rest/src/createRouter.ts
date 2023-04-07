@@ -1,4 +1,12 @@
-import { Handler, RestRouter, UseHandler, UseRouter, UseRouterWithPath, Route } from './types'
+import {
+    Handler,
+    RestRouter,
+    UseHandler,
+    UseRouter,
+    UseRouterWithPath,
+    Route,
+    Methods,
+} from './types'
 import { pathToRegexp, Key } from 'path-to-regexp'
 
 type UseParameters =
@@ -38,6 +46,18 @@ export const createRouter = (): RestRouter => {
                     keys: [],
                 })
             }
+            return router
+        },
+        METHOD: (method, path, handler) => {
+            const keys: Key[] = []
+            const regexp = pathToRegexp(path, keys)
+            routes.push({
+                method: method.toUpperCase() as Methods,
+                path,
+                handler: handler as Handler<string>,
+                regexp,
+                keys,
+            })
             return router
         },
         get: (path, handler) => {
