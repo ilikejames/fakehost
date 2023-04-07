@@ -13,11 +13,10 @@ describe('HttpRestService', () => {
             res.end()
         })
         .get('/api/users/:userId', (req, res) => {
-            res.send({
+            res.json({
                 path: req.url,
                 params: req.params,
             })
-            res.end()
         })
 
     test('simple call', async () => {
@@ -32,7 +31,7 @@ describe('HttpRestService', () => {
         }
     })
 
-    test.only('json params', async () => {
+    test('json params', async () => {
         const service = new HttpRestService(router, { name: 'Test Http' })
         const url = await service.url
         try {
