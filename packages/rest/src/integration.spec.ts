@@ -40,7 +40,7 @@ for (const target of targets) {
                         query: expect.objectContaining({}),
                     })
                 } finally {
-                    host.dispose()
+                    await host.dispose()
                 }
             })
 
@@ -62,7 +62,7 @@ for (const target of targets) {
                         query: expect.objectContaining({}),
                     })
                 } finally {
-                    host.dispose()
+                    await host.dispose()
                 }
             })
 
@@ -88,8 +88,6 @@ for (const target of targets) {
                 }
             })
         }
-
-        test.skip('body parameters', async () => {})
 
         test('multiple hosts', async () => {
             const { host: host1, url: url1 } = await getHost(target, echoRouter('GET', '/echo'), {
@@ -124,13 +122,39 @@ for (const target of targets) {
             }
         }, 15_000)
 
-        test.skip('text()', async () => {})
+        test('response text()', async () => {
+            const { host, url } = await getHost(target, echoRouter('GET', '/echo'))
+            try {
+                const response = await fetch(new URL('/echo', url))
+                expect(await response.text()).toBe(
+                    JSON.stringify({
+                        host: url.host,
+                        method: 'GET',
+                        url: '/echo',
+                        params: {},
+                        query: {},
+                    }),
+                )
+            } finally {
+                host.dispose()
+            }
+        })
 
-        test.skip('middleware', async () => {})
+        test.skip('body parameters', async () => {
+            // TODO:
+        })
 
-        test.skip('404 handler', async () => {})
+        test.skip('middleware', async () => {
+            // TODO:
+        })
 
-        test.skip('exception response', async () => {})
+        test.skip('404 handler', async () => {
+            // TODO:
+        })
+
+        test.skip('exception response', async () => {
+            // TODO:
+        })
     })
 }
 
