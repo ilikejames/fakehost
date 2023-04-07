@@ -16,5 +16,17 @@
             "smartStep": true,
             "console": "internalConsole"
         },
+        {
+            "name":"test rest",
+            "type": "node",
+            "request": "launch",
+            "autoAttachChildProcesses": true,
+            "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+            "program": "${workspaceRoot}/node_modules/vitest/vitest.mjs",
+            "cwd": "${workspaceFolder}/packages/rest",
+            "args": ["run", "${relativeFile}"],
+            "smartStep": true,
+            "console": "internalConsole"
+        },
     ]
 }

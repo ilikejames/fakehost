@@ -1,4 +1,4 @@
-import { describe, test, expect, vi } from 'vitest'
+import { describe, test, expect } from 'vitest'
 import { HttpRestService } from './HttpRestService'
 import { createRouter } from './createRouter'
 import fetch from 'isomorphic-fetch'

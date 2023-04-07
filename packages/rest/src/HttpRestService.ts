@@ -1,10 +1,10 @@
-import { createServer } from 'http'
-import { RestRouter, Request, Response, Methods } from './types'
-import { URL } from 'url'
-import { AddressInfo } from 'net'
-import { logger } from './logger'
-import { isHandler } from './createRouter'
 import chalk from 'chalk'
+import { createServer } from 'http'
+import { AddressInfo } from 'net'
+import { URL } from 'url'
+import { isHandler } from './createRouter'
+import { logger } from './logger'
+import { RestRouter, Request, Response, Methods } from './types'
 
 type HttpRestServiceOptions = {
     name: string
@@ -44,7 +44,7 @@ export class HttpRestService {
         this.server.listen(this.options.port)
         this.server.on('listening', () => {
             this.isOpen = true
-            const port: number = (this.server.address() as any).port
+            const port: number = (this.server.address() as AddressInfo).port
             console.log(chalk.green(`${this.options.name}: listening on port ${port}`))
         })
         this.server.on('request', async (req, res) => {
@@ -99,21 +99,26 @@ export class HttpRestService {
                 },
             }
             // while(matchingRoutes.length) {
-            const route = matchingRoutes.shift()!
+            const route = matchingRoutes.shift()
+            if (!route) {
+                return
+            }
             const paramValues = route.regexp.exec(requestUrl.pathname)
             const params = route.keys.reduce((acc, key, i) => {
-                acc[key.name] = paramValues![i + 1]
+                if (paramValues) {
+                    acc[key.name] = paramValues[i + 1]
+                }
                 return acc
             }, {} as Record<string, string>)
 
-            const fullUrl = new URL(req.url!, `http://localhost`)
+            const fullUrl = new URL(req.url ?? '/', `http://localhost`)
             const query = Object.fromEntries(fullUrl.searchParams.entries())
             const request: Request<string> = {
                 host: (await this.url).host,
                 params: params,
                 query: query,
                 headers: req.headers as Record<string, string>, // TODO: string | undefined | string[]
-                method: req.method! as Methods,
+                method: req.method as Methods,
                 url: req.url,
             }
 
@@ -126,8 +131,8 @@ export class HttpRestService {
             }
             // }
         })
-        this.server.on('upgrade', (req, socket, head) => {
-            // same as above. But check sockjs implementation.
+        this.server.on('upgrade', () => {
+            // TODO: same as above. But verify with sockjs implementation.
         })
     }
 

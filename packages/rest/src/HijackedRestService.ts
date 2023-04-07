@@ -10,6 +10,7 @@ type HijackedRestServiceOptions = {
 }
 
 declare global {
+    // eslint-disable-next-line no-var
     var originalFetch: typeof fetch | undefined
 }
 /**
@@ -83,12 +84,12 @@ export class HijackedRestService {
                         )
 
                         const matchingRoute = matchingRoutes.shift()
-                        // if (!matchingRoute) Promise.reject('failed to find route')
+                        if (!matchingRoute) return Promise.reject('failed to find route')
 
                         let status: number | undefined = undefined
-                        let send: any[] = []
-                        let complete: boolean = false
-                        let headers: Headers = new Headers()
+                        let send: unknown[] = []
+                        let complete = false
+                        const headers: Headers = new Headers()
                         const response: Response = {
                             status: code => {
                                 status = code
@@ -117,11 +118,13 @@ export class HijackedRestService {
                                 complete = true
                             },
                         }
-                        const paramValues = matchingRoute!.regexp.exec(url.pathname)
-                        const params = matchingRoute!.keys.reduce((acc, key, i) => {
-                            acc[key.name] = paramValues![i + 1]
-                            return acc
-                        }, {} as Record<string, string>)
+                        const paramValues = matchingRoute.regexp.exec(url.pathname)
+                        const params = paramValues
+                            ? matchingRoute.keys.reduce((acc, key, i) => {
+                                  acc[key.name] = paramValues[i + 1]
+                                  return acc
+                              }, {} as Record<string, string>)
+                            : {}
 
                         const query = Object.fromEntries(url.searchParams.entries())
                         const request: Request<string> = {
@@ -129,11 +132,11 @@ export class HijackedRestService {
                             params: params,
                             query: query,
                             headers: getHeaders(input, init) as Record<string, string>,
-                            method: method! as Methods,
+                            method: method as Methods,
                             url: hostUrl,
                         }
 
-                        const { handler } = matchingRoute!
+                        const { handler } = matchingRoute
                         // TODO: next should call next in the list...
                         // if no more, ensure that the response is ended.
                         if (isHandler(handler)) {
