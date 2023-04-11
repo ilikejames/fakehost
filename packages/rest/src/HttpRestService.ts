@@ -12,6 +12,44 @@ type HttpRestServiceOptions = {
     path: string
 }
 
+const collect = <T>(stream: NodeJS.ReadableStream): Promise<T[]> => {
+    const chunks: T[] = []
+    return new Promise((resolve, reject) => {
+        stream.on('data', (chunk: T) => chunks.push(chunk))
+        stream.on('end', () => resolve(chunks))
+        stream.on('error', reject)
+    })
+}
+
+const parseMultipartFormData = (body: string, boundary: string): Record<string, string> => {
+    const parts = body.split(boundary).slice(1, -1)
+    const parsedData: Record<string, string> = {}
+
+    for (const part of parts) {
+        const [, header, value] = part.split(/(?:\r\n)+/)
+        const nameMatch = header.match(/name="([^"]+)"/)
+
+        if (nameMatch) {
+            const [, name] = nameMatch
+            parsedData[name] = value
+        }
+    }
+
+    return parsedData
+}
+
+const getBody = async (contentType: string, stream: NodeJS.ReadableStream) => {
+    const chunks = await collect<Buffer>(stream)
+    const body = Buffer.concat(chunks).toString()
+    if (contentType.includes('application/json')) {
+        return JSON.parse(body)
+    } else if (contentType.includes('multipart/form-data')) {
+        const [, boundary] = contentType.split('boundary=')
+        return parseMultipartFormData(body, boundary)
+    }
+    return body
+}
+
 export class HttpRestService {
     private server: ReturnType<typeof createServer>
     private options: Partial<HttpRestServiceOptions>
@@ -113,6 +151,9 @@ export class HttpRestService {
 
             const fullUrl = new URL(req.url ?? '/', `http://localhost`)
             const query = Object.fromEntries(fullUrl.searchParams.entries())
+
+            const body = await getBody(req.headers['content-type'] ?? '', req)
+
             const request: Request<string> = {
                 host: (await this.url).host,
                 params: params,
@@ -120,13 +161,16 @@ export class HttpRestService {
                 headers: req.headers as Record<string, string>, // TODO: string | undefined | string[]
                 method: req.method as Methods,
                 url: req.url,
+                body,
             }
 
             const { handler } = route
             // TODO: next should call next in the list...
             // if no more, ensure that the response is ended.
             if (isHandler(handler)) {
-                handler(request, response, () => undefined)
+                handler(request, response, () => {
+                    debugger
+                })
                 return
             }
             // }

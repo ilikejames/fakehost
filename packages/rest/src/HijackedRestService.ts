@@ -134,6 +134,7 @@ export class HijackedRestService {
                             headers: getHeaders(input, init) as Record<string, string>,
                             method: method as Methods,
                             url: hostUrl,
+                            body: getBody(input, init),
                         }
 
                         const { handler } = matchingRoute
@@ -152,7 +153,14 @@ export class HijackedRestService {
                             },
                             headers: headers,
                             text: () => {
-                                return Promise.resolve(send.join(''))
+                                const result = send.map(x => {
+                                    if (typeof x === 'string') {
+                                        return x
+                                    } else {
+                                        return JSON.stringify(x)
+                                    }
+                                })
+                                return Promise.resolve(result.join(''))
                             },
                             url: url.toString(),
                         }) as Promise<globalThis.Response>
@@ -169,5 +177,29 @@ export class HijackedRestService {
         // when what we want is to remove this handler, but keep any others
         this.isActive = false
         logger(`${this.options.name}: Disposed.`)
+    }
+}
+
+const getB = (input: RequestInfo | URL, init?: RequestInit) => {
+    if (typeof input === 'string') {
+        return init?.body
+    } else if (input instanceof URL) {
+        return init?.body
+    } else {
+        return input.body
+    }
+}
+
+const getBody = (input: RequestInfo | URL, init?: RequestInit) => {
+    const body = getB(input, init)
+    if (typeof body === 'string') {
+        return JSON.parse(body)
+    } else if (body instanceof FormData) {
+        const data = Object.fromEntries(body.entries())
+        return data
+    } else if (body instanceof Blob) {
+        return body
+    } else if (typeof body === 'object') {
+        return body
     }
 }

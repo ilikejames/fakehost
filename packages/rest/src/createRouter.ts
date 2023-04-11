@@ -61,17 +61,11 @@ export const createRouter = (): RestRouter => {
             return router
         },
         get: (path, handler) => {
-            const keys: Key[] = []
-            const regexp = pathToRegexp(path, keys)
-            routes.push({
-                path,
-                handler: handler as Handler<string>,
-                regexp,
-                keys,
-            })
-            return router
+            return router.METHOD('GET', path, handler)
         },
-        post: () => router,
+        post: (path, handler) => {
+            return router.METHOD('POST', path, handler)
+        },
     }
     return router
 }

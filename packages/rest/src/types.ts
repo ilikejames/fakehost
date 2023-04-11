@@ -9,6 +9,7 @@ export type Request<T extends string> = {
     query: ExtractQueryParams<RemoveParentheses<T>>
     params: ExtractRouteParams<RemoveParentheses<T>>
     headers: Record<string, string>
+    body: unknown
 }
 
 export type Response = {
