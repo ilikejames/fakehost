@@ -4,9 +4,9 @@ import { Methods, RestRouter } from './types'
 import { HijackedRestService } from './HijackedRestService'
 import { HttpRestService } from './HttpRestService'
 
-type Target = 'FakeHijacked' | 'FakeService' //  'Express' |
+type Target = 'FakeHijacked' | 'FakeService'
 
-const targets: ReadonlyArray<Target> = ['FakeService'] // ['FakeHijacked'] //, 'FakeService'] as const
+const targets: ReadonlyArray<Target> = ['FakeService', 'FakeService'] as const
 
 for (const target of targets) {
     describe(`${target}: fake rest`, () => {
@@ -22,7 +22,7 @@ for (const target of targets) {
         })
 
         //  'post', 'put', 'delete', 'patch', 'head', 'options'
-        const methods: ReadonlyArray<Methods> = ['GET'] as const
+        const methods: ReadonlyArray<Methods> = ['GET', 'POST'] as const
 
         for (const method of methods) {
             test(`${method} to plain endpoint`, async () => {
@@ -40,7 +40,7 @@ for (const target of targets) {
                         query: expect.objectContaining({}),
                     })
                 } finally {
-                    await host.dispose()
+                    host.dispose()
                 }
             })
 
@@ -62,7 +62,7 @@ for (const target of targets) {
                         query: expect.objectContaining({}),
                     })
                 } finally {
-                    await host.dispose()
+                    host.dispose()
                 }
             })
 
@@ -89,7 +89,7 @@ for (const target of targets) {
             })
         }
 
-        test('multiple hosts', async () => {
+        test(`multiple hosts`, async () => {
             const { host: host1, url: url1 } = await getHost(target, echoRouter('GET', '/echo'), {
                 port: 9000,
             })
@@ -118,7 +118,7 @@ for (const target of targets) {
                 // and it cannot be reached anymore
                 await expect(fetch(new URL('/echo', url2))).rejects.toThrow()
             } finally {
-                await Promise.all([host1.dispose(), host2.dispose()])
+                Promise.all([host1.dispose(), host2.dispose()])
             }
         }, 15_000)
 
@@ -140,8 +140,53 @@ for (const target of targets) {
             }
         })
 
-        test.skip('body parameters', async () => {
-            // TODO:
+        test('POST json', async () => {
+            const payload = { foo: 'bar' } as const
+            const router = createRouter().post('/echo', (req, res) => {
+                expect(req.body).toEqual(payload)
+                res.json({
+                    payload: req.body,
+                })
+                res.end()
+            })
+            const { host, url } = await getHost(target, router)
+            try {
+                const response = await fetch(new URL('/echo', url), {
+                    method: 'POST',
+                    body: JSON.stringify({ foo: 'bar' }),
+                    headers: {
+                        'content-type': 'application/json',
+                    },
+                })
+                expect(await response.json()).toEqual({ payload })
+            } finally {
+                host.dispose()
+            }
+        })
+
+        test('POST formData', async () => {
+            const payload = { foo: 'bar', baz: 'qux' } as const
+            const router = createRouter().post('/echo', (req, res) => {
+                expect(req.body).toEqual(payload)
+                res.json({
+                    payload: req.body,
+                })
+                res.end()
+            })
+            const { host, url } = await getHost(target, router)
+            try {
+                const formData = new FormData()
+                Object.entries(payload).forEach(([key, value]) => {
+                    formData.append(key, value)
+                })
+                const response = await fetch(new URL('/echo', url), {
+                    method: 'POST',
+                    body: formData,
+                })
+                expect(await response.json()).toEqual({ payload })
+            } finally {
+                host.dispose()
+            }
         })
 
         test.skip('middleware', async () => {
