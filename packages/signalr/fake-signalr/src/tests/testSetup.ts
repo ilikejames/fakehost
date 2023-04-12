@@ -1,10 +1,8 @@
-import { createServer } from 'http'
-import { HostOptions } from '../Host'
+import { WsHost, enableLogger, ConnectionId, WsStandaloneOptions } from '@fakehost/host'
+import { HttpRestService, createRouter } from '@fakehost/fake-rest'
+import { v4 as uuid } from 'uuid'
 import { chatHub } from '../services/fakeChatHub'
 import { timeHub } from '../services/fakeTimeStreamHub'
-import { v4 as uuid } from 'uuid'
-import { ConnectionId } from '@fakehost/exchange'
-import { WsHost, enableLogger } from '@fakehost/host'
 
 enableLogger()
 
@@ -25,10 +23,10 @@ export const getTestTarget = (): TestTarget => {
 
 export type TestEnv = {
     url: URL
-    dispose: () => void
+    dispose: () => Promise<void>
 }
 
-const getPort = async (options?: Partial<HostOptions>): Promise<number> => {
+const getPort = async (options?: Partial<WsStandaloneOptions>): Promise<number> => {
     if (process.env.SIGNALR_REMOTE_PORT) {
         return parseInt(process.env.SIGNALR_REMOTE_PORT, 10)
     }
@@ -41,14 +39,12 @@ const getPort = async (options?: Partial<HostOptions>): Promise<number> => {
 export const testSetup = async (mode: TestTarget): Promise<TestEnv> => {
     switch (mode) {
         case 'FAKE': {
-            const http = createServer()
-            http.on('request', (_, res) => {
-                res.write(JSON.stringify(signalrHandshake(uuid() as ConnectionId)))
-                res.end()
+            const restRouter = createRouter().use((_, res) => {
+                const connectionId = uuid() as ConnectionId
+                res.json(signalrHandshake(connectionId))
             })
-            http.listen(0)
-
-            const wsHost = new WsHost({ server: http })
+            const rest = new HttpRestService(restRouter)
+            const wsHost = new WsHost({ server: rest.server })
             hubs.forEach(hub => hub.setHost(wsHost))
 
             const hostUrl = await wsHost.url
@@ -56,12 +52,10 @@ export const testSetup = async (mode: TestTarget): Promise<TestEnv> => {
                 `http://${hostUrl.hostname}${hostUrl.port ? ':' + hostUrl.port : ''}`,
             )
 
-            console.log('url =', url)
             return {
                 url: url,
-                dispose: () => {
-                    http.close()
-                    wsHost.dispose()
+                dispose: async () => {
+                    await Promise.all([rest.dispose(), wsHost.dispose()])
                 },
             }
         }
@@ -69,7 +63,7 @@ export const testSetup = async (mode: TestTarget): Promise<TestEnv> => {
             const url = new URL(`http://localhost:${await getPort()}`)
             return {
                 url,
-                dispose: () => undefined,
+                dispose: () => Promise.resolve(),
             }
         }
     }

@@ -17,6 +17,7 @@
   },
   "types": "dist/index.d.ts",
   "dependencies": {
+    "@fakehost/fake-rest": "^1.0.0",
     "blob-util": "^2.0.2",
     "chalk": "^4.0.0",
     "debug": "^4.3.3",
