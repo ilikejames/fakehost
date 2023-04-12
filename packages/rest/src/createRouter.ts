@@ -6,6 +6,7 @@ import {
     UseRouterWithPath,
     Route,
     Methods,
+    ErrorHandler,
 } from './types'
 import { pathToRegexp, Key } from 'path-to-regexp'
 
@@ -16,10 +17,18 @@ type UseParameters =
 
 export const createRouter = (): RestRouter => {
     const routes: Route[] = []
+    const errorHandlers: ErrorHandler[] = []
 
     const router: RestRouter = {
         get routes() {
             return routes
+        },
+        get errorHandlers() {
+            return errorHandlers
+        },
+        useError: (handler: ErrorHandler) => {
+            errorHandlers.push(handler)
+            return router
         },
         use: (...args: UseParameters) => {
             const path = typeof args[0] === 'string' ? args[0] : ''

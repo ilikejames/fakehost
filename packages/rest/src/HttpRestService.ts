@@ -1,16 +1,18 @@
+import { Buffer } from 'buffer'
 import chalk from 'chalk'
 import { createServer } from 'http'
 import { AddressInfo } from 'net'
 import { URL } from 'url'
 import { isHandler } from './createRouter'
 import { logger } from './logger'
-import { RestRouter, Request, Response, Methods } from './types'
-import { getRouteParams } from './utils'
+import { RestRouter, Request, Response, Methods, HttpHeader } from './types'
+import { getRouteParams, handleServiceError } from './utils'
 
 type HttpRestServiceOptions = {
     name: string
     port: number
     path: string
+    silent: boolean
 }
 
 const collect = <T>(stream: NodeJS.ReadableStream): Promise<T[]> => {
@@ -93,7 +95,8 @@ export class HttpRestService {
         this.server.on('listening', () => {
             this.isOpen = true
             const port: number = (this.server.address() as AddressInfo).port
-            console.log(chalk.green(`${this.options.name}: listening on port ${port}`))
+            !this.options.silent &&
+                console.log(chalk.green(`${this.options.name}: listening on port ${port}`))
         })
         this.server.on('request', async (req, res) => {
             logger('->', req.method, req.url)
@@ -155,26 +158,37 @@ export class HttpRestService {
             const request: Omit<Request<string>, 'params'> = {
                 host: (await this.url).host,
                 query: query,
-                headers: req.headers as Record<string, string>, // TODO: string | undefined | string[]
+                headers: req.headers as HttpHeader,
                 method: req.method as Methods,
                 url: req.url,
                 body,
             }
 
             const promises: Promise<unknown>[] = []
+            const errorHandlers = [...router.errorHandlers]
+
             const executeRoutes = async () => {
                 const route = matchingRoutes.shift()
                 if (!route || !isHandler(route.handler)) return
                 const params = getRouteParams(route, requestUrl)
-
                 await route.handler(Object.assign(request, { params }), response, async () => {
                     // next is called, execute next route in the list
                     await executeRoutes()
                 })
             }
             promises.push(executeRoutes())
+
             while (promises.length) {
-                await promises.shift()
+                try {
+                    await promises.shift()
+                } catch (e) {
+                    handleServiceError(
+                        e,
+                        errorHandlers,
+                        Object.assign(request, { params: {} }),
+                        response,
+                    )
+                }
             }
         })
 
