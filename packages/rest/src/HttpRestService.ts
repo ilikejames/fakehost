@@ -5,6 +5,7 @@ import { URL } from 'url'
 import { isHandler } from './createRouter'
 import { logger } from './logger'
 import { RestRouter, Request, Response, Methods } from './types'
+import { getRouteParams } from './utils'
 
 type HttpRestServiceOptions = {
     name: string
@@ -21,6 +22,12 @@ const collect = <T>(stream: NodeJS.ReadableStream): Promise<T[]> => {
     })
 }
 
+/**
+ * Really simple multipart/form-data parser, that doesn't support uploading files.
+ * @param body
+ * @param boundary
+ * @returns
+ */
 const parseMultipartFormData = (body: string, boundary: string): Record<string, string> => {
     const parts = body.split(boundary).slice(1, -1)
     const parsedData: Record<string, string> = {}
@@ -136,27 +143,13 @@ export class HttpRestService {
                     res.end()
                 },
             }
-            // while(matchingRoutes.length) {
-            const route = matchingRoutes.shift()
-            if (!route) {
-                return
-            }
-            const paramValues = route.regexp.exec(requestUrl.pathname)
-            const params = route.keys.reduce((acc, key, i) => {
-                if (paramValues) {
-                    acc[key.name] = paramValues[i + 1]
-                }
-                return acc
-            }, {} as Record<string, string>)
 
             const fullUrl = new URL(req.url ?? '/', `http://localhost`)
             const query = Object.fromEntries(fullUrl.searchParams.entries())
-
             const body = await getBody(req.headers['content-type'] ?? '', req)
 
-            const request: Request<string> = {
+            const request: Omit<Request<string>, 'params'> = {
                 host: (await this.url).host,
-                params: params,
                 query: query,
                 headers: req.headers as Record<string, string>, // TODO: string | undefined | string[]
                 method: req.method as Methods,
@@ -164,17 +157,19 @@ export class HttpRestService {
                 body,
             }
 
-            const { handler } = route
-            // TODO: next should call next in the list...
-            // if no more, ensure that the response is ended.
-            if (isHandler(handler)) {
-                handler(request, response, () => {
-                    debugger
+            const executeRoutes = () => {
+                const route = matchingRoutes.shift()
+                if (!route || !isHandler(route.handler)) return
+                const params = getRouteParams(route, requestUrl)
+
+                route.handler(Object.assign(request, { params }), response, () => {
+                    // next is called, execute next route in the list
+                    executeRoutes()
                 })
-                return
             }
-            // }
+            executeRoutes()
         })
+
         this.server.on('upgrade', () => {
             // TODO: same as above. But verify with sockjs implementation.
         })

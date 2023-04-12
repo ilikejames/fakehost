@@ -6,7 +6,7 @@ import { HttpRestService } from './HttpRestService'
 
 type Target = 'FakeHijacked' | 'FakeService'
 
-const targets: ReadonlyArray<Target> = ['FakeService', 'FakeService'] as const
+const targets: ReadonlyArray<Target> = ['FakeService', 'FakeHijacked'] as const
 
 for (const target of targets) {
     describe(`${target}: fake rest`, () => {
@@ -189,8 +189,55 @@ for (const target of targets) {
             }
         })
 
-        test.skip('middleware', async () => {
-            // TODO:
+        test('middleware', async () => {
+            const router = createRouter()
+                .use((req, _, next) => {
+                    // set a property on the request for downstream routes to use
+                    ;(req as any).foo = 'bar'
+                    next()
+                })
+                .get('/echo', (req, res) => {
+                    expect((req as any).foo).toBe('bar')
+                    res.json({
+                        foo: (req as any).foo,
+                    })
+                })
+
+            const { host, url } = await getHost(target, router)
+            try {
+                const response = await fetch(new URL('/echo', url))
+                expect(await response.json()).toEqual({ foo: 'bar' })
+            } finally {
+                host.dispose()
+            }
+        })
+
+        test.skip('handlers can be async', async () => {
+            const router = createRouter()
+                .use(async (req, _, next) => {
+                    // set a property on the request for downstream routes to use
+                    await new Promise<void>(resolve => {
+                        setTimeout(() => {
+                            ;(req as any).foo = 'bar'
+                            resolve()
+                        }, 100)
+                    })
+                    next()
+                })
+                .get('/echo', (req, res) => {
+                    expect((req as any).foo).toBe('bar')
+                    res.json({
+                        foo: (req as any).foo,
+                    })
+                })
+
+            const { host, url } = await getHost(target, router)
+            try {
+                const response = await fetch(new URL('/echo', url))
+                expect(await response.json()).toEqual({ foo: 'bar' })
+            } finally {
+                host.dispose()
+            }
         })
 
         test.skip('404 handler', async () => {
