@@ -9,7 +9,7 @@
       "esModuleInterop": true,
       "removeComments": true,
       "isolatedModules": true,
-      "types": [],
+      "types": ["node"],
       "rootDir": ".",
       "baseUrl": ".",
     },

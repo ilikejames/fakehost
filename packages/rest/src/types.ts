@@ -8,11 +8,12 @@ export type Request<T extends string> = {
     host: string
     query: ExtractQueryParams<RemoveParentheses<T>>
     params: ExtractRouteParams<RemoveParentheses<T>>
-    headers: Record<string, string>
+    headers: HttpHeader
     body: Record<string, string> | null
 }
 
 export type Response = {
+    // TODO: set header
     status: (code: number) => Response
     send: (data: object | string | number | unknown[]) => Response
     json: (data: object | string | number | unknown[]) => Response
@@ -54,9 +55,23 @@ type ExtractQueryParams<T extends string> = string extends T
         : Record<string, string>
     : Record<string, string>
 
+export type RouterError = Error
+
+export type HttpHeader = {
+    [key: string]: string | string[] | undefined
+}
+
 export type UseHandler<T extends string> = (handler: Handler<T>) => RestRouter
 export type UseRouterWithPath<T extends string> = (path: T, router: RestRouter) => RestRouter
 export type UseRouter = (router: RestRouter) => RestRouter
+export type ErrorHandler = (
+    err: RouterError,
+    req: Request<string>,
+    res: Response,
+    next: Next,
+) => void | Promise<void>
+
+export type UseErrorHandler = (handler: ErrorHandler) => RestRouter
 
 export type Route = {
     method?: Methods
@@ -68,8 +83,13 @@ export type Route = {
 
 export type RestRouter = {
     get routes(): Route[]
+    get errorHandlers(): ErrorHandler[]
     use: UseHandler<string> & UseRouter & UseRouterWithPath<string>
+    useError: UseErrorHandler
     METHOD: <Path extends string>(method: Methods, path: Path, handler: Handler<Path>) => RestRouter
     get: <Path extends string>(path: Path, handler: Handler<Path>) => RestRouter
     post: <Path extends string>(path: Path, handler: Handler<Path>) => RestRouter
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AnyFunction = (...args: any[]) => any

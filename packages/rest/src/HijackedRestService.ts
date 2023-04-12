@@ -1,13 +1,13 @@
 import fetch from 'isomorphic-fetch'
-import { logger } from './logger'
-import { Response, Request, RestRouter, Methods } from './types'
-import { getHeaders, getMethod, getUrl } from './urlUtils'
 import { isHandler } from './createRouter'
-import { getRouteParams } from './utils'
+import { logger } from './logger'
+import { Response, Request, RestRouter, Methods, HttpHeader } from './types'
+import { getMethod, getRouteParams, getUrl, handleServiceError } from './utils'
 
 type HijackedRestServiceOptions = {
     name: string
     path: string
+    silent: boolean
 }
 
 declare global {
@@ -67,7 +67,6 @@ export class HijackedRestService {
                         const method = getMethod(input, init)
                         const hostUrl = url.pathname + url.search
                         logger(`${this.options.name}:`, '->', method, hostUrl)
-                        logger(`${this.options.name}:`, 'routes', this.router.routes.length)
 
                         const matchingRoutes = this.router.routes.filter(route => {
                             if (!route.method) {
@@ -77,12 +76,6 @@ export class HijackedRestService {
                                 return route.method === method && route.regexp.test(url.pathname)
                             }
                         })
-
-                        logger(
-                            this.options.name,
-                            'matching routes:',
-                            matchingRoutes.map(route => route.path),
-                        )
 
                         let status: number | undefined = undefined
                         let send: unknown[] = []
@@ -129,6 +122,8 @@ export class HijackedRestService {
                         }
 
                         const promises: Promise<unknown>[] = []
+                        const errorHandlers = [...router.errorHandlers]
+
                         const executeRoutes = async () => {
                             const matchingRoute = matchingRoutes.shift()
 
@@ -146,7 +141,16 @@ export class HijackedRestService {
                         }
                         promises.push(executeRoutes())
                         while (promises.length) {
-                            await promises.shift()
+                            try {
+                                await promises.shift()
+                            } catch (e) {
+                                handleServiceError(
+                                    e,
+                                    errorHandlers,
+                                    Object.assign(request, { params: {} }),
+                                    response,
+                                )
+                            }
                         }
 
                         return Promise.resolve<Partial<globalThis.Response>>({
@@ -174,9 +178,6 @@ export class HijackedRestService {
     }
 
     dispose() {
-        // this is incorrect...
-        // this will always return the original fetch
-        // when what we want is to remove this handler, but keep any others
         this.isActive = false
         logger(`${this.options.name}: Disposed.`)
     }
@@ -206,4 +207,32 @@ const getBody = (input: RequestInfo | URL, init?: RequestInit) => {
     } else if (typeof body === 'object') {
         return body
     }
+}
+
+const getHeaders = (input: RequestInfo | URL, init?: RequestInit): HttpHeader => {
+    if (typeof input === 'string') {
+        return convertHeaders(init?.headers)
+    } else if (input instanceof URL) {
+        return convertHeaders(init?.headers)
+    } else {
+        return convertHeaders(input.headers)
+    }
+}
+
+const convertHeaders = (headers?: HeadersInit): HttpHeader => {
+    if (!headers) return {}
+    if (isStringStringHeader(headers)) {
+        return headers.reduce((acc, [key, value]) => {
+            acc[key] = value
+            return acc
+        }, {} as HttpHeader)
+    } else if (headers instanceof Headers) {
+        return Object.fromEntries(headers.entries())
+    } else {
+        return headers
+    }
+}
+
+const isStringStringHeader = (header: HeadersInit): header is [string, string][] => {
+    return Array.isArray(header)
 }

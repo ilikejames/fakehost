@@ -1,5 +1,5 @@
 {
-  "name": "@fakehost/rest",
+  "name": "@fakehost/fake-rest",
   "description": "A fake REST server that can run as a service or bundled within a browser, for testing and demoing",
   "keywords": ["fake", "rest", "browser", "react-native", "mock"],
   "version": "1.0.0",
@@ -19,6 +19,7 @@
   },
   "types": "dist/index.d.ts",
   "dependencies": {
+    "buffer": "^6.0.3",
     "chalk": "^4.0.0",
     "debug": "^4.3.3",
     "path-to-regexp": "^6.2.1",
