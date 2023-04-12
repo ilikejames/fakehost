@@ -9,7 +9,7 @@ export type Request<T extends string> = {
     query: ExtractQueryParams<RemoveParentheses<T>>
     params: ExtractRouteParams<RemoveParentheses<T>>
     headers: Record<string, string>
-    body: unknown
+    body: Record<string, string> | null
 }
 
 export type Response = {
@@ -21,7 +21,11 @@ export type Response = {
 
 export type Next = () => void
 
-export type Handler<T extends string> = (req: Request<T>, res: Response, next: Next) => void
+export type Handler<T extends string> = (
+    req: Request<T>,
+    res: Response,
+    next: Next,
+) => void | Promise<void>
 
 type ExtractRouteParams<T> = T extends `${string}/:${infer Param}/${infer Rest}`
     ? { [K in Param | keyof ExtractRouteParams<`/${Rest}`>]: string }

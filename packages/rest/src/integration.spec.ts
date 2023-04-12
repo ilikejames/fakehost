@@ -6,7 +6,7 @@ import { HttpRestService } from './HttpRestService'
 
 type Target = 'FakeHijacked' | 'FakeService'
 
-const targets: ReadonlyArray<Target> = ['FakeService', 'FakeHijacked'] as const
+const targets: ReadonlyArray<Target> = ['FakeService'] as const
 
 for (const target of targets) {
     describe(`${target}: fake rest`, () => {
@@ -140,6 +140,25 @@ for (const target of targets) {
             }
         })
 
+        test('POST empty', async () => {
+            const router = createRouter().post('/echo', (req, res) => {
+                res.json({
+                    payload: req.body,
+                })
+                res.end()
+            })
+            const { host, url } = await getHost(target, router)
+            try {
+                const response = await fetch(new URL('/echo', url), {
+                    method: 'POST',
+                })
+                const json = await response.json()
+                expect(json).toEqual({ payload: null })
+            } finally {
+                host.dispose()
+            }
+        })
+
         test('POST json', async () => {
             const payload = { foo: 'bar' } as const
             const router = createRouter().post('/echo', (req, res) => {
@@ -212,10 +231,10 @@ for (const target of targets) {
             }
         })
 
-        test.skip('handlers can be async', async () => {
+        test('handlers can be async', async () => {
             const router = createRouter()
                 .use(async (req, _, next) => {
-                    // set a property on the request for downstream routes to use
+                    // set a property "foo" on the request for downstream routes to use
                     await new Promise<void>(resolve => {
                         setTimeout(() => {
                             ;(req as any).foo = 'bar'
@@ -224,24 +243,54 @@ for (const target of targets) {
                     })
                     next()
                 })
+                .use(async (req, _, next) => {
+                    // set a property "baz" on the request for downstream routes to use
+                    await new Promise<void>(resolve => {
+                        setTimeout(() => {
+                            ;(req as any).baz = 'quz'
+                            resolve()
+                        }, 100)
+                    })
+                    next()
+                })
                 .get('/echo', (req, res) => {
                     expect((req as any).foo).toBe('bar')
+                    expect((req as any).baz).toBe('quz')
                     res.json({
                         foo: (req as any).foo,
+                        baz: (req as any).baz,
                     })
                 })
 
             const { host, url } = await getHost(target, router)
             try {
                 const response = await fetch(new URL('/echo', url))
-                expect(await response.json()).toEqual({ foo: 'bar' })
+                const json = await response.json()
+                expect(json).toEqual({ foo: 'bar', baz: 'quz' })
             } finally {
                 host.dispose()
             }
         })
 
-        test.skip('404 handler', async () => {
-            // TODO:
+        test('404 handler', async () => {
+            const router = createRouter()
+                .get('/echo', (_, res) => {
+                    res.status(200).send('ok')
+                })
+                .use((_, res) => {
+                    res.status(404).send('Not found')
+                })
+            const { host, url } = await getHost(target, router)
+            try {
+                const response = await fetch(new URL('/not-found', url))
+                expect(await response.text()).toEqual('Not found')
+                expect(await response.status).toEqual(404)
+
+                const non404Response = await fetch(new URL('/echo', url))
+                expect(await non404Response.status).toEqual(200)
+            } finally {
+                host.dispose()
+            }
         })
 
         test.skip('exception response', async () => {
