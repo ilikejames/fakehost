@@ -3,6 +3,7 @@ import { logger } from './logger'
 import { Response, Request, RestRouter, Methods } from './types'
 import { getHeaders, getMethod, getUrl } from './urlUtils'
 import { isHandler } from './createRouter'
+import { getRouteParams } from './utils'
 
 type HijackedRestServiceOptions = {
     name: string
@@ -83,9 +84,6 @@ export class HijackedRestService {
                             matchingRoutes.map(route => route.path),
                         )
 
-                        const matchingRoute = matchingRoutes.shift()
-                        if (!matchingRoute) return Promise.reject('failed to find route')
-
                         let status: number | undefined = undefined
                         let send: unknown[] = []
                         let complete = false
@@ -118,18 +116,10 @@ export class HijackedRestService {
                                 complete = true
                             },
                         }
-                        const paramValues = matchingRoute.regexp.exec(url.pathname)
-                        const params = paramValues
-                            ? matchingRoute.keys.reduce((acc, key, i) => {
-                                  acc[key.name] = paramValues[i + 1]
-                                  return acc
-                              }, {} as Record<string, string>)
-                            : {}
 
                         const query = Object.fromEntries(url.searchParams.entries())
-                        const request: Request<string> = {
+                        const request: Omit<Request<string>, 'params'> = {
                             host: host.host,
-                            params: params,
                             query: query,
                             headers: getHeaders(input, init) as Record<string, string>,
                             method: method as Methods,
@@ -137,27 +127,35 @@ export class HijackedRestService {
                             body: getBody(input, init),
                         }
 
-                        const { handler } = matchingRoute
-                        // TODO: next should call next in the list...
-                        // if no more, ensure that the response is ended.
-                        if (isHandler(handler)) {
-                            handler(request, response, () => undefined)
-                        } else {
-                            // TODO:
+                        const executeRoutes = () => {
+                            const matchingRoute = matchingRoutes.shift()
+
+                            if (!matchingRoute || !isHandler(matchingRoute.handler))
+                                return Promise.reject('failed to find route')
+
+                            const params = getRouteParams(matchingRoute, url)
+                            matchingRoute.handler(
+                                Object.assign(request, { params }),
+                                response,
+                                () => {
+                                    executeRoutes()
+                                },
+                            )
                         }
+
+                        executeRoutes()
 
                         return Promise.resolve<Partial<globalThis.Response>>({
                             status: status ?? 500,
-                            json: () => {
-                                return Promise.resolve(send[0])
-                            },
+                            json: () => Promise.resolve(send[0]),
                             headers: headers,
                             text: () => {
                                 const result = send.map(x => {
-                                    if (typeof x === 'string') {
-                                        return x
-                                    } else {
-                                        return JSON.stringify(x)
+                                    switch (typeof x) {
+                                        case 'string':
+                                            return x
+                                        default:
+                                            return JSON.stringify(x)
                                     }
                                 })
                                 return Promise.resolve(result.join(''))
