@@ -54,7 +54,7 @@ export class HijackedRestService {
         }
 
         this.isActive = true
-        globalThis.fetch = (input: RequestInfo | URL, init?: RequestInit) => {
+        globalThis.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
             if (!this.isActive) {
                 return previousFetch(input, init)
             }
@@ -98,6 +98,7 @@ export class HijackedRestService {
                                     throw new Error('Response already completed')
                                 }
                                 send.push(data)
+                                complete = true
                                 return response
                             },
                             json: data => {
@@ -127,23 +128,26 @@ export class HijackedRestService {
                             body: getBody(input, init),
                         }
 
-                        const executeRoutes = () => {
+                        const promises: Promise<unknown>[] = []
+                        const executeRoutes = async () => {
                             const matchingRoute = matchingRoutes.shift()
 
                             if (!matchingRoute || !isHandler(matchingRoute.handler))
                                 return Promise.reject('failed to find route')
 
                             const params = getRouteParams(matchingRoute, url)
-                            matchingRoute.handler(
+                            await matchingRoute.handler(
                                 Object.assign(request, { params }),
                                 response,
-                                () => {
-                                    executeRoutes()
+                                async () => {
+                                    promises.push(executeRoutes())
                                 },
                             )
                         }
-
-                        executeRoutes()
+                        promises.push(executeRoutes())
+                        while (promises.length) {
+                            await promises.shift()
+                        }
 
                         return Promise.resolve<Partial<globalThis.Response>>({
                             status: status ?? 500,
@@ -178,7 +182,7 @@ export class HijackedRestService {
     }
 }
 
-const getB = (input: RequestInfo | URL, init?: RequestInit) => {
+const parseInput = (input: RequestInfo | URL, init?: RequestInit) => {
     if (typeof input === 'string') {
         return init?.body
     } else if (input instanceof URL) {
@@ -189,8 +193,10 @@ const getB = (input: RequestInfo | URL, init?: RequestInit) => {
 }
 
 const getBody = (input: RequestInfo | URL, init?: RequestInit) => {
-    const body = getB(input, init)
-    if (typeof body === 'string') {
+    const body = parseInput(input, init)
+    if (body === undefined) {
+        return null
+    } else if (typeof body === 'string') {
         return JSON.parse(body)
     } else if (body instanceof FormData) {
         const data = Object.fromEntries(body.entries())

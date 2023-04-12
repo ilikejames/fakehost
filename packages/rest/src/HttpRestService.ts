@@ -48,6 +48,9 @@ const parseMultipartFormData = (body: string, boundary: string): Record<string, 
 const getBody = async (contentType: string, stream: NodeJS.ReadableStream) => {
     const chunks = await collect<Buffer>(stream)
     const body = Buffer.concat(chunks).toString()
+    if (!body.length) {
+        return null
+    }
     if (contentType.includes('application/json')) {
         return JSON.parse(body)
     } else if (contentType.includes('multipart/form-data')) {
@@ -131,6 +134,7 @@ export class HttpRestService {
                             res.write(JSON.stringify(data))
                             break
                     }
+                    res.end()
                     return response
                 },
                 json: data => {
@@ -157,17 +161,21 @@ export class HttpRestService {
                 body,
             }
 
-            const executeRoutes = () => {
+            const promises: Promise<unknown>[] = []
+            const executeRoutes = async () => {
                 const route = matchingRoutes.shift()
                 if (!route || !isHandler(route.handler)) return
                 const params = getRouteParams(route, requestUrl)
 
-                route.handler(Object.assign(request, { params }), response, () => {
+                await route.handler(Object.assign(request, { params }), response, async () => {
                     // next is called, execute next route in the list
-                    executeRoutes()
+                    await executeRoutes()
                 })
             }
-            executeRoutes()
+            promises.push(executeRoutes())
+            while (promises.length) {
+                await promises.shift()
+            }
         })
 
         this.server.on('upgrade', () => {
