@@ -63,7 +63,7 @@ const getBody = async (contentType: string, stream: NodeJS.ReadableStream) => {
 }
 
 export class HttpRestService {
-    private server: ReturnType<typeof createServer>
+    public readonly server: ReturnType<typeof createServer>
     private options: Partial<HttpRestServiceOptions>
     public readonly url: Promise<URL>
 
