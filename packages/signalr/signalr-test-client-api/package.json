@@ -1,5 +1,5 @@
 {
-    "name": "@fakehost/signalr-test-api",
+    "name": "@fakehost/signalr-test-client-api",
     "version": "1.0.0",
     "private": true,
     "main": "dist/index.cjs",
@@ -14,12 +14,12 @@
     "files": ["dist"],
     "license": "MIT",
     "dependencies": {
-        "@microsoft/signalr": "^7.0.4",
+        "@microsoft/signalr": "^7.0.5",
         "rxjs": "^7.8.0"
     },
     "devDependencies": {
         "tsup": "^6.7.0",
-        "typescript": "^4.4.3"
+        "typescript": "^5.0.0"
     },
     "scripts": {
         "build": "tsup src/index.ts --format cjs,esm --dts --sourcemap",

@@ -1,4 +1,3 @@
-import { HttpRestService } from '@fakehost/fake-rest'
 import chalk from 'chalk'
 import { URL } from 'url'
 import { v4 as uuid } from 'uuid'

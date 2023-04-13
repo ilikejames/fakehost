@@ -2,13 +2,14 @@ import {
     getHubProxyFactory,
     streamResultToObservable,
     ClientItem,
-} from '@fakehost/signalr-test-api'
-import { HubConnectionBuilder, Subject as SignalrSubject } from '@microsoft/signalr'
+    HubConnectionBuilder,
+} from '@fakehost/signalr-test-client-api'
+import { Subject as SignalrSubject } from '@microsoft/signalr'
 import { Subject, bufferCount, firstValueFrom, timer } from 'rxjs'
 import { describe, test, expect, beforeAll, afterAll } from 'vitest'
 import { testSetup, getTestTarget, TestEnv } from './testSetup'
 
-describe(`${getTestTarget()}:fake-signalr`, () => {
+describe(`${getTestTarget()}: TimeStreamHub`, () => {
     let fake: TestEnv
 
     beforeAll(async () => {

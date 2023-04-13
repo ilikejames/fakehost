@@ -1,9 +1,13 @@
-import { IChatReceiver, getHubProxyFactory, getReceiverRegister } from '@fakehost/signalr-test-api'
-import { HubConnectionBuilder } from '@microsoft/signalr'
+import {
+    IChatReceiver,
+    getHubProxyFactory,
+    getReceiverRegister,
+    HubConnectionBuilder,
+} from '@fakehost/signalr-test-client-api'
 import { describe, test, expect, beforeAll, afterAll, vi } from 'vitest'
 import { testSetup, TestEnv, getTestTarget } from './testSetup'
 
-describe(`${getTestTarget()}:fake-signalr`, () => {
+describe(`${getTestTarget()}: ChatHub`, () => {
     let fake: TestEnv
 
     beforeAll(async () => {

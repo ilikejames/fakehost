@@ -3,10 +3,13 @@ import chalk from 'chalk'
 import { createServer } from 'http'
 import { AddressInfo } from 'net'
 import { URL } from 'url'
-import { isHandler } from './createRouter'
-import { logger } from './logger'
+import { createRouter, isHandler } from './createRouter'
+import { logger, enableLogger } from './logger'
 import { RestRouter, Request, Response, Methods, HttpHeader } from './types'
 import { getRouteParams, handleServiceError } from './utils'
+
+export { createRouter }
+export { enableLogger }
 
 type HttpRestServiceOptions = {
     name: string
