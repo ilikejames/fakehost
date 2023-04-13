@@ -1,4 +1,4 @@
-import BlobUtil from 'blob-util'
+import { blobToArrayBuffer } from 'blob-util'
 import chalk from 'chalk'
 import { Server } from 'mock-socket'
 import { URL } from 'url'
@@ -66,7 +66,7 @@ export class BrowserWsHost extends BaseHost {
                 if (typeof raw === 'string') {
                     result = raw
                 } else if (raw instanceof Blob) {
-                    result = Buffer.from(await BlobUtil.blobToArrayBuffer(raw))
+                    result = Buffer.from(await blobToArrayBuffer(raw))
                 } else if (raw instanceof ArrayBuffer) {
                     result = Buffer.from(raw)
                 } else if (ArrayBuffer.isView(raw)) {

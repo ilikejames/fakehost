@@ -34,7 +34,7 @@
     "@types/ws": "^8.5.3",
     "cross-env": "^7.0.3",
     "ts-node": "^10.4.0",
-    "typescript": "^4.5.5"
+    "typescript": "^5.0.0"
   },
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts --sourcemap",

@@ -1,7 +1,7 @@
+import { Connection } from '@fakehost/host'
 import { ISubscription, Subject } from '@microsoft/signalr'
 import { Subscription } from 'rxjs'
 import { InvocationId } from './messageTypes'
-import { Connection } from './protocolHandler'
 
 export class ClientState<T = object> {
     public readonly state = {} as T

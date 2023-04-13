@@ -8,11 +8,32 @@
     "type": "module",
     "exports": {
         ".": {
-        "import": "./dist/index.js",
-        "require": "./dist/index.cjs"
+          "types": "./dist/index.d.ts",
+          "import": "./dist/index.js",
+          "require": "./dist/index.cjs"
+        },
+        "./browser": {
+          "types": "./dist/createInBrowser.d.ts",
+          "import": "./dist/createInBrowser.js",
+          "require": "./dist/createInBrowser.cjs"
+        },
+        "./server": {
+          "types": "./dist/createServer.d.ts",
+          "import": "./dist/createServer.js",
+          "require": "./dist/createServer.cjs"
+        },
+        "./package.json": "./package.json"
+      },
+      "browser": {
+        "./browser": "./createInBrowser.js"
+      },
+      "typesVersions": {
+        "*": {
+          "*": ["./dist/index.d.ts"],
+          "browser": ["./dist/createInBrowser.d.ts"],
+          "server": ["./dist/createServer.d.ts"]
         }
-    },
-    "types": "dist/index.d.ts",
+      },
     "files": [
         "dist"
     ],
@@ -26,8 +47,8 @@
         "ws": "^8.13.0"
     },
     "devDependencies": {
-        "@fakehost/signalr-test-api": "*",
-        "@microsoft/signalr": "^7.0.4",
+        "@fakehost/signalr-test-client-api": "*",
+        "@microsoft/signalr": "^7.0.5",
         "@types/uuid": "^9.0.1",
         "@types/ws":"^8.5.4",
         "chalk": "^5.2.0",
@@ -36,9 +57,7 @@
         "vitest": "^0.29.8"
     },
     "scripts": {
-        "build": "tsup src/index.ts --format cjs,esm --dts --sourcemap",
-        "lint": "eslint --ext .tsx --ext .ts src/",
-        "test": "cross-env TEST_TARGET=FAKE vitest --run",
-        "test:contract": "cross-env TEST_TARGET=REMOTE vitest --run"
+        "build": "tsup --config ./tsup.config.ts",
+        "lint": "eslint --ext .tsx --ext .ts src/"
     }
 }

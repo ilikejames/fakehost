@@ -1,6 +1,5 @@
-import { ConnectionId } from '@fakehost/host'
-import { IChatHub, IChatReceiver } from '@fakehost/signalr-test-api'
-import { FakeSignalrHub } from '../FakeSignalrHub'
+import { FakeSignalrHub, ConnectionId } from '@fakehost/signalr'
+import { IChatHub, IChatReceiver } from '@fakehost/signalr-test-client-api'
 
 type Username = string & { __username: never }
 

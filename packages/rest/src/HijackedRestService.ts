@@ -1,8 +1,11 @@
 import fetch from 'isomorphic-fetch'
-import { isHandler } from './createRouter'
-import { logger } from './logger'
+import { createRouter, isHandler } from './createRouter'
+import { enableLogger, logger } from './logger'
 import { Response, Request, RestRouter, Methods, HttpHeader } from './types'
 import { getMethod, getRouteParams, getUrl, handleServiceError } from './utils'
+
+export { createRouter }
+export { enableLogger }
 
 type HijackedRestServiceOptions = {
     name: string
@@ -38,8 +41,9 @@ export class HijackedRestService {
             logger(
                 `${this.options.name}: No global fetch...are you sure this is a browser/dom environment?`,
             )
-            logger(`${this.options.name}: Wiring up isomorphic-fetch`)
-            globalThis.fetch = fetch
+            logger(
+                `${this.options.name}: For nodejs environments, please wiring up isomorphic-fetch`,
+            )
         }
 
         globalThis.originalFetch = globalThis.originalFetch || globalThis.fetch

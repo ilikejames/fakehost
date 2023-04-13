@@ -60,10 +60,10 @@ jobs:
         run: yarn --frozen-lockfile
 
       - name: Generate typescript definition for signalr service
-        run: yarn --cwd packages/signalr/signalr-test-api generate:api
+        run: yarn --cwd packages/signalr/signalr-test-client-api generate:api
       
       - name: Build signal-test-api
-        run: yarn --cwd packages/signalr/signalr-test-api build
+        run: yarn --cwd packages/signalr/signalr-test-client-api build
       
       - name: Contact tests REMOTE
         run: |
