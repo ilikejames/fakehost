@@ -1,12 +1,21 @@
 import { createInBrowserSignalr } from '@fakehost/signalr/browser'
 import { chatHub, timeHub } from '@fakehost/signalr-test-fake-svc'
 
-const hubs = [chatHub, timeHub] as const
+type SignalrPaths<T> = T extends { path: infer Path } ? Path : never
 
+type T = SignalrPaths<typeof chatHub | typeof timeHub>
+
+/**
+ * Hijack the websocket for 'http://localhost:9999' and point to the fake service
+ * embedded in the web app.
+ */
 ;(async function () {
-    const { host } = await createInBrowserSignalr({
+    const { items } = await createInBrowserSignalr({
         url: new URL('http://localhost:9999'),
         debug: true,
+        name: 'localhost:9999',
+        hubs: [chatHub, timeHub],
     })
-    hubs.forEach(hub => hub.setHost(host))
+
+    // items[]]
 })()

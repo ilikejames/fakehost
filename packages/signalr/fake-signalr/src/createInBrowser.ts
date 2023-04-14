@@ -1,19 +1,22 @@
 import { HijackedRestService, enableLogger as restLogger } from '@fakehost/fake-rest/browser'
-import { BrowserWsHost, Host, enableLogger as wsLogger } from '@fakehost/host'
-import { URL } from 'url'
+import { BrowserWsHost, enableLogger as wsLogger } from '@fakehost/host'
+import Url from 'url'
 import { restRouter } from './restHandshakeRouter'
+import { FakeSignalrHub } from './FakeSignalrHub'
+
+const URL = globalThis.URL || Url.URL
 
 export type ServerOptions = {
     url: URL
     name?: string
     silent?: boolean
     debug?: boolean
+    hubs: ReadonlyArray<FakeSignalrHub<any, any, any>>
 }
 
 type CreateInBrowserSignalr = {
     dispose: () => Promise<void>
     url: URL
-    host: Host
 }
 
 export const createInBrowserSignalr = async (
@@ -24,18 +27,25 @@ export const createInBrowserSignalr = async (
         silent: options?.silent,
     })
 
-    const wsHost = new BrowserWsHost({ url: options.url, name: options?.name })
+    const remoteUrl = new URL(options.url)
+    remoteUrl.protocol = 'ws:'
+
+    const wsHosts = options.hubs.map(hub => {
+        const host = new BrowserWsHost({
+            url: new URL(hub.path, remoteUrl),
+            name: `${options?.name ?? 'hub'}/${hub.path}`,
+        })
+        hub.setHost(host)
+        return host
+    })
 
     options?.debug && wsLogger()
     options?.debug && restLogger()
 
-    const url = await wsHost.url
-
     return {
-        host: wsHost,
-        url: url,
+        url: options.url,
         dispose: async () => {
-            await Promise.all([rest.dispose(), wsHost.dispose()])
+            await Promise.all([rest.dispose(), ...wsHosts.map(x => x.dispose())])
         },
     }
 }

@@ -158,6 +158,11 @@ export class HijackedRestService {
                         }
 
                         return Promise.resolve<Partial<globalThis.Response>>({
+                            get ok() {
+                                return Boolean(
+                                    `${status}`.startsWith('2') || `${status}`.startsWith('3'),
+                                )
+                            },
                             status: status ?? 500,
                             json: () => Promise.resolve(send[0]),
                             headers: headers,
