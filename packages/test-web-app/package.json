@@ -5,6 +5,8 @@
     "private": "true",
     "license": "MIT",
     "dependencies": {
+      "@microsoft/signalr": "^7.0.5",
+      "@react-rxjs/core": "^0.10.4",
       "react": "^18.2.0",
       "react-dom": "^18.2.0",
       "rxjs": "^7.8.0",

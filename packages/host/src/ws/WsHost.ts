@@ -25,13 +25,13 @@ export type WsHostOptions = WsStandaloneOptions | WsHostedOptions
  */
 export class WsHost extends BaseHost {
     private ws: WebSocketServer
-    private _options: Partial<WsHostOptions> = {}
+    private options: Partial<WsHostOptions> = {}
     public readonly port: Promise<number>
     public readonly url: Promise<URL>
 
     constructor(options?: Partial<WsHostOptions>) {
         super()
-        this._options = {
+        this.options = {
             name: 'WsHost',
             ...options,
         }
@@ -40,9 +40,9 @@ export class WsHost extends BaseHost {
 
         this.port = new Promise(resolve => {
             logger('finding port...')
-            if ('server' in this._options) {
+            if ('server' in this.options) {
                 logger('on server')
-                this.resolveAddress(resolve, this._options.server)
+                this.resolveAddress(resolve, this.options.server)
             }
             this.ws.on('listening', () => {
                 logger('listening')
@@ -51,10 +51,10 @@ export class WsHost extends BaseHost {
         })
 
         this.url = this.port.then(port => {
-            if ('path' in this._options) {
-                return new URL(`ws://localhost:${port}${this._options.path}`)
+            if ('path' in this.options) {
+                return new URL(`ws://localhost:${port}${this.options.path}`)
             }
-            if ('server' in this._options) {
+            if ('server' in this.options) {
                 return new URL(`http://localhost:${port}`)
             }
             return new URL(`ws://localhost:${port}`)
@@ -62,7 +62,7 @@ export class WsHost extends BaseHost {
 
         this.ws.on('connection', async (socket, request) => {
             if (this.refuseNewConnections) {
-                logger(`${this._options.name}: Refusing new connection`)
+                logger(`${this.options.name}: Refusing new connection`)
                 socket.close()
                 return
             }
@@ -81,13 +81,13 @@ export class WsHost extends BaseHost {
                     socket.send(raw)
                 },
             }
-            logger(chalk.yellow(`${this._options.name}: Client connected ${connection.id}`))
+            logger(chalk.yellow(`${this.options.name}: Client connected ${connection.id}`))
             this.connections.set(connection.id, connection)
 
             this.handlers.connection.forEach(handler => handler({ type: 'connection', connection }))
 
             socket.on('close', async () => {
-                logger(chalk.yellow(`${this._options.name}: Client disconnected ${connection.id}`))
+                logger(chalk.yellow(`${this.options.name}: Client disconnected ${connection.id}`))
                 this.handlers.disconnection.forEach(handler =>
                     handler({ type: 'disconnection', connection }),
                 )
@@ -104,7 +104,7 @@ export class WsHost extends BaseHost {
 
     disconnect(): void {
         this.connections.forEach(connection => {
-            logger(chalk.yellow(`${this._options.name}: Disconnecting connection ${connection.id}`))
+            logger(chalk.yellow(`${this.options.name}: Disconnecting connection ${connection.id}`))
             connection.close()
             this.connections.delete(connection.id)
         })
@@ -116,11 +116,11 @@ export class WsHost extends BaseHost {
             this.ws.close(err => {
                 if (err) {
                     logger(
-                        chalk.red(`${this._options.name}: Failed to tear down connection. ${err}`),
+                        chalk.red(`${this.options.name}: Failed to tear down connection. ${err}`),
                     )
                     reject(err)
                 } else {
-                    logger(chalk.red(`${this._options.name}: Closed.`))
+                    logger(chalk.red(`${this.options.name}: Closed.`))
                     resolve()
                 }
             })
@@ -133,10 +133,11 @@ export class WsHost extends BaseHost {
     ) {
         const address = source?.address && source.address()
         if (address && typeof address === 'object' && 'port' in address) {
-            console.log('address =', address)
             resolve(address.port as number)
-            const name = this._options.name
-            console.log(chalk.green(`${name}: Started on ${address.port}`))
+            const name = this.options.name
+            if (!this.options.silent) {
+                console.log(chalk.green(`${name}: Started on ${address.port}`))
+            }
         }
     }
 }

@@ -26,13 +26,17 @@ export class BrowserWsHost extends BaseHost {
     constructor(options: BrowserWsHostOptions) {
         super()
         this._options = {
-            name: 'BrowserWsHost',
             ...options,
+            name: `ws:${options.name}` || 'BrowserWsHost',
         }
 
         this.url = Promise.resolve(this._options.url)
         this.server = new Server(this._options.url.toString(), {})
-        console.log(chalk.green(`${this._options.name}: Hijacking ${this._options.url.toString()}`))
+        if (!options.silent) {
+            console.log(
+                chalk.green(`${this._options.name}: Hijacking ${this._options.url.toString()}`),
+            )
+        }
 
         this.server.on('connection', client => {
             if (this.refuseNewConnections) {

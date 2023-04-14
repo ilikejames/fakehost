@@ -8,6 +8,7 @@ type HandlerMap = {
 export type HostOptions = {
     name: string
     debug: boolean
+    silent: boolean
 }
 
 export type Host = {
