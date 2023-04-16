@@ -1,2 +1,1 @@
-export { chatHub } from './fakeChatHub'
-export { timeHub } from './fakeTimeStreamHub'
+export * from './hubs'

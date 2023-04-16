@@ -5,7 +5,22 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name":"test host",
+            "name":"signalr: test",
+            "type": "node",
+            "request": "launch",
+            "autoAttachChildProcesses": true,
+            "skipFiles": ["<node_internals>/**", "**/node_modules/**"],
+            "program": "${workspaceRoot}/node_modules/vitest/vitest.mjs",
+            "cwd": "${workspaceFolder}/packages/signalr/signalr-test-fake-svc",
+            "args": ["run", "${relativeFile}"],
+            "smartStep": true,
+            "console": "internalConsole",
+            "env": {
+                "TEST_TARGET": "FAKE"
+            }
+        },
+        {
+            "name":"host: test",
             "type": "node",
             "request": "launch",
             "autoAttachChildProcesses": true,
@@ -17,7 +32,7 @@
             "console": "internalConsole"
         },
         {
-            "name":"test rest",
+            "name":"rest: rest",
             "type": "node",
             "request": "launch",
             "autoAttachChildProcesses": true,

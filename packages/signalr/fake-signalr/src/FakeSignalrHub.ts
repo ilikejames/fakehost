@@ -33,19 +33,26 @@ type FormatTarget<Hub extends object, Receiver = object> =
     | undefined
     | ((s: keyof Hub | keyof Receiver) => string)
 
-export class FakeSignalrHub<Hub extends object, Receiver = object, State = object> {
+export class FakeSignalrHub<
+    Hub extends object,
+    Receiver extends object = object,
+    State extends object = object,
+> {
     // active client connections to this hub
     private clients = new Map<ConnectionId, ClientState<State>>()
     // methods from Hub. Not typed due to casing of methods (camelCase in ts vs PascalCase in C#)
     private handlers = new Map<string, Handler>()
-
-    private host: Host | undefined = undefined
+    private host?: Host
 
     constructor(
         public readonly path: string,
-        private receivers: AllKeys<Receiver>,
+        private receivers: Partial<AllKeys<Receiver>> = {},
         private format?: FormatTarget<Hub, Receiver>,
     ) {}
+
+    disconnect() {
+        this.host?.disconnect(this.path)
+    }
 
     setHost(host: Host) {
         this.host = host
@@ -55,6 +62,8 @@ export class FakeSignalrHub<Hub extends object, Receiver = object, State = objec
             const message = this.deserialize(e.message)
             this.onMessage.bind(this)(e.connection, message)
         })
+
+        // TODO: off
     }
 
     /**
@@ -73,30 +82,30 @@ export class FakeSignalrHub<Hub extends object, Receiver = object, State = objec
         }
     }
 
-    onConnection(connection: Connection) {
+    private onConnection(connection: Connection) {
         if (connection.url.pathname !== this.path) return
         this.clients.set(connection.id, new ClientState(connection))
     }
 
-    onDisconnection(connection: Connection) {
+    private onDisconnection(connection: Connection) {
         if (connection.url.pathname !== this.path) return
         this.clients.get(connection.id)?.dispose()
         this.clients.delete(connection.id)
     }
 
-    serialize(message: unknown) {
+    private serialize(message: unknown) {
         return JSON.stringify(message) + TERMINATING_CHAR
     }
 
-    deserialize(message: string | Buffer): InboundMessage<Hub> {
+    private deserialize(message: string | Buffer): InboundMessage<Hub> {
         return JSON.parse(message.toString().slice(0, -1))
     }
 
-    async onMessage(connection: Connection, message: InboundMessage<Hub>) {
+    private async onMessage(connection: Connection, message: InboundMessage<Hub>) {
         if (connection.url.pathname !== this.path) return
 
         if (isHandshakeMessage(message)) {
-            return connection.write(this.serialize({}))
+            return connection.write(this.serialize({ type: 0 }))
         }
 
         const connectionId = connection.id as ConnectionId

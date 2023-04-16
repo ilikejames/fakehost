@@ -14,7 +14,7 @@ export type HostOptions = {
 export type Host = {
     on: <Key extends keyof EventMap>(e: Key, handler: (e: EventMap[Key]) => void) => void
     off: <Key extends keyof EventMap>(e: Key, handler: (e: EventMap[Key]) => void) => void
-    disconnect: () => void
+    disconnect: (path?: string) => void
     dispose: () => Promise<void>
     get refuseNewConnections(): boolean
     set refuseNewConnections(refuse: boolean)

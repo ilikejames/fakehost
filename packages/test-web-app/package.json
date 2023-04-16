@@ -24,7 +24,7 @@
       "vite": "^2.9.12"
     },
     "scripts": {
-      "build": "vite build",
+      "build:app": "vite build",
       "start": "vite --port=3005"
     }
 }

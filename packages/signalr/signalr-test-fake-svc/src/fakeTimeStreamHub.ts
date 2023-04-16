@@ -1,12 +1,8 @@
-import { FakeSignalrHub, ConnectionId, createFakeSignalrHub } from '@fakehost/signalr'
+import { FakeSignalrHub, ConnectionId } from '@fakehost/signalr'
 import { ITimeStreamHub, observableToStreamResult } from '@fakehost/signalr-test-client-api'
 import { map, timer } from 'rxjs'
 
-export const timeHub = createFakeSignalrHub<ITimeStreamHub>('/timehub', {}, 'capitalize')
-
-//export const timeHub = new FakeSignalrHub<ITimeStreamHub>('/timehub' as const, {}, 'capitalize')
-
-type T = (typeof timeHub)['path']
+export const timeHub = new FakeSignalrHub<ITimeStreamHub>('/timehub', {}, 'capitalize')
 
 const userMessages = new Map<ConnectionId, string[]>()
 
