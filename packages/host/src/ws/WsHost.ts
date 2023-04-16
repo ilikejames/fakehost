@@ -28,6 +28,7 @@ export class WsHost extends BaseHost {
     private options: Partial<WsHostOptions> = {}
     public readonly port: Promise<number>
     public readonly url: Promise<URL>
+    private pathConnections = new Map<string, ConnectionId[]>()
 
     constructor(options?: Partial<WsHostOptions>) {
         super()
@@ -43,6 +44,7 @@ export class WsHost extends BaseHost {
             if ('server' in this.options) {
                 logger('on server')
                 this.resolveAddress(resolve, this.options.server)
+                return
             }
             this.ws.on('listening', () => {
                 logger('listening')
@@ -69,6 +71,10 @@ export class WsHost extends BaseHost {
 
             const id = uuid() as ConnectionId
             const requestUrl = new URL(request.url || '', await this.url)
+
+            // append to connection path for disconnection?
+            const pathConnections = this.pathConnections.get(requestUrl.pathname) || []
+            this.pathConnections.set(requestUrl.pathname, [...pathConnections, id])
 
             const connection: Connection = {
                 id,
@@ -102,12 +108,27 @@ export class WsHost extends BaseHost {
         })
     }
 
-    disconnect(): void {
-        this.connections.forEach(connection => {
-            logger(chalk.yellow(`${this.options.name}: Disconnecting connection ${connection.id}`))
-            connection.close()
-            this.connections.delete(connection.id)
+    disconnect(path?: string): void {
+        const connections =
+            path && this.pathConnections.has(path)
+                ? this.pathConnections.get(path)!
+                : Array.from(this.connections.keys())
+        connections.forEach(connectionId => {
+            const connection = this.connections.get(connectionId)
+            if (connection) {
+                logger(
+                    chalk.yellow(`${this.options.name}: Disconnecting connection ${connection.id}`),
+                )
+                connection.close()
+                this.connections.delete(connection.id)
+            }
         })
+        path && this.pathConnections.delete(path)
+        // this.connections.forEach(connection => {
+        //     logger(chalk.yellow(`${this.options.name}: Disconnecting connection ${connection.id}`))
+        //     connection.close()
+        //     this.connections.delete(connection.id)
+        // })
     }
 
     dispose(): Promise<void> {

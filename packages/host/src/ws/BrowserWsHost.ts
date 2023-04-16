@@ -19,37 +19,44 @@ export type BrowserWsHostOptions = Partial<HostOptions> & {
  *  - browser hosted tests such as Cypress
  */
 export class BrowserWsHost extends BaseHost {
-    private _options: BrowserWsHostOptions
+    private options: BrowserWsHostOptions
     private server: Server
     public readonly url: Promise<URL>
+    private pathConnections = new Map<string, ConnectionId[]>()
 
     constructor(options: BrowserWsHostOptions) {
         super()
-        this._options = {
+        this.options = {
             ...options,
             name: `ws:${options.name}` || 'BrowserWsHost',
         }
 
-        this.url = Promise.resolve(this._options.url)
-        this.server = new Server(this._options.url.toString(), {})
+        this.url = Promise.resolve(this.options.url)
+        this.server = new Server(this.options.url.toString(), {})
         if (!options.silent) {
             console.log(
-                chalk.green(`${this._options.name}: Hijacking ${this._options.url.toString()}`),
+                chalk.green(`${this.options.name}: Hijacking ${this.options.url.toString()}`),
             )
         }
 
         this.server.on('connection', client => {
             if (this.refuseNewConnections) {
-                logger(`${this._options.name}: Refusing new connection`)
+                logger(`${this.options.name}: Refusing new connection`)
                 client.close()
                 return
             }
 
             const connectionId = uuid() as ConnectionId
-            logger(`${this._options.name}: New connection ${connectionId}`)
+            const url = this.getUrl(client.url)
+
+            // connections per path
+            const pathConnections = this.pathConnections.get(url.pathname) || []
+            this.pathConnections.set(url.pathname, [...pathConnections, connectionId])
+
+            logger(`${this.options.name}: New connection ${connectionId}`)
             const connection: Connection = {
                 id: connectionId,
-                url: this._options.url,
+                url: this.options.url,
                 close: client.close,
                 write: (raw: string | Buffer) => client.send(raw),
             }
@@ -83,18 +90,34 @@ export class BrowserWsHost extends BaseHost {
         })
     }
 
-    disconnect(): void {
-        this.connections.forEach(connection => {
-            logger(chalk.yellow(`${this._options.name}: Disconnecting connection ${connection.id}`))
+    private getUrl(url: string): URL {
+        try {
+            return new URL(url)
+        } catch {
+            return this.options.url
+        }
+    }
+
+    disconnect(path?: string): void {
+        // TODO: this cannot be done with mock-socket
+        const connectionIds =
+            path && this.pathConnections.has(path)
+                ? this.pathConnections.get(path)!
+                : [...this.connections.keys()]
+        connectionIds.forEach(connectionId => {
+            const connection = this.connections.get(connectionId)!
+            logger(chalk.yellow(`${this.options.name}: Disconnecting connection ${connection.id}`))
             connection.close()
+            this.connections.delete(connectionId)
         })
+        path && this.pathConnections.delete(path)
     }
 
     dispose(): Promise<void> {
         this.server.close({ reason: 'dispose', code: 500, wasClean: true })
         return new Promise(resolve => {
             this.server.stop(() => {
-                logger(chalk.yellow(`${this._options.name}: Disposed mock websocket service`))
+                logger(chalk.yellow(`${this.options.name}: Disposed mock websocket service`))
                 resolve()
             })
         })

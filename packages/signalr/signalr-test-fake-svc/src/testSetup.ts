@@ -1,8 +1,5 @@
 import { createServerSignalr } from '@fakehost/signalr/server'
-import { chatHub } from './fakeChatHub'
-import { timeHub } from './fakeTimeStreamHub'
-
-const hubs = [chatHub, timeHub] as const
+import { hubs } from './hubs'
 
 export type TestTarget = 'FAKE' | 'REMOTE'
 
@@ -25,10 +22,12 @@ export type TestEnv = {
 export const testSetup = async (mode: TestTarget): Promise<TestEnv> => {
     switch (mode) {
         case 'FAKE': {
-            const { dispose, host, url } = await createServerSignalr()
-            hubs.forEach(hub => hub.setHost(host))
+            const { dispose, url } = await createServerSignalr<typeof hubs>({
+                hubs: hubs,
+                debug: false,
+            })
             return {
-                url: url,
+                url,
                 dispose: () => dispose(),
             }
         }

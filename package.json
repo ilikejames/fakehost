@@ -19,7 +19,9 @@
     "typescript": "^5.0.0"
   },
   "scripts": {
-    "build": "lerna run --stream build",
+    "build:libs": "lerna run --stream build",
+    "build:app": "lerna run --stream build:app",
+    "build": "yarn build:libs && yarn build:app",
     "lint": "lerna run --stream lint --",
     "test": "lerna run --stream test --"
   },
