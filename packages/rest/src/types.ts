@@ -13,7 +13,7 @@ export type Request<T extends string> = {
 }
 
 export type Response = {
-    // TODO: set header
+    setHeader(key: string, value: string): Response
     status: (code: number) => Response
     send: (data: object | string | number | unknown[]) => Response
     json: (data: object | string | number | unknown[]) => Response

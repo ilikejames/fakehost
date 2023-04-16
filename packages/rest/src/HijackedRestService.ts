@@ -86,6 +86,10 @@ export class HijackedRestService {
                         let complete = false
                         const headers: Headers = new Headers()
                         const response: Response = {
+                            setHeader(key, value) {
+                                headers.set(key, value)
+                                return response
+                            },
                             status: code => {
                                 status = code
                                 return response
