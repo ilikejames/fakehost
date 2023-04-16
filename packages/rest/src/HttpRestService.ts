@@ -125,6 +125,10 @@ export class HttpRestService {
             )
 
             const response: Response = {
+                setHeader(key, value) {
+                    res.setHeader(key, value)
+                    return response
+                },
                 status: (code: number) => {
                     res.statusCode = code
                     return response
