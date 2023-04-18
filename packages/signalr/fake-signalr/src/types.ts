@@ -1,6 +1,7 @@
+import Url from 'url'
 import { FakeSignalrHub } from './FakeSignalrHub'
 
-type Signalr<T> = T extends FakeSignalrHub<infer H, infer R, infer S>
+export type Signalr<T> = T extends FakeSignalrHub<infer H, infer R, infer S>
     ? FakeSignalrHub<H, R, S>
     : never
 
@@ -13,3 +14,5 @@ export const isFakeSignalrHub = (hub: any): hub is FakeSignalrHub<any, any, any>
     // TODO: instanceof is not working, for reasons... so just use path for now
     return 'path' in hub
 }
+
+export const URL = globalThis.URL || Url.URL

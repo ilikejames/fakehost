@@ -109,7 +109,29 @@ jobs:
           path: packages/test-playwright/test-results/**/*.*
           if-no-files-found: ignore
 
+  cypress-e2e:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Cypress run
+        uses: cypress-io/github-action@v5
+        with:
+          build: yarn build:libs
+          start: yarn --cwd packages/test-web-app start --port=3000
+          wait-on: http://localhost:3000
+          command: yarn --cwd packages/test-cypress e2e
       
+      - uses: actions/upload-artifact@v3
+        if: failure()
+        with:
+          name: cypress-screenshots
+          path: packages/test-cypress/cypress/screenshots
+      
+
+
 
     
  

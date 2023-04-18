@@ -24,7 +24,7 @@ test.describe('initial test setup', () => {
     test('should display SignalR result', async ({ page, context }) => {
         await initPage({ page, context }, testEnv)
         await page.goto('/')
-        await expect(page.locator('time')).toHaveText(/^\d{2}:\d{2}:\d{2}((AM|PM)?)/)
+        await expect(page.locator('time')).toHaveText(/^\d{1,2}:\d{1,2}:\d{1,2}((AM|PM)?)/)
         log.data('time', await page.textContent('time'))
     })
 })

@@ -1,22 +1,37 @@
-import { HijackedRestService, enableLogger as restLogger } from '@fakehost/fake-rest/browser'
-import { BrowserWsHost, enableLogger as wsLogger, Host } from '@fakehost/host'
-import Url from 'url'
+import {
+    HijackedRestService,
+    enableLogger as restLogger,
+    getMockedFetch,
+} from '@fakehost/fake-rest/browser'
+import { BrowserWsHost, enableLogger as wsLogger, Host, MockedSocket } from '@fakehost/host'
 import { restRouter } from './restHandshakeRouter'
-import { SignalrHubCollection, isFakeSignalrHub } from './types'
+import { isFakeSignalrHub, URL, Signalr } from './types'
 
-const URL = globalThis.URL || Url.URL
+export { MockedSocket }
 
 export type ServerOptions<T> = {
     url: URL
     name?: string
     silent?: boolean
     debug?: boolean
-    hubs: SignalrHubCollection<T>
+    hubs: {
+        readonly [Key in keyof T]: Signalr<T[Key]>
+    }
+}
+
+export type CreateBrowserSignalr<T> = {
+    dispose: () => Promise<void>
+    url: URL
+    hubs: { readonly [K in keyof T]: Pick<BrowserWsHost, 'disconnect'> }
+    MockedSocket: BrowserWsHost['WebSocket']
+    getMockedFetch: typeof getMockedFetch
 }
 
 const objectKeys = <T extends Record<string, unknown>>(x: T) => Object.keys(x) as (keyof T)[]
 
-export const createInBrowserSignalr = async <T extends object>(options: ServerOptions<T>) => {
+export const createInBrowserSignalr = async <T extends object>(
+    options: ServerOptions<T>,
+): Promise<CreateBrowserSignalr<T>> => {
     if (options.debug) {
         restLogger()
         wsLogger()
@@ -28,9 +43,10 @@ export const createInBrowserSignalr = async <T extends object>(options: ServerOp
         silent: false,
     })
 
-    // signalr client lib requires the endpoint protocol to be ws:/
+    // signalr client lib requires the endpoint protocol to be ws://
     const wsUrl = new URL(options.url)
     wsUrl.protocol = 'ws:'
+
     const hosts = objectKeys(options.hubs)
         .filter(hubName => isFakeSignalrHub(options.hubs[hubName]))
         .reduce((acc, hubName) => {
@@ -43,13 +59,15 @@ export const createInBrowserSignalr = async <T extends object>(options: ServerOp
             })
             options.hubs[hubName].setHost(host)
             acc[hubName] = {
-                disconnect: () => host.disconnect(),
+                disconnect: host.disconnect,
             }
             return acc
-        }, {} as Record<keyof T, Pick<Host, 'disconnect'>>)
+        }, {} as Record<keyof T, Pick<BrowserWsHost, 'disconnect'>>)
 
     return {
-        hosts,
+        hubs: hosts,
+        MockedSocket,
+        getMockedFetch: getMockedFetch,
         url: options.url,
         dispose: async () => {
             const wshosts = Array.from(Object.values(hosts)) as Host[]

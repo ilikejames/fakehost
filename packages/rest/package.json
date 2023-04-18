@@ -9,7 +9,7 @@
     "dist"
   ],
   "homepage": "https://github.com/ilikejames/fakehost",
-  "main": "dist/index.cjs",
+  "main": "dist/",
   "type": "module",
   "exports": {
     ".": {
@@ -30,7 +30,7 @@
     "./package.json": "./package.json"
   },
   "browser": {
-    "./browser": "./HijackedRestService.js"
+    "./browser": "./dist/HijackedRestService.js"
   },
   "typesVersions": {
     "*": {
