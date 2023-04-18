@@ -1,0 +1,30 @@
+{
+    "name": "@fakehost/test-cypress",
+    "version": "1.0.0",
+    "description": "e2e test in cypress",
+    "private": true,
+    "type": "module",
+    "license": "MIT",
+    "dependencies": {
+      "@cypress/webpack-batteries-included-preprocessor": "^2.4.1",
+      "@cypress/webpack-preprocessor": "^5.17.0",
+      "@fakehost/fake-rest": "^1.0.0",
+      "@fakehost/signalr": "^1.0.0",
+      "@fakehost/signalr-test-fake-svc": "^1.0.0",
+      "@fakehost/test-rest-api": "^1.0.0",
+      "chalk": "^4.0.0",
+      "cypress": "^12.10.0"
+    },
+    "devDependencies": {
+      "start-server-and-test": "^2.0.0"
+    },
+    "scripts": {
+      "build": "rimraf dist && tsc --noEmit",
+      "e2e:base": "cypress run",
+      "e2e:open": "CYPRESS_BASE_URL=http://localhost:3000 cypress open",
+      "e2e:ci": "CYPRESS_BASE_URL=http://localhost:3000 cypress run",
+      "e2e:start-server": "yarn --cwd ../test-web-app start --port=3789 --strictPort=true",
+      "e2e": "CYPRESS_BASE_URL=http://localhost:3789 start-server-and-test 'yarn e2e:start-server' 3789/index.html 'yarn --cwd test-cypress e2e:base'"
+    }
+  }
+  

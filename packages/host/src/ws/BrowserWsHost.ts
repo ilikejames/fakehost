@@ -1,6 +1,6 @@
 import { blobToArrayBuffer } from 'blob-util'
 import chalk from 'chalk'
-import { Server } from 'mock-socket'
+import { Server, WebSocket } from 'mock-socket'
 import { URL } from 'url'
 import { v4 as uuid } from 'uuid'
 import { BaseHost, HostOptions } from './Host'
@@ -9,6 +9,10 @@ import { ConnectionId, Connection } from './types'
 
 export type BrowserWsHostOptions = Partial<HostOptions> & {
     url: URL
+}
+
+export const MockedSocket = function (url: string | URL, protocols?: string | string[]) {
+    return new WebSocket(url, protocols)
 }
 
 /**
@@ -20,6 +24,7 @@ export type BrowserWsHostOptions = Partial<HostOptions> & {
  */
 export class BrowserWsHost extends BaseHost {
     private options: BrowserWsHostOptions
+    public readonly WebSocket = MockedSocket
     private server: Server
     public readonly url: Promise<URL>
     private pathConnections = new Map<string, ConnectionId[]>()

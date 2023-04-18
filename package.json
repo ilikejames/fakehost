@@ -23,7 +23,8 @@
     "build:app": "lerna run --stream build:app",
     "build": "yarn build:libs && yarn build:app",
     "lint": "lerna run --stream lint --",
-    "test": "lerna run --stream test --"
+    "test": "lerna run --stream test --",
+    "e2e": "lerna run --stream e2e --"
   },
   "resolutions": {
     "whatwg-url": "12.0.1"

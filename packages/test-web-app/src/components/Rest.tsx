@@ -7,6 +7,9 @@ export const Rest: FC = () => {
         fetch(new URL('/api/me', config.restUrl))
             .then(result => result.json())
             .then(result => setUsername(result.username))
+            .catch((err) => {
+                console.warn('err', err)
+            })
     }, [])
     return (
         <div>Result for rest call: <span aria-label="username">{username ? username : 'none'}</span></div>

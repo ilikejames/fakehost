@@ -13,9 +13,16 @@ type HijackedRestServiceOptions = {
     silent: boolean
 }
 
+export const getMockedFetch = (...args: Parameters<typeof fetch>) => {
+    const f = globalThis.___HijackedRestService[globalThis.___HijackedRestService.length - 1]
+    return f(...args)
+}
+
 declare global {
     // eslint-disable-next-line no-var
     var originalFetch: typeof fetch | undefined
+    // eslint-disable-next-line no-var
+    var ___HijackedRestService: Array<typeof fetch>
 }
 /**
  * Hijacks the fetch/XmlRequest calls and returns the data from the router.
@@ -24,6 +31,7 @@ export class HijackedRestService {
     private options: Partial<HijackedRestServiceOptions>
     private previousFetch: typeof fetch
     private isActive = false
+    private readonly hijackedFetch: typeof fetch
 
     constructor(
         host: URL,
@@ -58,7 +66,10 @@ export class HijackedRestService {
         }
 
         this.isActive = true
-        globalThis.fetch = async (input: RequestInfo | URL, init?: RequestInit) => {
+        this.hijackedFetch = globalThis.fetch = async (
+            input: RequestInfo | URL,
+            init?: RequestInit,
+        ) => {
             if (!this.isActive) {
                 return previousFetch(input, init)
             }
@@ -168,7 +179,9 @@ export class HijackedRestService {
                                 )
                             },
                             status: status ?? 500,
-                            json: () => Promise.resolve(send[0]),
+                            json: () => {
+                                return Promise.resolve(send[0])
+                            },
                             headers: headers,
                             text: () => {
                                 const result = send.map(x => {
@@ -188,6 +201,10 @@ export class HijackedRestService {
             }
             return previousFetch(input, init)
         }
+
+        // Unique global across all versions of this library
+        globalThis.___HijackedRestService = globalThis.___HijackedRestService || []
+        globalThis.___HijackedRestService.push(this.hijackedFetch)
     }
 
     dispose() {

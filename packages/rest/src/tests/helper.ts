@@ -5,7 +5,7 @@ import { Methods, RestRouter } from '../types'
 
 export type Target = 'FakeHijacked' | 'FakeService'
 
-export const targets: ReadonlyArray<Target> = ['FakeService', 'FakeHijacked'] //, 'FakeHijacked'] as const
+export const targets: ReadonlyArray<Target> = ['FakeService', 'FakeHijacked'] as const
 
 export const getHost = async (
     mode: Target,

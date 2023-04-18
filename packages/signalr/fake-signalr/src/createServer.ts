@@ -1,12 +1,8 @@
 import { HttpRestService, enableLogger as restLogger } from '@fakehost/fake-rest/server'
 import { WsHost, Host, enableLogger as wsLogger } from '@fakehost/host'
 import { URL } from 'url'
-import { FakeSignalrHub } from './FakeSignalrHub'
 import { restRouter } from './restHandshakeRouter'
-
-type Signalr<T> = T extends FakeSignalrHub<infer H, infer R, infer S>
-    ? FakeSignalrHub<H, R, S>
-    : never
+import { Signalr } from './types'
 
 export type ServerOptions<T> = {
     port?: number
