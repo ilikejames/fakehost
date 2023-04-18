@@ -12,7 +12,7 @@
     "packages/utils/*"
   ],
   "devDependencies": {
-    "@types/node": "^16.7.1",
+    "@types/node": "^18.0.0",
     "cross-env": "^7.0.3",
     "lerna": "^6.0.0",
     "prettier": "^2.3.2",

@@ -1,0 +1,34 @@
+{
+    "name": "@fakehost/test-rest-api",
+    "description": "The test rest api for contract tests, bundling in browser, and e2e tests",
+    "keywords": ["fake", "rest", "browser", "react-native", "mock"],
+    "version": "1.0.0",
+    "private": true,
+    "license": "ISC",
+    "files": [
+      "dist"
+    ],
+    "homepage": "https://github.com/ilikejames/fakehost",
+    "main": "dist/index.cjs",
+    "type": "module",
+    "exports": {
+      ".": {
+        "import": "./dist/index.js",
+        "require": "./dist/index.cjs"
+      }
+    },
+    "types": "dist/index.d.ts",
+    "dependencies": {
+      "@fakehost/fake-rest": "^1.0.0"
+    },
+    "devDependencies": {
+      "cross-env": "^7.0.3",
+      "ts-node": "^10.9.1"
+    },
+    "scripts": {
+      "start": "cross-env NODE_OPTIONS='--experimental-specifier-resolution=node' TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true  ts-node --esm src/start.ts",
+      "build": "tsup src/index.ts --format cjs,esm --dts --dts-resolve --sourcemap",
+      "lint": "eslint --ext .tsx --ext .ts src/"
+    }
+  }
+  

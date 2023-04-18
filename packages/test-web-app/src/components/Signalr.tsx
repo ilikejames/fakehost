@@ -6,7 +6,7 @@ export const Signalr: FC = () => {
 
     return (
         <div>
-            Time from the signalr service is {time ? time.toLocaleTimeString() : 'loading...'}
+            Time from the signalr service is <time>{time ? time.toLocaleTimeString() : 'loading...'}</time>
         </div>
     )
 }

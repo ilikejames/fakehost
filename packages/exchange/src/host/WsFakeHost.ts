@@ -37,7 +37,7 @@ export class WsFakeHost extends BaseFakeHost {
         this.websocket.on('listening', () => {
             const address = this.websocket.address() as AddressInfo
             this.serverPort = address.port
-            console.log(chalk.green(`${this.options.name}: Started on ${address.port}`))
+            console.log(chalk.green(`${this.options.name}: Listening on ${address.port}`))
         })
 
         this.websocket.on('connection', socket => {
