@@ -32,14 +32,14 @@ export const createServerSignalr = async <T extends object>(
 ): Promise<CreateServerSignalr<T>> => {
     // hijack the http requests to serve the signalr handshake response
     const rest = new HttpRestService(restRouter, {
-        name: options?.name,
+        name: `http://${options?.name}`,
         port: options?.port,
-        silent: options?.silent,
+        silent: true,
     })
 
     const wsHost = new WsHost({
         server: rest.server,
-        name: options?.name,
+        name: `ws://${options?.name}`,
         debug: options.debug,
     })
 
@@ -55,6 +55,7 @@ export const createServerSignalr = async <T extends object>(
     options?.debug && restLogger()
 
     const hostUrl = await wsHost.url
+
     const url = new URL(`http://${hostUrl.hostname}${hostUrl.port ? ':' + hostUrl.port : ''}`)
 
     return {

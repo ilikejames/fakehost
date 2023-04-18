@@ -5,6 +5,23 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "test-playwright {current file}",
+            "request": "launch",
+            "runtimeArgs": [
+                "playwright",
+                "test",
+                "-c", "${workspaceRoot}/packages/test-playwright/src/config/config.ts",
+                "${relativeFile}",
+                "--headed"
+            ],
+            "cwd": "${workspaceFolder}",
+            "runtimeExecutable": "npx",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "type": "node"
+        },
+        {
             "name":"signalr: test",
             "type": "node",
             "request": "launch",

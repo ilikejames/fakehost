@@ -1,2 +1,6 @@
 export * from './createRouter'
 export { enableLogger } from './logger'
+export * from './types'
+// export * from './HijackedRestService'
+// export * from './HttpRestService'
+export * from './cors'

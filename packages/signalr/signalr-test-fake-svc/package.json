@@ -27,7 +27,7 @@
         "vitest": "^0.29.8"
     },
     "scripts": {
-        "build": "tsup src/index.ts --format cjs,esm --dts --sourcemap",
+        "build": "tsup src/index.ts --format cjs,esm --dts --dts-resolve --sourcemap",
         "lint": "eslint --ext .tsx --ext .ts src/",
         "test": "cross-env TEST_TARGET=FAKE vitest --run",
         "test:contract": "cross-env TEST_TARGET=REMOTE vitest --run"

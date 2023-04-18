@@ -111,7 +111,7 @@ export class WsHost extends BaseHost {
     disconnect(path?: string): void {
         const connections =
             path && this.pathConnections.has(path)
-                ? this.pathConnections.get(path)!
+                ? this.pathConnections.get(path) ?? []
                 : Array.from(this.connections.keys())
         connections.forEach(connectionId => {
             const connection = this.connections.get(connectionId)

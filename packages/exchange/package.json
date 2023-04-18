@@ -27,14 +27,12 @@
   },
   "devDependencies": {
     "@types/debug": "^4.1.7",
-    "@types/node": "^14.0.0",
     "@types/sockjs": "^0.3.33",
     "@types/sockjs-node": "^0.3.28",
     "@types/uuid": "^8.3.4",
     "@types/ws": "^8.5.3",
     "cross-env": "^7.0.3",
-    "ts-node": "^10.4.0",
-    "typescript": "^5.0.0"
+    "ts-node": "^10.4.0"
   },
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts --sourcemap",

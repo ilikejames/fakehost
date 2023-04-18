@@ -1,11 +1,13 @@
 import { ConnectionId } from '@fakehost/host'
-import { createRouter } from '@fakehost/fake-rest'
+import { createRouter, cors } from '@fakehost/fake-rest'
 import { v4 as uuid } from 'uuid'
 
-export const restRouter = createRouter().use((_, res) => {
-    const connectionId = uuid() as ConnectionId
-    res.json(signalrHandshake(connectionId))
-})
+export const restRouter = createRouter()
+    .use(cors())
+    .use((_, res) => {
+        const connectionId = uuid() as ConnectionId
+        res.json(signalrHandshake(connectionId))
+    })
 
 const signalrHandshake = (connectionId: ConnectionId) => ({
     negotiateVersion: 1,

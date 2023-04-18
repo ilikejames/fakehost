@@ -72,4 +72,44 @@ jobs:
           sleep 10 # enough time to startup?
           SIGNALR_REMOTE_PORT=6002 yarn --cwd packages/signalr/signalr-test-fake-svc test:contract
 
+  playwright-e2e:
+
+    needs: build
+    runs-on: ubuntu-latest
+    container:
+      image: mcr.microsoft.com/playwright:v1.32.3-focal
+    
+    steps:
+      - uses: actions/setup-node@v3
+        with: 
+          node-version: '18.x'
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref }}
+      
+      - name: Install packages
+        run: yarn --frozen-lockfile
+
+      - name: Build
+        run: yarn build
+
+      - name: e2e playwright
+        run: |
+          npx playwright install
+          # HOME=/root is specific workaround for firefox 
+          # see: https://github.com/microsoft/playwright/issues/6500
+          HOME=/root yarn --cwd packages/test-playwright e2e --workers=1
+      
+      - name: Archive e2e playwright artifacts
+        if: always()
+        uses: actions/upload-artifact@v3
+        with:
+          name: playwright-e2e-results
+          path: packages/test-playwright/test-results/**/*.*
+          if-no-files-found: ignore
+
+      
+
+    
  
