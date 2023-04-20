@@ -1,6 +1,6 @@
 {
     "name": "@fakehost/signalr",
-    "description": "A Fake Signalr Service for faking/mocking signalr hub services for testing purposes",
+    "description": "A Fake Signalr Service for faking/mocking signalr hub services for testing, prototyping, and demoing",
     "keywords": ["fake", "signalr", "mock", "testing", "storybook", "react-native", "contact"],
     "version": "1.0.0",
     "private": false,
@@ -35,7 +35,8 @@
         }
       },
     "files": [
-        "dist"
+        "dist",
+        "README.md"
     ],
     "license": "MIT",
     "dependencies": {

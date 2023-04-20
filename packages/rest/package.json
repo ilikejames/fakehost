@@ -6,7 +6,8 @@
   "private": false,
   "license": "ISC",
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "homepage": "https://github.com/ilikejames/fakehost",
   "main": "dist/",
