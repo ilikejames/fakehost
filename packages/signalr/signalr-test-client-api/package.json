@@ -25,4 +25,4 @@
         "lint": "eslint --ext .tsx --ext .ts src/",
         "generate:api": "./generate-api.sh"
     }
-  }
+}

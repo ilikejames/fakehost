@@ -113,6 +113,7 @@ export class WsHost extends BaseHost {
             path && this.pathConnections.has(path)
                 ? this.pathConnections.get(path) ?? []
                 : Array.from(this.connections.keys())
+
         connections.forEach(connectionId => {
             const connection = this.connections.get(connectionId)
             if (connection) {
@@ -124,11 +125,6 @@ export class WsHost extends BaseHost {
             }
         })
         path && this.pathConnections.delete(path)
-        // this.connections.forEach(connection => {
-        //     logger(chalk.yellow(`${this.options.name}: Disconnecting connection ${connection.id}`))
-        //     connection.close()
-        //     this.connections.delete(connection.id)
-        // })
     }
 
     dispose(): Promise<void> {

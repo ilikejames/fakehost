@@ -81,7 +81,7 @@ describe(`${getTestTarget()}: ChatHub`, () => {
         expect.assertions(2)
         try {
             await proxy.alwaysThrows()
-        } catch (ex: any) {
+        } catch (ex: unknown) {
             expect(ex).toMatchObject({
                 name: 'Error',
                 message: expect.stringMatching(/^An unexpected error occurred/),
@@ -90,7 +90,7 @@ describe(`${getTestTarget()}: ChatHub`, () => {
             try {
                 const participants = await proxy.getParticipants()
                 expect(participants).toEqual([])
-            } catch (ex: any) {
+            } catch (ex: unknown) {
                 // swallow
             }
         } finally {
