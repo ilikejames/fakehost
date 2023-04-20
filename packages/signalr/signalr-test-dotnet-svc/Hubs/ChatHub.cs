@@ -62,8 +62,6 @@ public class ChatHub : Hub<IChatReceiver>, IChatHub
     {
         _logger.Log(LogLevel.Information, "{id}: Invoke OnDisconnectedAsync", this.Context.ConnectionId);
 
-        //var result = UserNames.TryRemove(this.Context.ConnectionId, out var username);
-
         if (UserNames.TryRemove(this.Context.ConnectionId, out var username))
         {
             await this.Clients.All.OnLeave(username, DateTime.Now);

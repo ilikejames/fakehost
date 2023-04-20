@@ -91,5 +91,3 @@ const customHost = new CustomFakeHost();
 new WsFakeHost(customHost, 5555);
 services.forEach(svc => customHost.subscribe(svc));
 ```
-
-.

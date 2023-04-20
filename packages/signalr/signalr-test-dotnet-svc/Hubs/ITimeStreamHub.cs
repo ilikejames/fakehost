@@ -19,4 +19,3 @@ public interface ITimeStreamHub
 
 [TranspilationSource]
 public record ClientItem(string Content);
-

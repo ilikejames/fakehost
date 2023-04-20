@@ -43,11 +43,13 @@ export const startFakeEnv = async (): Promise<FakeEnv<typeof hubs>> => {
         window.localStorage.setItem('feature-use-fakes', 'true')
     })
 
+    // setup fake signalr service
     const fakeSignalr = await createInBrowserSignalr<typeof hubs>({
         hubs: hubs,
         url: new URL('http://example2.com'),
     })
-    // This is the last REST service...
+
+    // setup fake rest service
     const fakeRest = new HijackedRestService(new URL('http://example.com'), router, {
         name: 'rest',
         silent: false,

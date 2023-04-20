@@ -1,25 +1,11 @@
-import { Url } from 'url'
 import { ProtocolHandler } from '../ProtocolHandler'
-
-export type Localhost = {
-    port: number
-    path?: string
-}
-
-export type NewHostOptions = {
-    protocolHandler: ProtocolHandler<unknown, unknown> | ProtocolHandler<unknown, unknown>[]
-    name: string
-    debug: boolean
-    url: Url | Localhost // url on InlineFakeHost, vs port/path on WsFakeHost
-    httpServer: unknown
-}
 
 export interface HostOptions {
     name?: string
     debug?: boolean
 }
 
-export type ConnectionId = string & { __connectionId: never }
+export type ConnectionId = string
 export interface Connection {
     close: () => void
     readonly id: ConnectionId

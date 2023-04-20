@@ -2,4 +2,6 @@
 
 e2e tests against fakes in cypress
 
-## Debug config
+```sh
+yarn e2e
+```
