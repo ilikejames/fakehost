@@ -29,6 +29,7 @@
     "scripts": {
         "build": "tsup src/index.ts --format cjs,esm --dts --dts-resolve --sourcemap",
         "lint": "eslint --ext .tsx --ext .ts src/",
+        "start:fake": "cross-env NODE_OPTIONS='--experimental-specifier-resolution=node' TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true  ts-node --esm src/start.ts",
         "test": "cross-env TEST_TARGET=FAKE vitest --run",
         "test:contract": "cross-env TEST_TARGET=REMOTE vitest --run"
     }
