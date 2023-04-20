@@ -124,19 +124,30 @@ export class FakeSignalrHub<
                     })
                     return
                 }
-                const result = await handler?.apply(
-                    this.getSignalrInstance(connectionId),
-                    message.arguments ?? [],
-                )
-                return connection.write(
-                    this.serialize({
-                        type: MessageType.Completion,
-                        invocationId: message.invocationId,
-                        result,
-                    }),
-                )
+                try {
+                    const result = await handler?.apply(
+                        this.getSignalrInstance(connectionId),
+                        message.arguments ?? [],
+                    )
+                    return connection.write(
+                        this.serialize({
+                            type: MessageType.Completion,
+                            invocationId: message.invocationId,
+                            result,
+                        }),
+                    )
+                } catch (error: unknown) {
+                    return connection.write(
+                        this.serialize({
+                            type: MessageType.Completion,
+                            invocationId: message.invocationId,
+                            error: stringifyError(error),
+                        }),
+                    )
+                }
             }
             case MessageType.StreamInvocation: {
+                debugger
                 const handler = this.handlers.get(message.target as string)
                 const result: IStreamResult<unknown> | Observable<unknown> = await handler?.apply(
                     this.getSignalrInstance(connectionId),
@@ -153,11 +164,12 @@ export class FakeSignalrHub<
                         )
                     },
                     error: error => {
+                        console.log('ERRRRRRO', error)
                         connection.write(
                             this.serialize({
                                 type: MessageType.Completion,
                                 invocationId: message.invocationId,
-                                error,
+                                error: stringifyError(error),
                             }),
                         )
                     },
@@ -271,3 +283,9 @@ export class FakeSignalrHub<
 type Handler = (...args: any[]) => any
 
 const capitalize = (key: string) => key.slice(0, 1).toUpperCase() + key.slice(1)
+
+const stringifyError = (e: unknown) => {
+    if (typeof e === 'string') return e
+    if (e instanceof Error) return e.message
+    return JSON.stringify(e)
+}

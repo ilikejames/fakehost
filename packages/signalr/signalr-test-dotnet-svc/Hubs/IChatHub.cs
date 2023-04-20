@@ -13,6 +13,7 @@ public interface IChatHub
     Task Leave();
     Task<IEnumerable<string>> GetParticipants();
     Task SendMessage(string message);
+    Task AlwaysThrows();
 }
 
 [Receiver]

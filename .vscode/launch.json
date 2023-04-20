@@ -37,6 +37,21 @@
             }
         },
         {
+            "name":"signalr: test:contract",
+            "type": "node",
+            "request": "launch",
+            "autoAttachChildProcesses": true,
+            "skipFiles": ["<node_internals>/**"],
+            "program": "${workspaceRoot}/node_modules/vitest/vitest.mjs",
+            "cwd": "${workspaceFolder}/packages/signalr/signalr-test-fake-svc",
+            "args": ["run", "${relativeFile}"],
+            "smartStep": true,
+            "console": "internalConsole",
+            "env": {
+                "TEST_TARGET": "REMOTE"
+            }
+        },
+        {
             "name":"host: test",
             "type": "node",
             "request": "launch",

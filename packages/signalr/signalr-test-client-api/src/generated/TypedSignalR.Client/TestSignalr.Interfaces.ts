@@ -23,6 +23,10 @@ export type IChatHub = {
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     sendMessage(message: string): Promise<void>;
+    /**
+    * @returns Transpiled from System.Threading.Tasks.Task
+    */
+    alwaysThrows(): Promise<void>;
 }
 
 export type ITimeStreamHub = {
@@ -41,6 +45,14 @@ export type ITimeStreamHub = {
     * @returns Transpiled from System.Threading.Tasks.Task<System.Collections.Generic.IEnumerable<string>>
     */
     getUploaded(): Promise<string[]>;
+    /**
+    * @returns Transpiled from System.Threading.Tasks.Task<System.Threading.Channels.ChannelReader<string>>
+    */
+    alwaysErrors(): IStreamResult<string>;
+    /**
+    * @returns Transpiled from System.Threading.Tasks.Task<System.Threading.Channels.ChannelReader<string>>
+    */
+    alwaysErrorsOnTheSecondEmit(): IStreamResult<string>;
 }
 
 export type IChatReceiver = {

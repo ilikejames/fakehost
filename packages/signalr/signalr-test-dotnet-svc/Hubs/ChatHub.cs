@@ -54,6 +54,10 @@ public class ChatHub : Hub<IChatReceiver>, IChatHub
         await this.Clients.All.OnReceiveMessage(new Message(username, message, DateTime.Now));
     }
 
+    public async Task AlwaysThrows() {
+        throw new InvalidOperationException("This methods always throws an error");
+    }
+
     public override async Task OnDisconnectedAsync(Exception? exception)
     {
         _logger.Log(LogLevel.Information, "{id}: Invoke OnDisconnectedAsync", this.Context.ConnectionId);

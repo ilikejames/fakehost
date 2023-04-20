@@ -5,7 +5,7 @@ import {
     HubConnectionBuilder,
 } from '@fakehost/signalr-test-client-api'
 import { Subject as SignalrSubject } from '@microsoft/signalr'
-import { Subject, bufferCount, firstValueFrom, timer } from 'rxjs'
+import { Subject, bufferCount, catchError, firstValueFrom, of, timer } from 'rxjs'
 import { describe, test, expect, beforeAll, afterAll } from 'vitest'
 import { testSetup, getTestTarget, TestEnv } from './testSetup'
 
@@ -70,6 +70,50 @@ describe(`${getTestTarget()}: TimeStreamHub`, () => {
                 'count: 4',
                 'count: 5',
             ])
+        } finally {
+            await connection.stop()
+        }
+    })
+
+    test('alwaysErrors', async () => {
+        const { connection, proxy } = await getConnection()
+        expect.assertions(1)
+        try {
+            const [result] = await firstValueFrom(
+                streamResultToObservable(proxy.alwaysErrors()).pipe(
+                    catchError(err => of(err)),
+                    bufferCount(1),
+                ),
+            )
+            expect(result).toMatchObject({
+                name: 'Error',
+                message: expect.stringMatching(/^An unexpected error occurred invoking/),
+            })
+        } finally {
+            await connection.stop()
+        }
+    })
+
+    test('alwaysErrorsOnTheSecondEmit', async () => {
+        const { connection, proxy } = await getConnection()
+        expect.assertions(2)
+        try {
+            const [result, error] = await firstValueFrom(
+                streamResultToObservable(proxy.alwaysErrorsOnTheSecondEmit()).pipe(
+                    catchError(err =>
+                        of({
+                            name: err.name,
+                            message: err.message,
+                        }),
+                    ),
+                    bufferCount(2),
+                ),
+            )
+            expect(result).toMatch('first')
+            expect(error).toMatchObject({
+                name: 'Error',
+                message: 'An error occurred on the server while streaming results.',
+            })
         } finally {
             await connection.stop()
         }
