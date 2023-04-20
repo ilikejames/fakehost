@@ -39,8 +39,13 @@ const getParticipants: IChatHub['getParticipants'] = async () => {
     return result
 }
 
+const alwaysThrows: IChatHub['alwaysThrows'] = async () => {
+    throw new Error(`An unexpected error occurred invoking 'AlwaysThrows' on the server.`)
+}
+
 chatHub.register('getParticipants', getParticipants)
 chatHub.register('join', join)
 chatHub.register('leave', leave)
+chatHub.register('alwaysThrows', alwaysThrows)
 
 export { chatHub }

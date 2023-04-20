@@ -76,6 +76,28 @@ describe(`${getTestTarget()}: ChatHub`, () => {
         }
     })
 
+    test('AlwaysThrows', async () => {
+        const { connection, proxy } = await getConnection()
+        expect.assertions(2)
+        try {
+            await proxy.alwaysThrows()
+        } catch (ex: any) {
+            expect(ex).toMatchObject({
+                name: 'Error',
+                message: expect.stringMatching(/^An unexpected error occurred/),
+            })
+            // but then can continue to call the next service
+            try {
+                const participants = await proxy.getParticipants()
+                expect(participants).toEqual([])
+            } catch (ex: any) {
+                // swallow
+            }
+        } finally {
+            await connection.stop()
+        }
+    })
+
     type Receivers = {
         [K in keyof IChatReceiver]: IChatReceiver[K]
     }

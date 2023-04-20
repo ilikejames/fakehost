@@ -45,5 +45,5 @@ const getSignalrDotNetPort = () => {
     if (process.env.SIGNALR_REMOTE_PORT) {
         return parseInt(process.env.SIGNALR_REMOTE_PORT, 10)
     }
-    return 5002
+    return 5001
 }

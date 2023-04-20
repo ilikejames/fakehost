@@ -9,8 +9,6 @@ using TestSignalr.Interfaces;
 
 namespace TestSignalr.Hub;
 
-
-
 public class TimeStreamHub : Hub<ITimeStreamHub>, ITimeStreamHub
 {
     private readonly ILogger _logger;
@@ -66,10 +64,43 @@ public class TimeStreamHub : Hub<ITimeStreamHub>, ITimeStreamHub
             Uploaded.TryUpdate(this.Context.ConnectionId, newArray, Uploaded[this.Context.ConnectionId]);
         }
     }
-     public Task<IEnumerable<string>> GetUploaded()
+
+    public Task<IEnumerable<string>> GetUploaded()
     {
         _logger.Log(LogLevel.Information, "{id}: Invoke GetUploaded", this.Context.ConnectionId);
         var uploaded = Uploaded.GetOrAdd(this.Context.ConnectionId, _ => new string[0]);
         return Task.FromResult(uploaded as IEnumerable<string>);
+    }
+
+
+    public async Task<ChannelReader<string>> AlwaysErrors() 
+    {
+        throw new InvalidOperationException("This method always throws an error.");
+    }
+
+    public async Task<ChannelReader<string>> AlwaysErrorsOnTheSecondEmit()
+    {
+        var channel = Channel.CreateUnbounded<string>();
+
+        _ = WriteItemsAsync(channel.Writer);
+
+        return channel.Reader;
+
+        async Task WriteItemsAsync(ChannelWriter<string> writer)
+        {
+            try
+            {
+                await writer.WriteAsync("first");
+                await Task.Delay(TimeSpan.FromSeconds(1));
+
+                // Throw an error after 1 second
+                throw new InvalidOperationException("This method always throws an error on the second emit.");
+            }
+            catch (Exception ex)
+            {
+                // Complete the writer with the exception to propagate the error to the client
+                writer.Complete(ex);
+            }
+        }
     }
 }

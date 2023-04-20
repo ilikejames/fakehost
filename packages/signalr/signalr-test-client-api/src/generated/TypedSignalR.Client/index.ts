@@ -98,6 +98,10 @@ class IChatHub_HubProxy implements IChatHub {
     public readonly sendMessage = async (message: string): Promise<void> => {
         return await this.connection.invoke("SendMessage", message);
     }
+
+    public readonly alwaysThrows = async (): Promise<void> => {
+        return await this.connection.invoke("AlwaysThrows");
+    }
 }
 
 class ITimeStreamHub_HubProxyFactory implements HubProxyFactory<ITimeStreamHub> {
@@ -126,6 +130,14 @@ class ITimeStreamHub_HubProxy implements ITimeStreamHub {
 
     public readonly getUploaded = async (): Promise<string[]> => {
         return await this.connection.invoke("GetUploaded");
+    }
+
+    public readonly alwaysErrors = (): IStreamResult<string> => {
+        return this.connection.stream("AlwaysErrors");
+    }
+
+    public readonly alwaysErrorsOnTheSecondEmit = (): IStreamResult<string> => {
+        return this.connection.stream("AlwaysErrorsOnTheSecondEmit");
     }
 }
 

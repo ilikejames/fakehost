@@ -13,7 +13,8 @@ public interface ITimeStreamHub
     Task<ChannelReader<DateTime>> StreamTimeAsync(int intervalSeconds, CancellationToken cancellationToken);
     Task ClientToServerStreaming(ChannelReader<ClientItem> stream);
     Task<IEnumerable<string>> GetUploaded();
- 
+    Task<ChannelReader<string>> AlwaysErrors();
+    Task<ChannelReader<string>> AlwaysErrorsOnTheSecondEmit();
 }
 
 [TranspilationSource]

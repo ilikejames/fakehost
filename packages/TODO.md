@@ -5,7 +5,7 @@ between the nodejs version and the browser version. Breakout separate doc.
 - [x] REST: setHeaders
 - [ ] REST: more verbs
 - [ ] Signalr: close?
-- [ ] Signalr: error thrown
+- [x] Signalr: error thrown
 - [ ] Signalr: reconnection test
 - [x] playwright test setup
 - [x] cypress test setup

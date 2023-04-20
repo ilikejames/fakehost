@@ -1,6 +1,6 @@
 import { FakeSignalrHub, ConnectionId } from '@fakehost/signalr'
 import { ITimeStreamHub, observableToStreamResult } from '@fakehost/signalr-test-client-api'
-import { map, timer } from 'rxjs'
+import { map, of, switchMap, throwError, timer } from 'rxjs'
 
 export const timeHub = new FakeSignalrHub<ITimeStreamHub>('/timehub', {}, 'capitalize')
 
@@ -37,6 +37,34 @@ const getUploaded: ITimeStreamHub['getUploaded'] = async function (
     return Array.from(userMessages.get(this.Connection.id) ?? [])
 }
 
+const alwaysErrors: ITimeStreamHub['alwaysErrors'] = () => {
+    return observableToStreamResult<string>(
+        throwError(() => new Error(`An unexpected error occurred invoking 'AlwaysErrors'`)),
+    )
+}
+
+const alwaysErrorsOnTheSecondEmit: ITimeStreamHub['alwaysErrorsOnTheSecondEmit'] = () => {
+    return observableToStreamResult<string>(
+        timer(100, 500).pipe(
+            switchMap(i => {
+                switch (i) {
+                    case 0:
+                        return of('first')
+                    default:
+                        return throwError(
+                            () =>
+                                new Error(
+                                    'An error occurred on the server while streaming results.',
+                                ),
+                        )
+                }
+            }),
+        ),
+    )
+}
+
 timeHub.register('streamTimeAsync', streamTimeAsync)
 timeHub.register('clientToServerStreaming', clientToServerStreaming)
 timeHub.register('getUploaded', getUploaded)
+timeHub.register('alwaysErrors', alwaysErrors)
+timeHub.register('alwaysErrorsOnTheSecondEmit', alwaysErrorsOnTheSecondEmit)
