@@ -147,7 +147,6 @@ export class FakeSignalrHub<
                 }
             }
             case MessageType.StreamInvocation: {
-                debugger
                 const handler = this.handlers.get(message.target as string)
                 const result: IStreamResult<unknown> | Observable<unknown> = await handler?.apply(
                     this.getSignalrInstance(connectionId),
@@ -164,7 +163,6 @@ export class FakeSignalrHub<
                         )
                     },
                     error: error => {
-                        console.log('ERRRRRRO', error)
                         connection.write(
                             this.serialize({
                                 type: MessageType.Completion,

@@ -28,7 +28,7 @@
     "scripts": {
       "build:app": "vite build",
       "start": "vite",
-      "start:fake": "vite --mode fake-service --port 3003",
-      "start:bundled": "vite --mode bundled --port 3004"
+      "start:fakeapp": "vite --mode fake-service --port 3003",
+      "start:bundledapp": "vite --mode bundled --port 3004"
     }
 }
