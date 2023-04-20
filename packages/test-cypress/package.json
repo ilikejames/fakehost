@@ -6,8 +6,6 @@
   "type": "module",
   "license": "MIT",
   "dependencies": {
-    "@cypress/webpack-batteries-included-preprocessor": "^2.4.1",
-    "@cypress/webpack-preprocessor": "^5.17.0",
     "@fakehost/fake-rest": "^1.0.0",
     "@fakehost/signalr": "^1.0.0",
     "@fakehost/signalr-test-fake-svc": "^1.0.0",
