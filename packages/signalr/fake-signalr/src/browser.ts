@@ -1,7 +1,7 @@
 import {
     HijackedRestService,
     enableLogger as restLogger,
-    getMockedFetch,
+    mockedFetch,
 } from '@fakehost/fake-rest/browser'
 import { BrowserWsHost, enableLogger as wsLogger, Host, MockedSocket } from '@fakehost/host'
 import { restRouter } from './restHandshakeRouter'
@@ -24,7 +24,7 @@ export type CreateBrowserSignalr<T> = {
     url: URL
     hubs: { readonly [K in keyof T]: Pick<BrowserWsHost, 'disconnect'> }
     MockedSocket: BrowserWsHost['WebSocket']
-    getMockedFetch: typeof getMockedFetch
+    mockedFetch: typeof mockedFetch
 }
 
 const objectKeys = <T extends Record<string, unknown>>(x: T) => Object.keys(x) as (keyof T)[]
@@ -67,7 +67,7 @@ export const createInBrowserSignalr = async <T extends object>(
     return {
         hubs: hosts,
         MockedSocket,
-        getMockedFetch: getMockedFetch,
+        mockedFetch: mockedFetch,
         url: options.url,
         dispose: async () => {
             const wshosts = Array.from(Object.values(hosts)) as Host[]

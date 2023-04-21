@@ -1,6 +1,6 @@
 import { MockedSocket, createInBrowserSignalr } from '@fakehost/signalr/browser'
 import { chatHub, timeHub } from '@fakehost/signalr-test-fake-svc'
-import { HijackedRestService, enableLogger, getMockedFetch } from '@fakehost/fake-rest/browser'
+import { HijackedRestService, enableLogger, mockedFetch } from '@fakehost/fake-rest/browser'
 import { router } from '@fakehost/test-rest-api'
 
 const hubs = {
@@ -12,7 +12,7 @@ enableLogger()
 
 type FakeEnv<T extends object> = {
     dispose: () => void
-    mockedFetch: typeof getMockedFetch
+    mockedFetch: typeof mockedFetch
     mockedSocket: typeof MockedSocket
     restHost: HijackedRestService
     signalr: Awaited<ReturnType<typeof createInBrowserSignalr<T>>>
@@ -45,7 +45,7 @@ export const startFakeEnv = async (): Promise<FakeEnv<typeof hubs>> => {
     return {
         restHost: fakeRest,
         signalr: fakeSignalr,
-        mockedFetch: getMockedFetch,
+        mockedFetch: mockedFetch,
         mockedSocket: fakeSignalr.MockedSocket,
         dispose: () => {
             return Promise.all([fakeRest.dispose(), fakeSignalr.dispose()])
