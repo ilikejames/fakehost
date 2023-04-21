@@ -1,12 +1,14 @@
 import { describe, expect, test } from 'vitest'
 import { echoRouter, getHost, targets } from './helper'
-import { Methods } from '../types'
+import { METHODS } from '../methods'
 
 // Tests run across both the node service and the browser hijacked fetch
 for (const target of targets) {
-    // Tests run across all http methods
-    const methods: ReadonlyArray<Methods> = ['GET', 'POST'] as const
-    for (const method of methods) {
+    // Tests run across all http methods that support body.
+    // HEAD does not.
+    const BODY_METHODS = METHODS.filter(method => method !== 'HEAD')
+
+    for (const method of BODY_METHODS) {
         describe(`${target}: http ${method}`, () => {
             test(`${method} to plain endpoint`, async () => {
                 const { host, url } = await getHost(target, echoRouter(method, '/echo'))
@@ -92,4 +94,30 @@ for (const target of targets) {
             })
         })
     }
+
+    describe(`${target}: http HEAD`, () => {
+        test('response text() should be empty', async () => {
+            const { host, url } = await getHost(target, echoRouter('HEAD', '/echo'))
+            try {
+                const response = await globalThis.fetch(new URL('/echo', url), {
+                    method: 'HEAD',
+                })
+                expect(await response.text()).toBe('')
+            } finally {
+                host.dispose()
+            }
+        })
+
+        test('response json() should throw', async () => {
+            const { host, url } = await getHost(target, echoRouter('HEAD', '/echo'))
+            try {
+                const response = await globalThis.fetch(new URL('/echo', url), {
+                    method: 'HEAD',
+                })
+                await expect(response.json()).rejects.toThrowError('Unexpected end of JSON input')
+            } finally {
+                host.dispose()
+            }
+        })
+    })
 }

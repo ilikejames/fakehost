@@ -1,7 +1,3 @@
-// import isomorphicFetch from 'isomorphic-fetch'
-
-// const fetch = typeof globalThis.fetch === 'function' ? globalThis.fetch : isomorphicFetch
-
 declare global {
     // eslint-disable-next-line no-var
     var ___originalFetch: typeof fetch

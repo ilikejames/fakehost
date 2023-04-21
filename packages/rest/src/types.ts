@@ -1,6 +1,5 @@
 import { Key } from 'path-to-regexp'
-
-export type Methods = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH' | 'HEAD' | 'OPTIONS'
+import { type Methods } from './methods'
 
 export type Request<T extends string> = {
     method: Methods
@@ -87,8 +86,13 @@ export type RestRouter = {
     use: UseHandler<string> & UseRouter & UseRouterWithPath<string>
     useError: UseErrorHandler
     METHOD: <Path extends string>(method: Methods, path: Path, handler: Handler<Path>) => RestRouter
+    delete: <Path extends string>(path: Path, handler: Handler<Path>) => RestRouter
     get: <Path extends string>(path: Path, handler: Handler<Path>) => RestRouter
+    head: <Path extends string>(path: Path, handler: Handler<Path>) => RestRouter
+    options: <Path extends string>(path: Path, handler: Handler<Path>) => RestRouter
+    patch: <Path extends string>(path: Path, handler: Handler<Path>) => RestRouter
     post: <Path extends string>(path: Path, handler: Handler<Path>) => RestRouter
+    put: <Path extends string>(path: Path, handler: Handler<Path>) => RestRouter
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

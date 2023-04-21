@@ -1,7 +1,8 @@
 import { HijackedRestService } from '../HijackedRestService'
 import { HttpRestService } from '../HttpRestService'
 import { createRouter } from '../createRouter'
-import { Methods, RestRouter } from '../types'
+import { type Methods } from '../methods'
+import { RestRouter } from '../types'
 
 export type Target = 'FakeHijacked' | 'FakeService'
 
