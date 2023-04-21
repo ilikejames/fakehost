@@ -17,12 +17,11 @@ type FakeEnv<T extends object> = {
     signalr: Awaited<ReturnType<typeof createInBrowserSignalr<T>>>
 }
 
-const SIGNALR_URL = 'http://signalr2.com'
-const REST_URL = 'http://example.com'
+const SIGNALR_URL = 'http://signalr222.com'
+const REST_URL = 'http://example222.com'
 
 export const startFakeEnv = async (): Promise<FakeEnv<typeof hubs>> => {
     Cypress.on('window:before:load', async win => {
-        debugger
         win.localStorage.setItem('feature-use-fakes', 'true')
         ;(win as any).config = {
             restUrl: REST_URL,

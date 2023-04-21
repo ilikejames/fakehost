@@ -4,7 +4,7 @@ import { config } from '@/config'
 
 /***
  * Wire up fake rest service.
- * NOTE: put it behind `import.meta.env.` so vite can tree-shake it await (inc deps)
+ * NOTE: put it behind `import.meta.env.` so vite can tree-shake it away (inc deps)
  */
 if (import.meta.env.VITE_BUNDLE_FAKES === 'true') {
     enableLogger()

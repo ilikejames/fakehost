@@ -7,7 +7,7 @@ describe('initial', async () => {
         cy.visit('/', {
             onBeforeLoad: win => {
                 cy.stub(win, 'fetch').callsFake(mockedFetch)
-                cy.stub(win, 'WebSocket').callsFake(signalr.MockedSocket)
+                // cy.stub(win, 'WebSocket').callsFake(signalr.MockedSocket)
             },
         })
     })
@@ -17,5 +17,6 @@ describe('initial', async () => {
     it('should have REST & signalr results', () => {
         cy.get('[aria-label="username"]').should('have.text', 'test-user')
         cy.get('time').contains(/^\d{1,2}:\d{1,2}:\d{1,2}((AM|PM)?)/)
+        cy.screenshot()
     })
 })

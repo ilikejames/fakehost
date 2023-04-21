@@ -4,7 +4,7 @@ import {
     streamResultToObservable,
 } from '@fakehost/signalr-test-client-api'
 import { bind } from '@react-rxjs/core'
-import { from, map, shareReplay, switchMap } from 'rxjs'
+import { catchError, from, map, of, shareReplay, switchMap } from 'rxjs'
 import { config } from '@/config'
 import { HubConnection } from '@microsoft/signalr'
 
@@ -27,11 +27,20 @@ const connection$ = from(getConnection().start()).pipe(
     shareReplay({ refCount: true, bufferSize: 1 }),
 )
 
+export type TimeError = {
+    type: 'error'
+}
+
 export const [useTimeHub, timeHub$] = bind(() => {
     return connection$.pipe(
         switchMap(proxy => {
             return streamResultToObservable(proxy.streamTimeAsync(1))
         }),
         map(x => new Date(x)),
+        catchError(() =>
+            of({
+                type: 'error',
+            } as TimeError),
+        ),
     )
 }, null)
