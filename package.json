@@ -19,13 +19,13 @@
     "typescript": "^5.0.0"
   },
   "scripts": {
-    "build:libs": "lerna run --stream build",
-    "build:app": "lerna run --stream build:app",
+    "build:libs": "lerna run build",
+    "build:app": "lerna run  build:app",
     "build": "yarn build:libs && yarn build:app",
-    "lint": "lerna run --stream lint --",
-    "test": "lerna run --stream test --",
+    "lint": "lerna run  lint --",
+    "test": "lerna run test --",
     "e2e": "lerna run --stream e2e --",
-    "start:fakes": "cross-env SIGNALR_PORT=5002 REST_PORT=5005 lerna run --stream start:fake --"
+    "start:fakes": "cross-env SIGNALR_PORT=5002 REST_PORT=5005 lerna run start:fake --"
   },
   "resolutions": {
     "whatwg-url": "12.0.1"
