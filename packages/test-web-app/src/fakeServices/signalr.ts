@@ -6,7 +6,7 @@ import { config } from '@/config'
  * embedded in the web app.
  */
 ;(async function () {
-    if (config.bundleFakes) {
+    if (import.meta.env.VITE_BUNDLE_FAKES === 'true') {
         await createInBrowserSignalr<typeof hubs>({
             url: new URL(config.signalrUrl),
             hubs,
