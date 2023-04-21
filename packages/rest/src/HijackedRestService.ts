@@ -1,6 +1,7 @@
 import { createRouter, isHandler } from './createRouter'
 import { enableLogger, logger } from './logger'
-import { Response, Request, RestRouter, Methods, HttpHeader } from './types'
+import { type Methods } from './methods'
+import { Response, Request, RestRouter, HttpHeader } from './types'
 import { getMethod, getRouteParams, getUrl, handleServiceError } from './utils'
 import { FetchCollection } from './FetchCollection'
 
@@ -151,10 +152,18 @@ export class HijackedRestService {
                             },
                             status: status ?? 500,
                             json: () => {
+                                if (request.method === 'HEAD') {
+                                    return Promise.reject(
+                                        new SyntaxError('Unexpected end of JSON input'),
+                                    )
+                                }
                                 return Promise.resolve(send[0])
                             },
                             headers: headers,
                             text: () => {
+                                if (request.method === 'HEAD') {
+                                    return Promise.resolve('')
+                                }
                                 const result = send.map(x => {
                                     switch (typeof x) {
                                         case 'string':

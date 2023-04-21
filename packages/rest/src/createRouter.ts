@@ -1,3 +1,5 @@
+import { pathToRegexp, Key } from 'path-to-regexp'
+import { type Methods } from './methods'
 import {
     Handler,
     RestRouter,
@@ -5,10 +7,8 @@ import {
     UseRouter,
     UseRouterWithPath,
     Route,
-    Methods,
     ErrorHandler,
 } from './types'
-import { pathToRegexp, Key } from 'path-to-regexp'
 
 type UseParameters =
     | Parameters<UseRouter>
@@ -69,12 +69,13 @@ export const createRouter = (): RestRouter => {
             })
             return router
         },
-        get: (path, handler) => {
-            return router.METHOD('GET', path, handler)
-        },
-        post: (path, handler) => {
-            return router.METHOD('POST', path, handler)
-        },
+        delete: (path, handler) => router.METHOD('DELETE', path, handler),
+        get: (path, handler) => router.METHOD('GET', path, handler),
+        head: (path, handler) => router.METHOD('HEAD', path, handler),
+        patch: (path, handler) => router.METHOD('PATCH', path, handler),
+        post: (path, handler) => router.METHOD('POST', path, handler),
+        put: (path, handler) => router.METHOD('PUT', path, handler),
+        options: (path, handler) => router.METHOD('OPTIONS', path, handler),
     }
     return router
 }

@@ -5,7 +5,8 @@ import { AddressInfo } from 'net'
 import { URL } from 'url'
 import { createRouter, isHandler } from './createRouter'
 import { logger, enableLogger } from './logger'
-import { RestRouter, Request, Response, Methods, HttpHeader } from './types'
+import { type Methods } from './methods'
+import { RestRouter, Request, Response, HttpHeader } from './types'
 import { getRouteParams, handleServiceError } from './utils'
 
 export { createRouter }
