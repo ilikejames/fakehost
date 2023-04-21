@@ -17,13 +17,15 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/setup-node@v3
-        with: 
-          node-version: '18.x'
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
           ref: ${{ github.ref }}
+
+      - uses: actions/setup-node@v3
+        with: 
+          cache: 'yarn'
+          node-version: '18.x'
       
       - name: Install packages
         run: yarn --frozen-lockfile
@@ -43,16 +45,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/setup-node@v3
-        with: 
-          node-version: '18.x'
-      - uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '7.0.x'
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
           ref: ${{ github.ref }}
+
+      - uses: actions/setup-node@v3
+        with: 
+          cache: 'yarn'
+          node-version: '18.x'
+
+      - uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7.0.x'
       
       - name: Install dotnet tools
         run: dotnet tool install --global TypedSignalR.Client.TypeScript.Generator
@@ -80,13 +85,15 @@ jobs:
       image: mcr.microsoft.com/playwright:v1.32.3-focal
     
     steps:
-      - uses: actions/setup-node@v3
-        with: 
-          node-version: '18.x'
       - uses: actions/checkout@v3
         with:
           fetch-depth: 0
           ref: ${{ github.ref }}
+
+      - uses: actions/setup-node@v3
+        with: 
+          cache: 'yarn'
+          node-version: '18.x'
       
       - name: Install packages
         run: yarn --frozen-lockfile
@@ -112,9 +119,15 @@ jobs:
   cypress-e2e:
     needs: build
     runs-on: ubuntu-latest
-    steps:
+     
+    steps:  
       - name: Checkout
         uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with: 
+          cache: 'yarn'
+          node-version: '18.x'
 
       - name: Install packages
         run: yarn --frozen-lockfile
