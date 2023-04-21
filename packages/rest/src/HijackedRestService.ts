@@ -3,6 +3,7 @@ import { createRouter, isHandler } from './createRouter'
 import { enableLogger, logger } from './logger'
 import { Response, Request, RestRouter, Methods, HttpHeader } from './types'
 import { getMethod, getRouteParams, getUrl, handleServiceError } from './utils'
+import { FetchCollection } from './FetchCollection'
 
 export { createRouter }
 export { enableLogger }
@@ -14,24 +15,16 @@ type HijackedRestServiceOptions = {
 }
 
 export const getMockedFetch = (...args: Parameters<typeof fetch>) => {
-    const f = globalThis.___HijackedRestService[globalThis.___HijackedRestService.length - 1]
-    return f(...args)
+    return FetchCollection.getInstance().instance(...args)
 }
 
-declare global {
-    // eslint-disable-next-line no-var
-    var originalFetch: typeof fetch | undefined
-    // eslint-disable-next-line no-var
-    var ___HijackedRestService: Array<typeof fetch>
-}
 /**
  * Hijacks the fetch/XmlRequest calls and returns the data from the router.
  */
 export class HijackedRestService {
     private options: Partial<HijackedRestServiceOptions>
-    private previousFetch: typeof fetch
-    private isActive = false
     private readonly hijackedFetch: typeof fetch
+    private isActive = true
 
     constructor(
         host: URL,
@@ -44,37 +37,13 @@ export class HijackedRestService {
         }
 
         logger(`${this.options.name}: Starting...`)
-        // wire up the fetch calls
-        if (!globalThis.fetch) {
-            logger(
-                `${this.options.name}: No global fetch...are you sure this is a browser/dom environment?`,
-            )
-            logger(
-                `${this.options.name}: For nodejs environments, please wiring up isomorphic-fetch`,
-            )
-        }
 
-        globalThis.originalFetch = globalThis.originalFetch || globalThis.fetch
-        this.previousFetch = globalThis.fetch
-
-        const previousFetch = (input: RequestInfo | URL, init?: RequestInit) => {
-            if (this.previousFetch !== globalThis.originalFetch) {
-                return this.previousFetch(input, init)
-            } else {
-                return globalThis.originalFetch(input, init)
-            }
-        }
-
-        this.isActive = true
-        this.hijackedFetch = globalThis.fetch = async (
-            input: RequestInfo | URL,
-            init?: RequestInit,
-        ) => {
-            if (!this.isActive) {
-                return previousFetch(input, init)
-            }
+        this.hijackedFetch = async (input: RequestInfo | URL, init?: RequestInit) => {
             const url = getUrl(input)
             logger(`${this.options.name}: Fetching ${url}`)
+            if (!this.isActive) {
+                return FetchCollection.getInstance().next(this.hijackedFetch)(input, init)
+            }
             if (`${host.protocol}` === url.protocol) {
                 if (host.host === url.host) {
                     if (!host.pathname || url.pathname.startsWith(host.pathname)) {
@@ -199,16 +168,15 @@ export class HijackedRestService {
                     }
                 }
             }
-            return previousFetch(input, init)
+            return FetchCollection.getInstance().next(this.hijackedFetch)(input, init)
         }
 
-        // Unique global across all versions of this library
-        globalThis.___HijackedRestService = globalThis.___HijackedRestService || []
-        globalThis.___HijackedRestService.push(this.hijackedFetch)
+        FetchCollection.getInstance().push(this.hijackedFetch)
     }
 
     dispose() {
         this.isActive = false
+        FetchCollection.getInstance().delete(this.hijackedFetch)
         logger(`${this.options.name}: Disposed.`)
     }
 }

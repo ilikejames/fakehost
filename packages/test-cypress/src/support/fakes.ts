@@ -1,8 +1,7 @@
 import { createInBrowserSignalr } from '@fakehost/signalr/browser'
 import { chatHub, timeHub } from '@fakehost/signalr-test-fake-svc'
-import { HijackedRestService, enableLogger } from '@fakehost/fake-rest/browser'
+import { HijackedRestService, enableLogger, getMockedFetch } from '@fakehost/fake-rest/browser'
 import { router } from '@fakehost/test-rest-api'
-import Bluebird from 'cypress/types/bluebird'
 
 const hubs = {
     chatHub: chatHub,
@@ -13,49 +12,38 @@ enableLogger()
 
 type FakeEnv<T extends object> = {
     dispose: () => void
+    mockedFetch: typeof getMockedFetch
     restHost: HijackedRestService
     signalr: Awaited<ReturnType<typeof createInBrowserSignalr<T>>>
 }
 
-export const startFakeEnv2 = (): Bluebird<FakeEnv<typeof hubs>> => {
-    return new Cypress.Promise(resolve => {
-        createInBrowserSignalr<typeof hubs>({
-            hubs: hubs,
-            url: new URL('http://example2.com'),
-        }).then(fakeSignalr => {
-            const fakeRest = new HijackedRestService(new URL('http://example.com'), router, {
-                name: 'rest',
-                silent: false,
-            })
-            resolve({
-                restHost: fakeRest,
-                signalr: fakeSignalr,
-                dispose: () => {
-                    return Promise.all([fakeRest.dispose(), fakeSignalr.dispose()])
-                },
-            })
-        })
-    })
-}
+const SIGNALR_URL = 'http://signalr2.com'
+const REST_URL = 'http://example.com'
 
 export const startFakeEnv = async (): Promise<FakeEnv<typeof hubs>> => {
     Cypress.on('window:before:load', async win => {
-        window.localStorage.setItem('feature-use-fakes', 'true')
+        debugger
+        win.localStorage.setItem('feature-use-fakes', 'true')
+        ;(win as any).config = {
+            restUrl: REST_URL,
+            signalrUrl: SIGNALR_URL,
+        }
     })
 
     // setup fake signalr service
     const fakeSignalr = await createInBrowserSignalr<typeof hubs>({
         hubs: hubs,
-        url: new URL('http://example2.com'),
+        url: new URL(SIGNALR_URL),
     })
 
     // setup fake rest service
-    const fakeRest = new HijackedRestService(new URL('http://example.com'), router, {
+    const fakeRest = new HijackedRestService(new URL(REST_URL), router, {
         name: 'rest',
         silent: false,
     })
 
     return {
+        mockedFetch: getMockedFetch,
         restHost: fakeRest,
         signalr: fakeSignalr,
         dispose: () => {

@@ -6,12 +6,20 @@ import {
 import { bind } from '@react-rxjs/core'
 import { from, map, shareReplay, switchMap } from 'rxjs'
 import { config } from '@/config'
+import { HubConnection } from '@microsoft/signalr'
 
-const connection = new HubConnectionBuilder()
-    .withUrl(new URL('/timehub', config.signalrUrl).toString())
-    .build()
+let connection: HubConnection
 
-const connection$ = from(connection.start()).pipe(
+const getConnection = () => {
+    if (!connection) {
+        connection = new HubConnectionBuilder()
+            .withUrl(new URL('/timehub', config.signalrUrl).toString())
+            .build()
+    }
+    return connection
+}
+
+const connection$ = from(getConnection().start()).pipe(
     map(() => {
         const proxy = getHubProxyFactory('ITimeStreamHub').createHubProxy(connection)
         return proxy

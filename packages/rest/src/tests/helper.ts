@@ -10,7 +10,7 @@ export const targets: ReadonlyArray<Target> = ['FakeService', 'FakeHijacked'] as
 export const getHost = async (
     mode: Target,
     router: RestRouter,
-    options: { port: number } = { port: 3000 },
+    options: { port: number } = { port: 8000 },
 ) => {
     switch (mode) {
         case 'FakeHijacked': {

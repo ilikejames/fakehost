@@ -1,12 +1,12 @@
 import { startFakeEnv } from './support/fakes'
 
 describe('initial', async () => {
-    const { dispose, signalr } = await startFakeEnv()
+    const { dispose, signalr, mockedFetch } = await startFakeEnv()
 
     before(() => {
         cy.visit('/', {
             onBeforeLoad: win => {
-                cy.stub(win, 'fetch').callsFake(signalr.getMockedFetch)
+                cy.stub(win, 'fetch').callsFake(mockedFetch)
                 cy.stub(win, 'WebSocket').callsFake(signalr.MockedSocket)
             },
         })

@@ -12,6 +12,9 @@ export const Rest: FC = () => {
             })
     }, [])
     return (
-        <div>Result for rest call: <span aria-label="username">{username ? username : 'none'}</span></div>
+        <>
+            <div>Rest endpoint: {config.restUrl}</div>
+            <div>Result for rest call: <span aria-label="username">{username ? username : 'none'}</span></div>
+        </>
     )
 }
