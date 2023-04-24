@@ -84,6 +84,7 @@ export class WsHost extends BaseHost {
                     this.connections.delete(connection.id)
                 },
                 write: (raw: string | Buffer) => {
+                    logger(chalk.red('←'), `${raw}`)
                     socket.send(raw)
                 },
             }
@@ -101,6 +102,7 @@ export class WsHost extends BaseHost {
             })
 
             socket.on('message', (raw: string | Buffer) => {
+                logger(chalk.green('→'), `${raw}`)
                 this.handlers.message.forEach(handler =>
                     handler({ type: 'message', connection, message: raw }),
                 )

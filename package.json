@@ -14,6 +14,7 @@
   "devDependencies": {
     "@types/node": "^18.0.0",
     "cross-env": "^7.0.3",
+    "concurrently": "^8.0.1",
     "lerna": "^6.0.0",
     "prettier": "^2.3.2",
     "typescript": "^5.0.0"
@@ -25,7 +26,9 @@
     "lint": "lerna run  lint --",
     "test": "lerna run test --",
     "e2e": "lerna run --stream e2e --",
-    "start:fakes": "cross-env SIGNALR_PORT=5002 REST_PORT=5005 lerna run start:fake --"
+    "start:fakes": "concurrently \"yarn start:fake:rest\" \"yarn start:fake:signalr\"",
+    "start:fake:rest": "cross-env REST_PORT=5005 yarn --cwd packages/test-rest-api start:fake",
+    "start:fake:signalr": "cross-env SIGNALR_PORT=5002 yarn --cwd packages/signalr/signalr-test-fake-svc start:fake"
   },
   "resolutions": {
     "whatwg-url": "12.0.1"

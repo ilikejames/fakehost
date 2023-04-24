@@ -59,8 +59,8 @@ export class FakeSignalrHub<
         this.host.on('connection', e => this.onConnection.bind(this)(e.connection))
         this.host.on('disconnection', e => this.onDisconnection.bind(this)(e.connection))
         this.host.on('message', e => {
-            const message = this.deserialize(e.message)
-            this.onMessage.bind(this)(e.connection, message)
+            const messages = this.deserialize(e.message)
+            messages.forEach(message => this.onMessage.bind(this)(e.connection, message))
         })
 
         // TODO: off
@@ -97,8 +97,10 @@ export class FakeSignalrHub<
         return JSON.stringify(message) + TERMINATING_CHAR
     }
 
-    private deserialize(message: string | Buffer): InboundMessage<Hub> {
-        return JSON.parse(message.toString().slice(0, -1))
+    private deserialize(message: string | Buffer): Array<InboundMessage<Hub>> {
+        const s = message.toString()
+        const messages = s.split(TERMINATING_CHAR)
+        return messages.filter(x => Boolean(x)).map(x => JSON.parse(x))
     }
 
     private async onMessage(connection: Connection, message: InboundMessage<Hub>) {

@@ -63,7 +63,10 @@ export class BrowserWsHost extends BaseHost {
                 id: connectionId,
                 url: this.options.url,
                 close: client.close,
-                write: (raw: string | Buffer) => client.send(raw),
+                write: (raw: string | Buffer) => {
+                    logger(chalk.red('←'), `${raw}`)
+                    client.send(raw)
+                },
             }
             this.handlers.connection.forEach(handler => handler({ type: 'connection', connection }))
             this.connections.set(connectionId, connection)
@@ -77,7 +80,7 @@ export class BrowserWsHost extends BaseHost {
 
             client.on('message', async raw => {
                 let result: string | Buffer
-
+                logger(chalk.green('→'), `${raw}`)
                 // convert the raw message to a string or Buffer to match with a network message
                 if (typeof raw === 'string') {
                     result = raw
