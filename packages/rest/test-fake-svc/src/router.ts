@@ -1,7 +1,4 @@
 import { createRouter, cors } from '@fakehost/fake-rest'
+import { userRoute } from './userRoute'
 
-export const router = createRouter()
-    .use(cors())
-    .get('/api/me', (_, res) => {
-        res.json({ username: 'test-user' })
-    })
+export const router = createRouter().use(cors()).use('/user', userRoute)

@@ -1,0 +1,9 @@
+.cache/
+.gradle/
+gradle/
+.idea/
+# Ignore Gradle build output directory
+build
+out/
+# Do not ignore these files
+!.idea/externalDependencies.xml
