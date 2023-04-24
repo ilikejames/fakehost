@@ -7,9 +7,9 @@
   "license": "MIT",
   "dependencies": {
     "@fakehost/fake-rest": "^1.0.0",
+    "@fakehost/rest-test-fake-svc": "^1.0.0",
     "@fakehost/signalr": "^1.0.0",
     "@fakehost/signalr-test-fake-svc": "^1.0.0",
-    "@fakehost/test-rest-api": "^1.0.0",
     "chalk": "^4.0.0",
     "cypress": "^12.10.0"
   },

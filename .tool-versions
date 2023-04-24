@@ -1,0 +1,5 @@
+dotnet 7.0.202
+nodejs 18.15.0
+yarn 1.22.19
+java temurin-17.0.3+7
+gradle 8.1.1

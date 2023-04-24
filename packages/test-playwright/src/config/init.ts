@@ -1,7 +1,7 @@
 import { createServerSignalr } from '@fakehost/signalr/server'
 import { chatHub, timeHub } from '@fakehost/signalr-test-fake-svc'
 import { HttpRestService } from '@fakehost/fake-rest/server'
-import { router } from '@fakehost/test-rest-api'
+import { router } from '@fakehost/rest-test-fake-svc'
 import { Page, BrowserContext } from '@playwright/test'
 
 const serviceHubs = {
