@@ -6,9 +6,9 @@
   "license": "MIT",
   "dependencies": {
     "@fakehost/fake-rest": "^1.0.0",
+    "@fakehost/rest-test-fake-svc": "^1.0.0",
     "@fakehost/signalr": "^1.0.0",
     "@fakehost/signalr-test-fake-svc": "^1.0.0",
-    "@fakehost/test-rest-api": "^1.0.0",
     "@playwright/test": "^1.32.3",
     "chalk": "^4.0.0"
   },

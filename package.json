@@ -8,6 +8,7 @@
   "workspaces": [
     "packages/*",
     "packages/devtools/*",
+    "packages/rest/*",
     "packages/signalr/*",
     "packages/utils/*"
   ],

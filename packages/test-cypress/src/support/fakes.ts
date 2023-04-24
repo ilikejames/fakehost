@@ -1,7 +1,7 @@
 import { MockedSocket, createInBrowserSignalr } from '@fakehost/signalr/browser'
-import { chatHub, timeHub } from '@fakehost/signalr-test-fake-svc'
 import { HijackedRestService, enableLogger, mockedFetch } from '@fakehost/fake-rest/browser'
-import { router } from '@fakehost/test-rest-api'
+import { router } from '@fakehost/rest-test-fake-svc'
+import { chatHub, timeHub } from '@fakehost/signalr-test-fake-svc'
 
 const hubs = {
     chatHub: chatHub,

@@ -1,5 +1,5 @@
 {
-    "name": "@fakehost/test-rest-api",
+    "name": "@fakehost/rest-test-fake-svc",
     "description": "The test rest api for contract tests, bundling in browser, and e2e tests",
     "keywords": ["fake", "rest", "browser", "react-native", "mock"],
     "version": "1.0.0",
@@ -19,7 +19,8 @@
     },
     "types": "dist/index.d.ts",
     "dependencies": {
-      "@fakehost/fake-rest": "^1.0.0"
+      "@fakehost/fake-rest": "^1.0.0",
+      "@fakehost/rest-generated-client-api": "*"
     },
     "devDependencies": {
       "cross-env": "^7.0.3",

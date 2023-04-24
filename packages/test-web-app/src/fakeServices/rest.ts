@@ -1,5 +1,5 @@
 import { HijackedRestService } from '@fakehost/fake-rest/browser'
-import { router, enableLogger } from '@fakehost/test-rest-api'
+import { router, enableLogger } from '@fakehost/rest-test-fake-svc'
 import { config } from '@/config'
 
 if (import.meta.env.VITE_BUNDLE_FAKES === 'true') {
