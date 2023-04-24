@@ -1,0 +1,54 @@
+buildscript {
+    repositories {
+        maven {
+            url = uri("https://plugins.gradle.org/m2/")
+        }
+    }
+    dependencies {
+        classpath("org.openapitools:openapi-generator-gradle-plugin:6.5.0")
+    }
+}
+
+
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.0.6'
+	id 'io.spring.dependency-management' version '1.1.0'
+}
+
+apply plugin: "org.openapi.generator"
+
+
+group = 'fakehost'
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = '17'
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test:3.0.4'
+    implementation 'com.google.code.gson:gson:2.8.9'
+    compileOnly 'org.projectlombok:lombok:1.18.26'
+    annotationProcessor 'org.projectlombok:lombok:1.18.26'
+    testCompileOnly 'org.projectlombok:lombok:1.18.26'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.26'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+bootRun {
+//    systemProperties = System.properties
+}
+
+openApiGenerate {
+    generatorName = 'typescript-fetch'
+    inputSpec = "$rootDir/src/main/resources/static/openapi.json".toString()
+    outputDir = "$rootDir/../generated-test-client".toString()
+    configFile = "$rootDir/openapi-config.json".toString()
+}
