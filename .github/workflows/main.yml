@@ -39,6 +39,70 @@ jobs:
       - name: Unit tests
         run: yarn test
 
+  contact-test-rest:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+          ref: ${{ github.ref }}
+
+      - uses: actions/setup-node@v3
+        with: 
+          cache: 'yarn'
+          node-version: '18.x'
+
+      - name: Set up JDK
+        uses: actions/setup-java@v3
+        with:
+          java-version: "17"
+          distribution: "zulu"
+      
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: Build java
+        working-directory: ./packages/rest/test-java-svc
+        run: gradle build
+
+      - name: Generate typescript definition for OpenApi service
+        working-directory: ./packages/rest/test-java-svc
+        env:
+          API_URL: http://localhost:8080/v3/api-docs
+        run: |
+          nohup gradle bootRun -Dserver.port=8080 &
+          ./wait-for-svc.sh
+          curl ${API_URL} -o src/main/resources/static/openapi.json
+          gradle openApiGenerate
+      
+      - name: Changed files
+        uses: tj-actions/verify-changed-files@v14
+        id: changed-files-rest-contract
+        with: 
+          files: packages/rest/generated-test-client
+
+      - name: Check no changes
+        if: steps.changed-files-rest-contract.files_changed == 'true'
+        run: exit 1
+
+      - name: Install packages
+        run: yarn --frozen-lockfile
+
+      - name: Build packages
+        run: yarn build:libs
+
+      - name: Contract test remote REST
+        working-directory: ./packages/rest/test-java-svc
+        env: 
+          REST_REMOTE_URL: http://localhost:8080
+          API_URL: http://localhost:8080/v3/api-docs
+        run: |
+          nohup gradle bootRun -Dserver.port=8080 &
+          ./wait-for-svc.sh
+          yarn --cwd ../test-fake-svc test:contract
+    
   contract-test-signalr:
 
     needs: build
@@ -67,15 +131,28 @@ jobs:
 
       - name: Generate typescript definition for signalr service
         run: yarn --cwd packages/signalr/signalr-test-client-api generate:api
+
+      - name: Changed files
+        uses: tj-actions/verify-changed-files@v14
+        id: changed-files-signalr-contract
+        with: 
+          files: packages/signalr/signalr-test-client-api
+
+      - name: Check no changes
+        if: steps.changed-files-signalr-contract.files_changed == 'true'
+        run: exit 1
       
       - name: Build packages
         run: yarn build:libs
-        
+
       - name: Contact tests REMOTE
+        env: 
+          API_URL: http://localhost:6002
+          SIGNALR_REMOTE_PORT: 6002
         run: |
-          nohup dotnet run --urls=http://localhost:6002/ --project=packages/signalr/signalr-test-dotnet-svc &
-          sleep 10 # enough time to startup?
-          SIGNALR_REMOTE_PORT=6002 yarn --cwd packages/signalr/signalr-test-fake-svc test:contract
+          nohup dotnet run --urls=${API_URL} --project=packages/signalr/signalr-test-dotnet-svc &
+          ./packages/signalr/signalr-test-dotnet-svc/wait-for-svc.sh
+          yarn --cwd packages/signalr/signalr-test-fake-svc test:contract
 
   playwright-e2e:
 
@@ -146,8 +223,6 @@ jobs:
           name: cypress-screenshots
           path: packages/test-cypress/cypress/screenshots
       
-
-
 
     
  

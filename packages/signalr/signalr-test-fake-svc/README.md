@@ -20,7 +20,7 @@ Run the contract tests against the dotnet service
 ```sh
 # start the dotnet service
 cd packages/signalr/signalr-test-dotnet-svc
-run --urls=http://localhost:5001/
+dotnet run --urls=http://localhost:5001/
 ```
 
 ```sh
