@@ -28,7 +28,7 @@
     "test": "lerna run test --",
     "e2e": "lerna run --stream e2e --",
     "start:fakes": "concurrently \"yarn start:fake:rest\" \"yarn start:fake:signalr\"",
-    "start:fake:rest": "cross-env REST_PORT=5005 yarn --cwd packages/test-rest-api start:fake",
+    "start:fake:rest": "cross-env REST_PORT=5005 yarn --cwd packages/rest/test-fake-svc start:fake",
     "start:fake:signalr": "cross-env SIGNALR_PORT=5002 yarn --cwd packages/signalr/signalr-test-fake-svc start:fake"
   },
   "resolutions": {

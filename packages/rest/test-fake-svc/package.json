@@ -24,12 +24,16 @@
     },
     "devDependencies": {
       "cross-env": "^7.0.3",
-      "ts-node": "^10.9.1"
+      "ts-node": "^10.9.1",
+      "url": "^0.11.0",
+      "vitest": "^0.30.1"
     },
     "scripts": {
       "start:fake": "cross-env NODE_OPTIONS='--experimental-specifier-resolution=node' TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true  ts-node --esm src/start.ts",
       "build": "tsup src/index.ts --format cjs,esm --dts --dts-resolve --sourcemap",
-      "lint": "eslint --ext .tsx --ext .ts src/"
+      "lint": "eslint --ext .tsx --ext .ts src/",
+      "test": "cross-env TEST_TARGET=FAKE vitest --run",
+      "test:contract": "cross-env TEST_TARGET=REMOTE vitest --run"
     }
   }
   
