@@ -14,6 +14,7 @@
     },
     "devDependencies": {
       "@fakehost/fake-rest": "^1.0.0",
+      "@fakehost/rest-generated-client-api": "*",
       "@fakehost/rest-test-fake-svc": "^1.0.0",
       "@fakehost/signalr": "^1.0.0",
       "@fakehost/signalr-test-client-api": "^1.0.0",
