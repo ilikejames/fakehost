@@ -151,7 +151,7 @@ jobs:
           SIGNALR_REMOTE_PORT: 6002
         run: |
           nohup dotnet run --urls=${API_URL} --project=packages/signalr/signalr-test-dotnet-svc &
-          ./packages/signalr/signalr-test-dotnet-svc/wait-for-svc.sh
+          sleep 10 # enough time to startup?
           yarn --cwd packages/signalr/signalr-test-fake-svc test:contract
 
   playwright-e2e:

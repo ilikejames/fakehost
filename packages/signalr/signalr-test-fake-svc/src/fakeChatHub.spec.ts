@@ -104,7 +104,6 @@ describe(`${getTestTarget()}: ChatHub`, () => {
 
     const getConnection = async (receivers?: Partial<Receivers>) => {
         const url = `${fake.url}chathub`
-        console.log('url tst =', url)
 
         const connection = new HubConnectionBuilder().withUrl(url).build()
 

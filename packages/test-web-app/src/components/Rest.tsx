@@ -1,15 +1,12 @@
 import React, { FC, useEffect } from 'react';
 import { config } from '@/config'
+import { UserControllerApi, Configuration } from '@fakehost/rest-generated-client-api'
 
 export const Rest: FC = () => {
     const [username, setUsername] = React.useState<any>(null)
     useEffect(() => {
-        fetch(new URL('/api/me', config.restUrl))
-            .then(result => result.json())
-            .then(result => setUsername(result.username))
-            .catch((err) => {
-                console.warn('err', err)
-            })
+        const api = new UserControllerApi(new Configuration({ basePath: config.restUrl }))
+        api.me().then(result => setUsername(result.username))
     }, [])
     return (
         <div>Result for rest call: <span aria-label="username">{username ? username : 'none'}</span></div>

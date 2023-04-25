@@ -33,7 +33,7 @@ export const initPage = async (
     { page, context }: { page: Page; context: BrowserContext },
     fakes: Awaited<ReturnType<typeof createFakes>>,
 ) => {
-    const restUrl = await fakes.rest.url
+    const restUrl = getOpenApiRemoteUrl(await fakes.rest.url)
     const signalrUrl = await fakes.signalr.url
 
     const props = { restUrl, signalrUrl }
@@ -45,3 +45,5 @@ export const initPage = async (
         context,
     }
 }
+
+const getOpenApiRemoteUrl = (url: URL) => `${url.protocol}//${url.host}`
