@@ -17,6 +17,7 @@ const getFullUrl = (input: string | { url: string } | { href: string }) => {
     }
     return ''
 }
+
 export const getUrl = (input: RequestInfo | URL) => {
     if (typeof input === 'string') {
         return new URL(input, isUrlWithProtocol(input) ? undefined : getCurrentUrl())
