@@ -1,5 +1,4 @@
 import { FC, useId } from 'react';
-import { Form } from './Form'
 import { Username } from './Username'
 
 export const Rest: FC = () => {
@@ -9,7 +8,6 @@ export const Rest: FC = () => {
         <section aria-labelledby={titleId}>
             <h2 id={titleId}>Rest</h2>
             <Username />
-            <Form />
         </section>
     )
 }
