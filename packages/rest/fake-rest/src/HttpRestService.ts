@@ -54,6 +54,7 @@ const parseMultipartFormData = (body: string, boundary: string): Record<string, 
 const getBody = async (contentType: string, stream: NodeJS.ReadableStream) => {
     const chunks = await collect<Buffer>(stream)
     const body = Buffer.concat(chunks).toString()
+
     if (!body.length) {
         return null
     }
@@ -62,6 +63,9 @@ const getBody = async (contentType: string, stream: NodeJS.ReadableStream) => {
     } else if (contentType.includes('multipart/form-data')) {
         const [, boundary] = contentType.split('boundary=')
         return parseMultipartFormData(body, boundary)
+    } else if (contentType.includes('application/x-www-form-urlencoded')) {
+        const parsed = new URLSearchParams(body)
+        return Object.fromEntries(parsed.entries())
     }
     return body
 }

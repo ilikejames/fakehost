@@ -72,5 +72,24 @@ for (const target of targets) {
                 host.dispose()
             }
         })
+
+        test('POST formUrlEncoded', async () => {
+            const payload = { foo: 'bar', baz: 'qux' } as const
+            const router = createRouter().post('/echo', (req, res) => {
+                expect(req.body).toEqual(payload)
+                res.json({ payload: req.body })
+                res.end()
+            })
+            const { host, url } = await getHost(target, router)
+            try {
+                const response = await fetch(new URL('/echo', url), {
+                    method: 'POST',
+                    body: new URLSearchParams(payload),
+                })
+                expect(await response.json()).toEqual({ payload })
+            } finally {
+                host.dispose()
+            }
+        })
     })
 }

@@ -201,13 +201,17 @@ const parseInput = (input: RequestInfo | URL, init?: RequestInit) => {
     }
 }
 
+const isRequest = (input: RequestInfo | URL): input is globalThis.Request => {
+    return typeof input !== 'string' && 'headers' in input
+}
+
 const getBody = (input: RequestInfo | URL, init?: RequestInit) => {
     const body = parseInput(input, init)
     if (body === undefined) {
         return null
     } else if (typeof body === 'string') {
         return JSON.parse(body)
-    } else if (body instanceof FormData) {
+    } else if (body instanceof FormData || body instanceof URLSearchParams) {
         const data = Object.fromEntries(body.entries())
         return data
     } else if (body instanceof Blob) {
