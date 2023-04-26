@@ -15,17 +15,30 @@
 
 import * as runtime from '../runtime';
 import type {
+  NewOrder,
   Order,
 } from '../models';
 import {
+    NewOrderFromJSON,
+    NewOrderToJSON,
     OrderFromJSON,
     OrderToJSON,
 } from '../models';
 
-export interface PlaceOrderRequest {
+export interface PlaceOrderFormRequest {
     symbol?: string;
     quantity?: number;
-    side?: PlaceOrderSideEnum;
+    side?: PlaceOrderFormSideEnum;
+}
+
+export interface PlaceOrderFormDataRequest {
+    symbol: string;
+    quantity: number;
+    side: PlaceOrderFormDataSideEnum;
+}
+
+export interface PlaceOrderJsonRequest {
+    newOrder: NewOrder;
 }
 
 /**
@@ -35,16 +48,15 @@ export class OrderControllerApi extends runtime.BaseAPI {
 
     /**
      * Places an order with the given symbol, quantity, and side
-     * Place an order
+     * Place an order from a form
      */
-    async placeOrderRaw(requestParameters: PlaceOrderRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Order>> {
+    async placeOrderFormRaw(requestParameters: PlaceOrderFormRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Order>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
 
         const consumes: runtime.Consume[] = [
             { contentType: 'application/x-www-form-urlencoded' },
-            { contentType: 'application/json' },
         ];
         // @ts-ignore: canConsumeForm may be unused
         const canConsumeForm = runtime.canConsumeForm(consumes);
@@ -70,7 +82,7 @@ export class OrderControllerApi extends runtime.BaseAPI {
         }
 
         const response = await this.request({
-            path: `/orders/`,
+            path: `/orders/form`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -82,10 +94,97 @@ export class OrderControllerApi extends runtime.BaseAPI {
 
     /**
      * Places an order with the given symbol, quantity, and side
-     * Place an order
+     * Place an order from a form
      */
-    async placeOrder(requestParameters: PlaceOrderRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Order> {
-        const response = await this.placeOrderRaw(requestParameters, initOverrides);
+    async placeOrderForm(requestParameters: PlaceOrderFormRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Order> {
+        const response = await this.placeOrderFormRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Places an order with the given symbol, quantity, and side
+     * Place an order using FormData
+     */
+    async placeOrderFormDataRaw(requestParameters: PlaceOrderFormDataRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Order>> {
+        if (requestParameters.symbol === null || requestParameters.symbol === undefined) {
+            throw new runtime.RequiredError('symbol','Required parameter requestParameters.symbol was null or undefined when calling placeOrderFormData.');
+        }
+
+        if (requestParameters.quantity === null || requestParameters.quantity === undefined) {
+            throw new runtime.RequiredError('quantity','Required parameter requestParameters.quantity was null or undefined when calling placeOrderFormData.');
+        }
+
+        if (requestParameters.side === null || requestParameters.side === undefined) {
+            throw new runtime.RequiredError('side','Required parameter requestParameters.side was null or undefined when calling placeOrderFormData.');
+        }
+
+        const queryParameters: any = {};
+
+        if (requestParameters.symbol !== undefined) {
+            queryParameters['symbol'] = requestParameters.symbol;
+        }
+
+        if (requestParameters.quantity !== undefined) {
+            queryParameters['quantity'] = requestParameters.quantity;
+        }
+
+        if (requestParameters.side !== undefined) {
+            queryParameters['side'] = requestParameters.side;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/orders/form-data`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => OrderFromJSON(jsonValue));
+    }
+
+    /**
+     * Places an order with the given symbol, quantity, and side
+     * Place an order using FormData
+     */
+    async placeOrderFormData(requestParameters: PlaceOrderFormDataRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Order> {
+        const response = await this.placeOrderFormDataRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Places an order with the given symbol, quantity, and side
+     * Place an order using json
+     */
+    async placeOrderJsonRaw(requestParameters: PlaceOrderJsonRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<Order>> {
+        if (requestParameters.newOrder === null || requestParameters.newOrder === undefined) {
+            throw new runtime.RequiredError('newOrder','Required parameter requestParameters.newOrder was null or undefined when calling placeOrderJson.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/orders/json`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: NewOrderToJSON(requestParameters.newOrder),
+        }, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => OrderFromJSON(jsonValue));
+    }
+
+    /**
+     * Places an order with the given symbol, quantity, and side
+     * Place an order using json
+     */
+    async placeOrderJson(requestParameters: PlaceOrderJsonRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<Order> {
+        const response = await this.placeOrderJsonRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -94,8 +193,16 @@ export class OrderControllerApi extends runtime.BaseAPI {
 /**
  * @export
  */
-export const PlaceOrderSideEnum = {
+export const PlaceOrderFormSideEnum = {
     Buy: 'BUY',
     Sell: 'SELL'
 } as const;
-export type PlaceOrderSideEnum = typeof PlaceOrderSideEnum[keyof typeof PlaceOrderSideEnum];
+export type PlaceOrderFormSideEnum = typeof PlaceOrderFormSideEnum[keyof typeof PlaceOrderFormSideEnum];
+/**
+ * @export
+ */
+export const PlaceOrderFormDataSideEnum = {
+    Buy: 'BUY',
+    Sell: 'SELL'
+} as const;
+export type PlaceOrderFormDataSideEnum = typeof PlaceOrderFormDataSideEnum[keyof typeof PlaceOrderFormDataSideEnum];
