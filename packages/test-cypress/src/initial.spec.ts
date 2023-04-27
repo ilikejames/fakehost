@@ -1,9 +1,9 @@
 import { startFakeEnv } from './support/fakes'
 
 describe('initial', async () => {
-    const { dispose, mockedFetch, mockedSocket } = await startFakeEnv()
+    const { mockedFetch, mockedSocket } = await startFakeEnv()
 
-    before(() => {
+    beforeEach(() => {
         cy.visit('/', {
             onBeforeLoad: win => {
                 cy.stub(win, 'fetch').callsFake(mockedFetch)
@@ -12,10 +12,11 @@ describe('initial', async () => {
         })
     })
 
-    after(() => dispose())
-
     it('should have REST & signalr results', () => {
         cy.get('[aria-label="username"]').should('have.text', 'test-user')
+    })
+
+    it('should have signalr results', () => {
         cy.get('time').contains(/^\d{1,2}:\d{1,2}:\d{1,2}((AM|PM)?)/)
     })
 })
