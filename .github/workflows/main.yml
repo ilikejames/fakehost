@@ -211,9 +211,13 @@ jobs:
 
       - name: Cypress run
         uses: cypress-io/github-action@v5
+        env: 
+          ELECTRON_ENABLE_LOGGING: 0 # 1 to output browser logs
         with:
-          build: yarn build:libs
-          start: yarn --cwd packages/test-web-app start --port=3000
+          build: yarn build
+          # Start the web server serving static files. 
+          # Serving via vite causes page reload due to "dependencies optimised" which breaks the first test
+          start: npx --yes http-server --port 3000 --proxy http://localhost:3000? ./packages/test-web-app/dist
           wait-on: http://localhost:3000
           command: yarn --cwd packages/test-cypress e2e:ci
       
