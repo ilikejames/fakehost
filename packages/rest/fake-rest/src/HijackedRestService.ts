@@ -201,20 +201,33 @@ const parseInput = (input: RequestInfo | URL, init?: RequestInit) => {
     }
 }
 
-const isRequest = (input: RequestInfo | URL): input is globalThis.Request => {
-    return typeof input !== 'string' && 'headers' in input
+const compareInstance = (
+    body: any,
+    klass: { new (): FormData } | { new (): URLSearchParams } | { new (): Blob },
+) => {
+    if (body instanceof klass) return true
+    // In cypress we are comparing across different window instances.
+    return 'constructor' in body && body.constructor.toString() === klass.toString()
 }
+
+const isURLSearchParams = (body: any): body is URLSearchParams =>
+    compareInstance(body, URLSearchParams)
+
+const isFormData = (body: any): body is FormData => compareInstance(body, FormData)
+
+const isBlob = (body: any): body is Blob => compareInstance(body, Blob)
 
 const getBody = (input: RequestInfo | URL, init?: RequestInit) => {
     const body = parseInput(input, init)
-    if (body === undefined) {
+    if (body === undefined || body === null) {
         return null
     } else if (typeof body === 'string') {
         return JSON.parse(body)
-    } else if (body instanceof FormData || body instanceof URLSearchParams) {
-        const data = Object.fromEntries(body.entries())
-        return data
-    } else if (body instanceof Blob) {
+    } else if (isFormData(body)) {
+        return Object.fromEntries(body.entries())
+    } else if (isURLSearchParams(body)) {
+        return Object.fromEntries((body as unknown as URLSearchParams).entries())
+    } else if (isBlob(body)) {
         return body
     } else if (typeof body === 'object') {
         return body

@@ -8,7 +8,14 @@
     "url": "https://github.com/GIT_USER_ID/GIT_REPO_ID.git"
   },
   "type": "module",
-  "main": "./dist/index.js",
+  "main": "./dist/",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
   "typings": "./dist/index.d.ts",
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts --dts-resolve --sourcemap",
