@@ -29,6 +29,10 @@ const parseBody = (req: Request<string>): NewOrder => {
 }
 
 const postOrderHandler: Handler<string> = (req, res) => {
+    if (controls.shouldThrowUnexpected) {
+        res.status(400).json({ message: 'Unexpected error occurred' })
+        return
+    }
     const newOrder = parseBody(req)
     try {
         const order = placeOrder({ newOrder })
@@ -42,3 +46,7 @@ export const orderRoute = createRouter()
     .post('/json', postOrderHandler)
     .post('/form-data', postOrderHandler)
     .post('/form', postOrderHandler)
+
+export const controls = {
+    shouldThrowUnexpected: false,
+}
