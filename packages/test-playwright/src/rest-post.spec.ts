@@ -1,4 +1,5 @@
 import { NewOrder, OrderSideEnum } from '@fakehost/rest-generated-client-api'
+import { orderRoute } from '@fakehost/rest-test-fake-svc'
 import { Page, expect, test } from '@playwright/test'
 import { createFakes, initPage } from './config'
 import { log } from './helper'
@@ -25,33 +26,29 @@ test.describe('rest / post', () => {
         await testEnv.dispose()
     })
 
+    const validOrder: Required<NewOrder> = {
+        symbol: 'AAPL',
+        quantity: 100,
+        side: OrderSideEnum.Sell,
+    }
+
     for (const contentType of contentTypes) {
         test(`success: send "${contentType}"`, async ({ page }) => {
             await openForm(page)
-
-            const order: Required<NewOrder> = {
-                symbol: 'AAPL',
-                quantity: 100,
-                side: OrderSideEnum.Sell,
-            }
-            await sendForm(page, order, contentType)
+            await sendForm(page, validOrder, contentType)
 
             const { icon, response } = await getResult(page)
             expect(icon).toBe('SuccessOutlinedIcon')
             expect(JSON.parse(response!)).toMatchObject({
                 id: expect.any(Number),
-                ...order,
+                ...validOrder,
             })
         })
 
         test(`error: "unknown symbol" with "${contentType}" payload`, async ({ page }) => {
             await openForm(page)
 
-            const order: Required<NewOrder> = {
-                symbol: 'UNKNOWN',
-                quantity: 100,
-                side: OrderSideEnum.Sell,
-            }
+            const order = { ...validOrder, symbol: 'UNKNOWN' }
             await sendForm(page, order, contentType)
 
             const { icon, response } = await getResult(page)
@@ -62,16 +59,27 @@ test.describe('rest / post', () => {
         test(`error: "invalid quantity" with "${contentType}" payload`, async ({ page }) => {
             await openForm(page)
 
-            const order: Required<NewOrder> = {
-                symbol: 'AAPL',
-                quantity: 0,
-                side: OrderSideEnum.Sell,
-            }
+            const order: Required<NewOrder> = { ...validOrder, quantity: 0 }
             await sendForm(page, order, contentType)
 
             const { icon, response } = await getResult(page)
             expect(icon).toBe('ErrorOutlineIcon')
             expect(response).toBe('Quantity should be greater than zero')
+        })
+
+        test(`error: unexpected error with "${contentType}" payload`, async ({ page }) => {
+            // The real remote can occasionally fail due to upstream issues.
+            log.when('Service is configured to throw "Unexpected error occurred"')
+            orderRoute.controls.shouldThrowUnexpected = true
+            try {
+                await openForm(page)
+                await sendForm(page, validOrder, contentType)
+                const { icon, response } = await getResult(page)
+                expect(icon).toBe('ErrorOutlineIcon')
+                expect(response).toBe('Unexpected error occurred')
+            } finally {
+                orderRoute.controls.shouldThrowUnexpected = false
+            }
         })
     }
 })
