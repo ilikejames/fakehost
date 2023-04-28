@@ -1,0 +1,36 @@
+{
+    "name": "@fakehost/state-emitter",
+    "description": "Create a state",
+    "keywords": ["fake","testing"],
+    "version": "1.0.0",
+    "private": true,
+    "license": "MIT",
+    "files": [
+      "dist",
+      "README.md"
+    ],
+    "homepage": "https://github.com/ilikejames/fakehost",
+    "main": "dist/index.cjs",
+    "type": "module",
+    "exports": {
+      ".": {
+        "import": "./dist/index.js",
+        "require": "./dist/index.cjs"
+      }
+    },
+    "types": "dist/index.d.ts",
+    "peerDependencies": {
+      "rxjs": "^7.0.0"
+    },
+    "dependencies": {},
+    "devDependencies": {
+      "rxjs": "^7.8.0",
+      "vitest": "^0.29.8"
+    },
+    "scripts": {
+      "build": "tsup src/index.ts --format cjs,esm --dts --dts-resolve --sourcemap",
+      "lint": "eslint --ext .tsx --ext .ts src/",
+      "test": "vitest --run"
+    }
+  }
+  
