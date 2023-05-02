@@ -2,7 +2,7 @@
 /* eslint-disable */
 /* tslint:disable */
 import { IStreamResult, Subject } from '@microsoft/signalr';
-import { ClientItem, Message } from '../TestSignalr.Interfaces';
+import { Order, OrderUpdate, ClientItem, Message } from '../TestSignalr.Interfaces';
 
 export type IChatHub = {
     /**
@@ -27,6 +27,17 @@ export type IChatHub = {
     * @returns Transpiled from System.Threading.Tasks.Task
     */
     alwaysThrows(): Promise<void>;
+}
+
+export type IOrderHub = {
+    /**
+    * @returns Transpiled from System.Threading.Tasks.Task<System.Threading.Channels.ChannelReader<TestSignalr.Interfaces.Order>>
+    */
+    getAllOrders(): IStreamResult<Order>;
+    /**
+    * @returns Transpiled from System.Threading.Tasks.Task<System.Threading.Channels.ChannelReader<TestSignalr.Interfaces.OrderUpdate>>
+    */
+    orderStream(): IStreamResult<OrderUpdate>;
 }
 
 export type ITimeStreamHub = {

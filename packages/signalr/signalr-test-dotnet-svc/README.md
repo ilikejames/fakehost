@@ -15,7 +15,7 @@ dotnet run --urls=http://localhost:5001/
 ## Generate typescript definition
 
 ```sh
-dotnet tsrts -p signalr-test-app2.csproj  --output generated
+dotnet tsrts -p signalr-svc.csproj  --output ../signalr-test-client-api/src/generated
 ```
 
 
