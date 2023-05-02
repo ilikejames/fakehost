@@ -72,7 +72,7 @@ jobs:
         env:
           API_URL: http://localhost:8080/v3/api-docs
         run: |
-          nohup gradle bootRun -Dserver.port=8080 &
+          nohup gradle bootRun -Dserver.port=8080 --quiet & 2>1 >/dev/null  &
           ./wait-for-svc.sh
           curl ${API_URL} -o src/main/resources/static/openapi.json
           gradle openApiGenerate
@@ -99,7 +99,7 @@ jobs:
           REST_REMOTE_URL: http://localhost:8080
           API_URL: http://localhost:8080/v3/api-docs
         run: |
-          nohup gradle bootRun -Dserver.port=8080 &
+          nohup gradle bootRun -Dserver.port=8080 --quiet & 2>1 >/dev/null  &
           ./wait-for-svc.sh
           yarn --cwd ../test-fake-svc test:contract
     

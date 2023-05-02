@@ -18,7 +18,9 @@
     "license": "MIT",
     "dependencies": {
         "@fakehost/signalr": "^1.0.0",
-        "@fakehost/signalr-test-client-api": "^1.0.0"
+        "@fakehost/signalr-test-client-api": "^1.0.0",
+        "@fakehost/state-emitter": "^1.0.0",
+        "@faker-js/faker": "^7.6.0"
     },
     "devDependencies": {
         "@microsoft/signalr": "^7.0.5",

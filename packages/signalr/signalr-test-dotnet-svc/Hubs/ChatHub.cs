@@ -55,6 +55,7 @@ public class ChatHub : Hub<IChatReceiver>, IChatHub
     }
 
     public async Task AlwaysThrows() {
+        await Task.CompletedTask;
         throw new InvalidOperationException("This methods always throws an error");
     }
 

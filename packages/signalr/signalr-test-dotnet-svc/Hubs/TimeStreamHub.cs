@@ -21,7 +21,6 @@ public class TimeStreamHub : Hub<ITimeStreamHub>, ITimeStreamHub
 
     public async Task<ChannelReader<DateTime>> StreamTimeAsync(
         int intervalSeconds,
-        [EnumeratorCancellation]
         CancellationToken cancellationToken
     )
     {
@@ -45,6 +44,7 @@ public class TimeStreamHub : Hub<ITimeStreamHub>, ITimeStreamHub
             }
         });
 
+        await Task.CompletedTask;
         return channel.Reader;
     }
 
@@ -75,6 +75,7 @@ public class TimeStreamHub : Hub<ITimeStreamHub>, ITimeStreamHub
 
     public async Task<ChannelReader<string>> AlwaysErrors() 
     {
+        await Task.CompletedTask;
         throw new InvalidOperationException("This method always throws an error.");
     }
 
@@ -84,6 +85,7 @@ public class TimeStreamHub : Hub<ITimeStreamHub>, ITimeStreamHub
 
         _ = WriteItemsAsync(channel.Writer);
 
+        await Task.CompletedTask;
         return channel.Reader;
 
         async Task WriteItemsAsync(ChannelWriter<string> writer)

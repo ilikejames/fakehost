@@ -2,8 +2,8 @@
 /* eslint-disable */
 /* tslint:disable */
 import { HubConnection, IStreamResult, Subject } from '@microsoft/signalr';
-import { IChatHub, ITimeStreamHub, IChatReceiver } from './TestSignalr.Interfaces';
-import { ClientItem, Message } from '../TestSignalr.Interfaces';
+import { IChatHub, IOrderHub, ITimeStreamHub, IChatReceiver } from './TestSignalr.Interfaces';
+import { Order, OrderUpdate, ClientItem, Message } from '../TestSignalr.Interfaces';
 
 
 // components
@@ -43,12 +43,16 @@ class ReceiverMethodSubscription implements Disposable {
 
 export type HubProxyFactoryProvider = {
     (hubType: "IChatHub"): HubProxyFactory<IChatHub>;
+    (hubType: "IOrderHub"): HubProxyFactory<IOrderHub>;
     (hubType: "ITimeStreamHub"): HubProxyFactory<ITimeStreamHub>;
 }
 
 export const getHubProxyFactory = ((hubType: string) => {
     if(hubType === "IChatHub") {
         return IChatHub_HubProxyFactory.Instance;
+    }
+    if(hubType === "IOrderHub") {
+        return IOrderHub_HubProxyFactory.Instance;
     }
     if(hubType === "ITimeStreamHub") {
         return ITimeStreamHub_HubProxyFactory.Instance;
@@ -101,6 +105,31 @@ class IChatHub_HubProxy implements IChatHub {
 
     public readonly alwaysThrows = async (): Promise<void> => {
         return await this.connection.invoke("AlwaysThrows");
+    }
+}
+
+class IOrderHub_HubProxyFactory implements HubProxyFactory<IOrderHub> {
+    public static Instance = new IOrderHub_HubProxyFactory();
+
+    private constructor() {
+    }
+
+    public readonly createHubProxy = (connection: HubConnection): IOrderHub => {
+        return new IOrderHub_HubProxy(connection);
+    }
+}
+
+class IOrderHub_HubProxy implements IOrderHub {
+
+    public constructor(private connection: HubConnection) {
+    }
+
+    public readonly getAllOrders = (): IStreamResult<Order> => {
+        return this.connection.stream("GetAllOrders");
+    }
+
+    public readonly orderStream = (): IStreamResult<OrderUpdate> => {
+        return this.connection.stream("OrderStream");
     }
 }
 

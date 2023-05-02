@@ -12,6 +12,41 @@ export type Message = {
     timeStamp: (Date | string);
 }
 
+/** Transpiled from TestSignalr.Interfaces.OrderStatus */
+export enum OrderStatus {
+    Open = 0,
+    Partial = 1,
+    Filled = 2,
+}
+
+/** Transpiled from TestSignalr.Interfaces.EndOfStream */
+export type EndOfStream = {
+}
+
+/** Transpiled from TestSignalr.Interfaces.Order */
+export type Order = {
+    /** Transpiled from long */
+    orderId: number;
+    /** Transpiled from decimal */
+    price: number;
+    /** Transpiled from decimal */
+    totalQuantity: number;
+    /** Transpiled from decimal */
+    filledQuantity: number;
+    /** Transpiled from string */
+    symbol: string;
+    /** Transpiled from TestSignalr.Interfaces.OrderStatus */
+    status: OrderStatus;
+}
+
+/** Transpiled from TestSignalr.Interfaces.OrderUpdate */
+export type OrderUpdate = {
+    /** Transpiled from string */
+    action: string;
+    /** Transpiled from TestSignalr.Interfaces.Order */
+    order: Order;
+}
+
 /** Transpiled from TestSignalr.Interfaces.ClientItem */
 export type ClientItem = {
     /** Transpiled from string */
