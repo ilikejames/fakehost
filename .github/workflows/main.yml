@@ -61,7 +61,7 @@ jobs:
           distribution: "zulu"
       
       - name: Setup Gradle
-        uses: gradle/gradle-build-action@v2
+        uses: gradle/gradle-build-action@v2.4.2
 
       - name: Build java
         working-directory: ./packages/rest/test-java-svc
