@@ -25,6 +25,7 @@ const initialState = Array.from({ length: 100 }).map((_, i) => createOrder(i + 1
 const update = (state: EntityState<Order, 'orderId'>) => {
     const partial = state.filter(x => x.status !== OrderStatus.Filled)
     partial.forEach(partialOrder => {
+        if (!faker.datatype.boolean()) return
         const newFilled = partialOrder.filledQuantity + faker.datatype.number({ min: 1, max: 10 })
         if (newFilled >= partialOrder.totalQuantity) {
             partialOrder.filledQuantity = partialOrder.totalQuantity
@@ -35,7 +36,8 @@ const update = (state: EntityState<Order, 'orderId'>) => {
         }
         state.update(partialOrder)
     })
-    state.create()
+
+    Array.from({ length: faker.datatype.number({ min: 0, max: 3 }) }).forEach(() => state.create())
 }
 
 export const orderState = createEntityState<Order>()
@@ -43,5 +45,8 @@ export const orderState = createEntityState<Order>()
     .entityFactory(createOrder)
     .nextIdFactory(numberGenerator(Math.max(...initialState.map(x => x.orderId))))
     .initialState({ items: initialState })
-    .generate(500, update)
+    .generate(100, update)
     .build()
+
+// Start in stopped state
+orderState.generator.stop()

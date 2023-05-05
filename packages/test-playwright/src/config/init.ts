@@ -1,18 +1,13 @@
 import { createServerSignalr } from '@fakehost/signalr/server'
-import { chatHub, timeHub } from '@fakehost/signalr-test-fake-svc'
+import { hubs } from '@fakehost/signalr-test-fake-svc'
 import { HttpRestService } from '@fakehost/fake-rest/server'
 import { router } from '@fakehost/rest-test-fake-svc'
 import { Page, BrowserContext } from '@playwright/test'
 
-const serviceHubs = {
-    chatHub: chatHub,
-    timeHub: timeHub,
-} as const
-
 export const createFakes = async () => {
     const httpHost = new HttpRestService(router, { port: 0 })
-    const signalr = await createServerSignalr<typeof serviceHubs>({
-        hubs: serviceHubs,
+    const signalr = await createServerSignalr<typeof hubs>({
+        hubs,
         debug: false,
         name: 'signalr',
     })

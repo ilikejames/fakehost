@@ -6,15 +6,17 @@ import {
     getHubProxyFactory,
     streamResultToObservable,
 } from '@fakehost/signalr-test-client-api'
-import { bufferCount, filter, firstValueFrom, reduce, scan } from 'rxjs'
+import { filter, firstValueFrom, reduce, scan } from 'rxjs'
 import { describe, test, expect, beforeAll, afterAll } from 'vitest'
 import { TestEnv, getTestTarget, testSetup } from './testSetup'
+import { orderState } from './state'
 
 describe(`${getTestTarget()}: OrderHub`, () => {
     let env: TestEnv
 
     beforeAll(async () => {
         env = await testSetup(getTestTarget())
+        orderState.generator.start()
     })
 
     afterAll(() => env.dispose())
