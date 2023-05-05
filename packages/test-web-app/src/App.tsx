@@ -1,26 +1,35 @@
-import { FC } from 'react'
-import { ThemeProvider, createTheme } from '@mui/material/styles'
+import React, { FC, useMemo } from 'react'
+import { ThemeProvider as MuiThemeProvider, createTheme } from '@mui/material/styles'
 import { CssBaseline } from '@mui/material'
 import { Rest } from '@/components/Rest'
 import { Signalr } from '@/components/Signalr'
-
-
-const darkTheme = createTheme({
-    palette: {
-        mode: 'dark',
-    }
-})
+import { ThemeProvider as EmotionThemeProvider, withTheme } from '@emotion/react'
+import { darkTheme } from '@/theme'
 
 
 export const App: FC = () => {
 
+    const muiTheme = useMemo(() => createTheme({
+        palette: {
+            mode: 'dark',
+        }
+    }), [])
+
     return (
-        <ThemeProvider theme={darkTheme}>
-            <CssBaseline />
-            <main>
-                <Rest />
-                <Signalr />
-            </main>
-        </ThemeProvider>
+        <EmotionThemeProvider theme={darkTheme}>
+            <MuiThemeProvider theme={muiTheme}>
+                <CssBaseline />
+                <Main />
+            </MuiThemeProvider>
+        </EmotionThemeProvider>
     )
 }
+
+const Main: FC = React.memo(() => {
+    return (
+        <main>
+            <Rest />
+            <Signalr />
+        </main>
+    )
+})
