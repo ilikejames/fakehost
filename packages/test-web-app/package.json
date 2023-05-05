@@ -11,6 +11,11 @@
       "@mui/icons-material": "^5.11.16",
       "@microsoft/signalr": "^7.0.5",
       "@react-rxjs/core": "^0.10.4",
+<<<<<<< Updated upstream
+=======
+      "@tanstack/react-table": "^8.9.1",
+      "@webcontainer/api": "^1.1.3",
+>>>>>>> Stashed changes
       "react": "^18.2.0",
       "react-dom": "^18.2.0",
       "rxjs": "^7.8.0",
@@ -33,7 +38,7 @@
     "scripts": {
       "build:app": "vite build",
       "start": "vite",
-      "start:fakeapp": "vite --mode fake-service --port 3003",
+      "start:fakeapp": "vite --mode fake-service --port 3007",
       "start:bundledapp": "vite --mode bundled --port 3004"
     }
 }

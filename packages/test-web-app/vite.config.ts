@@ -8,5 +8,15 @@ export default defineConfig({
             '@': path.resolve(__dirname, './src'),
         },
     },
+<<<<<<< Updated upstream
     plugins: [react() as PluginOption],
+=======
+    plugins: [react() as PluginOption, splitVendorChunkPlugin()],
+    server: {
+        headers: {
+            'Cross-Origin-Embedder-Policy': 'require-corp',
+            'Cross-Origin-Opener-Policy': 'same-origin',
+        },
+    },
+>>>>>>> Stashed changes
 })
