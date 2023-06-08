@@ -11,8 +11,10 @@
     "@fakehost/rest-test-fake-svc": "^1.0.0",
     "@fakehost/signalr": "^1.0.0",
     "@fakehost/signalr-test-fake-svc": "^1.0.0",
+    "chai-subset": "^1.6.0",
     "chalk": "^4.0.0",
-    "cypress": "^12.10.0"
+    "cypress": "^12.14.0",
+    "cypress-wait-until": "^1.7.2"
   },
   "devDependencies": {
     "start-server-and-test": "^2.0.0"
