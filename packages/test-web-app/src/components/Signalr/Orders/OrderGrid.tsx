@@ -8,11 +8,13 @@ import {
     useReactTable
 } from '@tanstack/react-table'
 import { Subscribe } from '@react-rxjs/core'
-import React, { FC } from 'react'
+import React, { FC, ComponentProps } from 'react'
 import { useVirtual } from 'react-virtual'
 import { orders$, useOrders } from '@/api/orders'
 import { OrderStatusBadge } from './OrderStatusBadge'
 import { PercentFilled } from './PercentFilled'
+import { TextField } from '@mui/material'
+
 
 export const OrderGrid: FC = () => {
     return (
@@ -29,7 +31,7 @@ const OrderGridComponent: FC = () => {
         columns,
         getCoreRowModel: getCoreRowModel<Order>(),
         getSortedRowModel: getSortedRowModel<Order>(),
-        debugTable: true,
+        debugTable: false,
         state: {
             sorting: [{ id: 'orderId', desc: true }]
         }
@@ -70,7 +72,7 @@ const OrderGridComponent: FC = () => {
                             <tr aria-rowindex={row.index} key={row.id}>
                                 {row.getVisibleCells().map(cell => {
                                     return (
-                                        <td data-colId={cell.column.id} key={cell.id}>
+                                        <td data-colid={cell.column.id} key={cell.id}>
                                             {flexRender(
                                                 cell.column.columnDef.cell,
                                                 cell.getContext()
@@ -161,9 +163,6 @@ const THead = styled.thead`
 `
 
 const TBody = styled.tbody`
-    // & tr:nth-child(even) {
-    //     background: rgba(60, 60, 60,0.4);
-    // }
     & tr td {
         border-bottom: solid 1px ${props => props.theme.core.base?.toString()};
     }
