@@ -20,7 +20,7 @@ describe('order / grid', async () => {
     })
 
     it('should display orders', () => {
-        cy.waitUntil(() => parseOrderTable(cy.get('table'), 1).then(rows => rows.length > 0))
+        cy.waitUntil(matchTopRow(100))
         parseOrderTable(cy.get('table'), 5).then(rows => {
             expect(rows.length).equal(5)
             rows.forEach(row => {
@@ -31,7 +31,7 @@ describe('order / grid', async () => {
     })
 
     it('orders are updated in the grid', () => {
-        cy.waitUntil(() => parseOrderTable(cy.get('table'), 1).then(rows => rows.length > 0))
+        cy.waitUntil(matchTopRow(100))
         cy.log('Before:')
         parseOrderTable(cy.get('table'), 1)
             .then(rows => rows[0])
@@ -78,47 +78,36 @@ describe('order / grid', async () => {
     })
 
     it('new orders arrive', () => {
-        cy.waitUntil(() => parseOrderTable(cy.get('table'), 1).then(rows => rows.length > 0))
-
-        // HACK: without this, the rxjs timer will not fire in the api/order.ts throttleTime
-        // if the `throttleTime` is wrapped such as:
-        //  ```ts
-        //  tap(() => console.log('emit')),
-        //  throttleTime(100, undefined, { trailing: true}),
-        //  tap(() => console.log('emitted')),
-        // ```
-        // The `emit` is logged, but `emitted` is never logged.
-        cy.wait(500)
+        cy.waitUntil(matchTopRow(100))
 
         cy.wrap(orderState)
             .then(orderState => orderState.create())
             .as('newOrder')
 
         cy.log('And it appears at the top of the grid')
-        cy.waitUntil(
-            () => {
-                return cy.get<Order>('@newOrder').then(newOrder =>
-                    parseOrderTable(cy.get('table'), 1).then(rows => {
-                        return rows[0].orderId === newOrder.orderId
-                    }),
-                )
-            },
-            { interval: 500 },
-        )
+
+        cy.get<Order>('@newOrder').then(newOrder => {
+            cy.waitUntil(matchTopRow(newOrder.orderId))
+            parseOrderTable(cy.get('table'), 1).then(([row]) => {
+                expect(row).containSubset({
+                    orderId: newOrder.orderId,
+                    status: 'Open',
+                    symbol: row.symbol,
+                    price: row.price,
+                    totalQuantity: row.totalQuantity,
+                })
+            })
+        })
     })
 
     it('orders are removed', () => {
         const rowIndex = 0
-
-        cy.waitUntil(() => parseOrderTable(cy.get('table'), 1).then(rows => rows.length > 0))
+        cy.waitUntil(matchTopRow(100))
 
         parseOrderTable(cy.get('table'), rowIndex + 1)
             .then(rows => rows[rowIndex])
             .as('beforeRow')
             .then(row => cy.log('beforeRow', row))
-
-        // HACK: without this, the rxjs timer will not fire in the api/order.ts throttleTime
-        // cy.wait(500)
 
         cy.get<OrderRow>('@beforeRow').then(row => {
             return cy
@@ -223,4 +212,8 @@ const parseTable = (
     })
 
     return cy.get<Record<string, unknown>[]>('@rows')
+}
+
+const matchTopRow = (id: number) => {
+    return () => parseOrderTable(cy.get('table'), 1).then(rows => rows[0].orderId === id)
 }
