@@ -25,34 +25,9 @@ export const App: FC = () => {
             <EmotionThemeProvider theme={theme === ThemeMode.Dark ? darkTheme : darkTheme}>
                 <MuiThemeProvider theme={muiTheme}>
                     <CssBaseline />
-                    <Comp /><Comp />
                     <Main />
                 </MuiThemeProvider>
             </EmotionThemeProvider>
         </ThemeContext.Provider>
     )
 }
-
-
-const Comp: FC = () => {
-    const time = useTime()
-    return <div>{time}</div>
-}
-
-let subscriptions = new Set<Notifier>()
-let now = Date.now()
-setInterval(() => {
-    now = Date.now()
-    subscriptions.forEach(s => s())
-}, 1000)
-
-const subscribe = (notifier: Notifier) => {
-    subscriptions.add(notifier)
-    return () => subscriptions.delete(notifier)
-}
-
-export const useTime = () => {
-    return useSyncExternalStore(subscribe, () => now)
-}
-
-type Notifier = Parameters<Parameters<typeof useSyncExternalStore>[0]>[0]
