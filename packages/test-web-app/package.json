@@ -1,43 +1,43 @@
 {
-    "name": "@fakehost/test-web-app",
-    "version": "1.0.0",
-    "description": "Test web application for fakes in a browser",
-    "private": "true",
-    "license": "MIT",
-    "dependencies": {
-      "@emotion/react": "^11.10.6",
-      "@emotion/styled": "^11.10.6",
-      "@mui/material": "^5.12.1",
-      "@mui/icons-material": "^5.11.16",
-      "@microsoft/signalr": "^7.0.5",
-      "@react-rxjs/core": "^0.10.4",
-      "@tanstack/react-table": "^8.9.1",
-      "numeral": "^2.0.6",
-      "react": "^18.2.0",
-      "react-dom": "^18.2.0",
-      "react-virtual": "^2.10.4",
-      "rxjs": "^7.8.0",
-      "ws": "^8.13.0"
-    },
-    "devDependencies": {
-      "@fakehost/fake-rest": "^1.0.0",
-      "@fakehost/rest-generated-client-api": "*",
-      "@fakehost/rest-test-fake-svc": "^1.0.0",
-      "@fakehost/signalr": "^1.0.0",
-      "@fakehost/signalr-test-client-api": "^1.0.0",
-      "@fakehost/signalr-test-fake-svc": "^1.0.0",
-      "@types/numeral": "^2.0.2",
-      "@types/react": "^18.0.35",
-      "@types/react-dom": "^18.0.11",
-      "@vitejs/plugin-react": "^4.0.0-beta.0",
-      "cross-env": "^7.0.3",
-      "env-cmd": "^10.1.0",
-      "vite": "^2.9.12"
-    },
-    "scripts": {
-      "build:app": "vite build",
-      "start": "vite",
-      "start:fakeapp": "vite --mode fake-service --port 3003",
-      "start:bundledapp": "vite --mode bundled --port 3004"
-    }
+  "name": "@fakehost/test-web-app",
+  "version": "1.0.0",
+  "description": "Test web application for fakes in a browser",
+  "private": "true",
+  "license": "MIT",
+  "dependencies": {
+    "@emotion/react": "^11.10.6",
+    "@emotion/styled": "^11.10.6",
+    "@microsoft/signalr": "^7.0.5",
+    "@mui/icons-material": "^5.11.16",
+    "@mui/material": "^5.12.1",
+    "@react-rxjs/core": "^0.10.4",
+    "@tanstack/react-table": "^8.9.1",
+    "numeral": "^2.0.6",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-virtual": "^2.10.4",
+    "rxjs": "^7.8.0",
+    "ws": "^8.13.0"
+  },
+  "devDependencies": {
+    "@fakehost/fake-rest": "^1.0.0",
+    "@fakehost/rest-generated-client-api": "*",
+    "@fakehost/rest-test-fake-svc": "^1.0.0",
+    "@fakehost/signalr": "^1.0.0",
+    "@fakehost/signalr-test-client-api": "^1.0.0",
+    "@fakehost/signalr-test-fake-svc": "^1.0.0",
+    "@types/numeral": "^2.0.2",
+    "@types/react": "^18.0.35",
+    "@types/react-dom": "^18.0.11",
+    "@vitejs/plugin-react": "^4.0.0-beta.0",
+    "cross-env": "^7.0.3",
+    "env-cmd": "^10.1.0",
+    "vite": "^4.3.9"
+  },
+  "scripts": {
+    "build:app": "vite build",
+    "start": "vite",
+    "start:fakeapp": "vite --mode fake-service --port 3003",
+    "start:bundledapp": "vite --mode bundled --port 3004"
+  }
 }

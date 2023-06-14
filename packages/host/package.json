@@ -1,7 +1,11 @@
 {
   "name": "@fakehost/host",
   "description": "Create fake websocket services that can run as a service or bundled within the browser.",
-  "keywords": ["fake", "websocket", "testing"],
+  "keywords": [
+    "fake",
+    "websocket",
+    "testing"
+  ],
   "version": "1.0.0",
   "private": false,
   "license": "MIT",

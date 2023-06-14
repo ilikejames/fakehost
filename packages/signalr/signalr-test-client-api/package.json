@@ -6,12 +6,14 @@
     "type": "module",
     "exports": {
         ".": {
-        "import": "./dist/index.js",
-        "require": "./dist/index.cjs"
+            "import": "./dist/index.js",
+            "require": "./dist/index.cjs"
         }
     },
     "types": "dist/index.d.ts",
-    "files": ["dist"],
+    "files": [
+        "dist"
+    ],
     "license": "MIT",
     "dependencies": {
         "@microsoft/signalr": "^7.0.5",
