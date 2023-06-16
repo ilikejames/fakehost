@@ -47,9 +47,3 @@ export type OrderUpdate = {
     order: Order;
 }
 
-/** Transpiled from TestSignalr.Interfaces.ClientItem */
-export type ClientItem = {
-    /** Transpiled from string */
-    content: string;
-}
-

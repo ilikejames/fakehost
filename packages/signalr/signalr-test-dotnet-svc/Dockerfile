@@ -6,5 +6,6 @@ RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
 RUN apt-get install -y nodejs
 
 RUN dotnet tool install --global TypedSignalR.Client.TypeScript.Generator
+# ADD . /app
 
 ENV PATH="/root/.dotnet/tools:${PATH}"

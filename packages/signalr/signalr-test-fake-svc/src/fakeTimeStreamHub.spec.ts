@@ -1,14 +1,13 @@
 import {
     getHubProxyFactory,
     streamResultToObservable,
-    ClientItem,
     HubConnectionBuilder,
 } from '@fakehost/signalr-test-client-api'
 import { Subject as SignalrSubject } from '@microsoft/signalr'
 import { MessagePackHubProtocol } from '@microsoft/signalr-protocol-msgpack'
 import { Subject, bufferCount, catchError, firstValueFrom, of, timer } from 'rxjs'
 import { describe, test, expect, beforeAll, afterAll } from 'vitest'
-import { protocols, Protocols, testSetup, getTestTarget, TestEnv } from './testSetup'
+import { protocols, testSetup, getTestTarget, TestEnv } from './testSetup'
 
 for (const protocol of protocols) {
     describe(`${getTestTarget()}: TimeStreamHub (${protocol})`, () => {
@@ -56,17 +55,17 @@ for (const protocol of protocols) {
 
         test('TimeStream: client -> service', async () => {
             const { connection, proxy } = await getConnection()
-            const subject = new Subject<ClientItem>()
+            const subject = new Subject<string>()
 
             try {
                 proxy.clientToServerStreaming(extendSubject(subject))
 
                 Array.from({ length: 6 }).forEach((_, i) => {
-                    subject.next({ content: `count: ${i}` })
+                    subject.next(`count: ${i}`)
                 })
                 subject.complete()
 
-                await firstValueFrom(timer(500))
+                await firstValueFrom(timer(1000))
                 const results = await proxy.getUploaded()
                 expect(results.sort()).toEqual([
                     'count: 0',
