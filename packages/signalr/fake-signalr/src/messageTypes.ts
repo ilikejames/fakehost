@@ -33,6 +33,12 @@ export type Ping = {
     type: MessageType.Ping
 }
 
+export type CloseMessage = {
+    type: MessageType.Close
+    error?: string
+    allowReconnect?: boolean
+}
+
 export type StreamInvocation<Hub> = {
     type: MessageType.StreamInvocation
     target: keyof Hub
@@ -47,7 +53,9 @@ export type CancelInvocation = {
 
 export type CompleteInvocation = {
     type: MessageType.Completion
+    error?: string
     invocationId: InvocationId
+    result?: unknown
 }
 
 export type InboundMessage<Hub> =
@@ -57,7 +65,7 @@ export type InboundMessage<Hub> =
     | StreamItemMessage
     | CancelInvocation
     | Ping
-    | HandshakeMessage
+    | CloseMessage
 
 export const isHandshakeMessage = (
     message: unknown | HandshakeMessage,

@@ -1,8 +1,12 @@
-import { IStreamResult, Subject } from '@microsoft/signalr'
+import { HubMessage, IStreamResult, Subject } from '@microsoft/signalr'
+import { MessagePackHubProtocol } from '@microsoft/signalr-protocol-msgpack'
 import { Connection, ConnectionId, Host } from '@fakehost/host'
 import { Observable } from 'rxjs'
 import { ClientState } from './ClientState'
 import { MessageType, InboundMessage, isHandshakeMessage } from './messageTypes'
+import { parse } from './messagePack'
+
+const protocol = new MessagePackHubProtocol()
 
 type AllKeys<T = object> = {
     [K in keyof T]: boolean
@@ -43,6 +47,7 @@ export class FakeSignalrHub<
     // methods from Hub. Not typed due to casing of methods (camelCase in ts vs PascalCase in C#)
     private handlers = new Map<string, Handler>()
     private host?: Host
+    private messageProtocol = new Map<ConnectionId, 'json' | 'messagepack' | string>()
 
     constructor(
         public readonly path: string,
@@ -59,7 +64,16 @@ export class FakeSignalrHub<
         this.host.on('connection', e => this.onConnection.bind(this)(e.connection))
         this.host.on('disconnection', e => this.onDisconnection.bind(this)(e.connection))
         this.host.on('message', e => {
-            const messages = this.deserialize(e.message)
+            // Message not for this hub
+            if (e.connection.url.pathname !== this.path) return
+
+            // Handle initial handshake
+            if (!this.messageProtocol.has(e.connection.id)) {
+                this.handleHandshake(e.connection, e.message)
+                return
+            }
+
+            const messages = this.deserialize(e.connection, e.message)
             messages.forEach(message => this.onMessage.bind(this)(e.connection, message))
         })
 
@@ -93,23 +107,55 @@ export class FakeSignalrHub<
         this.clients.delete(connection.id)
     }
 
-    private serialize(message: unknown) {
-        return JSON.stringify(message) + TERMINATING_CHAR
+    private handleHandshake(connection: Connection, message: string | Buffer) {
+        const [parsed] = message
+            .toString()
+            .split(TERMINATING_CHAR)
+            .filter(Boolean)
+            .map(m => JSON.parse(m))
+
+        if (!isHandshakeMessage(parsed)) {
+            console.error('Expected initial handshake message, but none was received.')
+            connection.close()
+            return
+        }
+
+        this.messageProtocol.set(connection.id, parsed.protocol)
+        connection.write(JSON.stringify({ type: 0 }) + TERMINATING_CHAR)
     }
 
-    private deserialize(message: string | Buffer): Array<InboundMessage<Hub>> {
-        const s = message.toString()
-        const messages = s.split(TERMINATING_CHAR)
-        return messages.filter(x => Boolean(x)).map(x => JSON.parse(x))
+    private serialize(connection: Connection, message: unknown) {
+        switch (this.messageProtocol.get(connection.id)) {
+            case 'json':
+                return JSON.stringify(message) + TERMINATING_CHAR
+            case 'messagepack':
+                return protocol.writeMessage(message as HubMessage) as Buffer
+            default:
+                throw new Error('Unknown connection mode')
+        }
+    }
+
+    private deserialize(
+        connection: Connection,
+        message: string | Buffer,
+    ): Array<InboundMessage<Hub>> {
+        switch (this.messageProtocol.get(connection.id)) {
+            case 'json': {
+                return message
+                    .toString()
+                    .split(TERMINATING_CHAR)
+                    .filter(Boolean)
+                    .map(m => JSON.parse(m))
+            }
+            case 'messagepack': {
+                return parse(message as Buffer)
+            }
+            default:
+                throw new Error('Unknown connection mode')
+        }
     }
 
     private async onMessage(connection: Connection, message: InboundMessage<Hub>) {
-        if (connection.url.pathname !== this.path) return
-
-        if (isHandshakeMessage(message)) {
-            return connection.write(this.serialize({ type: 0 }))
-        }
-
         const connectionId = connection.id as ConnectionId
         const client = this.clients.get(connectionId)
         if (!client) return
@@ -132,7 +178,7 @@ export class FakeSignalrHub<
                         message.arguments ?? [],
                     )
                     return connection.write(
-                        this.serialize({
+                        this.serialize(connection, {
                             type: MessageType.Completion,
                             invocationId: message.invocationId,
                             result,
@@ -140,7 +186,7 @@ export class FakeSignalrHub<
                     )
                 } catch (error: unknown) {
                     return connection.write(
-                        this.serialize({
+                        this.serialize(connection, {
                             type: MessageType.Completion,
                             invocationId: message.invocationId,
                             error: stringifyError(error),
@@ -157,7 +203,7 @@ export class FakeSignalrHub<
                 const subscription = result.subscribe({
                     next: value => {
                         connection.write(
-                            this.serialize({
+                            this.serialize(connection, {
                                 type: MessageType.StreamItem,
                                 invocationId: message.invocationId,
                                 item: value,
@@ -166,7 +212,7 @@ export class FakeSignalrHub<
                     },
                     error: error => {
                         connection.write(
-                            this.serialize({
+                            this.serialize(connection, {
                                 type: MessageType.Completion,
                                 invocationId: message.invocationId,
                                 error: stringifyError(error),
@@ -175,7 +221,7 @@ export class FakeSignalrHub<
                     },
                     complete: () => {
                         connection.write(
-                            this.serialize({
+                            this.serialize(connection, {
                                 type: MessageType.Completion,
                                 invocationId: message.invocationId,
                             }),
@@ -192,7 +238,7 @@ export class FakeSignalrHub<
             case MessageType.CancelInvocation: {
                 client.cleanup(message.invocationId)
                 connection.write(
-                    this.serialize({
+                    this.serialize(connection, {
                         type: MessageType.Completion,
                         invocationId: message.invocationId,
                     }),
@@ -204,7 +250,7 @@ export class FakeSignalrHub<
                 return
             }
             case MessageType.Ping:
-                return connection.write(this.serialize({ type: MessageType.Ping }))
+                return connection.write(this.serialize(connection, { type: MessageType.Ping }))
             default:
                 console.warn('Not handled', message)
         }
@@ -227,7 +273,7 @@ export class FakeSignalrHub<
                         .filter(([connId]) => predicate(connId as ConnectionId))
                         .forEach(([, client]) => {
                             client.connection.write(
-                                this.serialize({
+                                this.serialize(client.connection, {
                                     type: MessageType.Invocation,
                                     target: this.formatTarget(target as keyof Receiver),
                                     arguments: args,
