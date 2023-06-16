@@ -80,6 +80,16 @@ describe('order / grid', async () => {
     it('new orders arrive', () => {
         cy.waitUntil(matchTopRow(100))
 
+        // HACK: without this, the rxjs timer will not fire in the api/order.ts throttleTime
+        // if the `throttleTime` is wrapped such as:
+        //  ```ts
+        //  tap(() => console.log('emit')),
+        //  throttleTime(100, undefined, { trailing: true}),
+        //  tap(() => console.log('emitted')),
+        // ```
+        // The `emit` is logged, but `emitted` is never logged.
+        cy.wait(1000)
+
         cy.wrap(orderState)
             .then(orderState => orderState.create())
             .as('newOrder')

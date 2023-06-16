@@ -3,7 +3,7 @@ using TestSignalr.Hub;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
-builder.Services.AddSignalR();
+builder.Services.AddSignalR().AddMessagePackProtocol();
 builder.Services.AddSingleton<OrderService>();
 // Use the AddHostedService overload that accepts a factory delegate
 builder.Services.AddSingleton<IOrderService, OrderService>(sp => sp.GetRequiredService<OrderService>());

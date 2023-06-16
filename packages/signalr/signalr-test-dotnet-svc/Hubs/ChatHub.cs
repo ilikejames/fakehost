@@ -38,9 +38,8 @@ public class ChatHub : Hub<IChatReceiver>, IChatHub
         _logger.Log(LogLevel.Information, "{id}: Invoke Leave", this.Context.ConnectionId);
 
         var id = this.Context.ConnectionId;
-        var username = UserNames[id];
 
-        if (UserNames.TryRemove(id, out var _))
+        if (UserNames.TryRemove(id, out var username))
         {
             await this.Clients.All.OnLeave(username, DateTime.Now);
         }
