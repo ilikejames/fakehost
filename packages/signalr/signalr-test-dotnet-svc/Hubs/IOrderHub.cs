@@ -19,7 +19,7 @@ public enum OrderStatus
 {
     Open,
     Partial,
-    Filled
+    Filled,
 }
 
 [TranspilationSource]
@@ -32,23 +32,23 @@ public class EndOfStream
 [TranspilationSource]
 public class Order
 {
-    public long OrderId { get; set; }
-    public decimal Price { get; set; }
-    public decimal TotalQuantity { get; set; }
-    public decimal FilledQuantity { get; set; }
-    public string Symbol { get; set; }
-    public OrderStatus Status { get; set; }
+    public long orderId { get; set; }
+    public decimal price { get; set; }
+    public decimal totalQuantity { get; set; }
+    public decimal filledQuantity { get; set; }
+    public string symbol { get; set; }
+    public OrderStatus status { get; set; }
 }
 
 [TranspilationSource]
 public class OrderUpdate
 {
-    public string Action { get; set; }
-    public Order Order { get; set; }
+    public string action { get; set; }
+    public Order order { get; set; }
 
     public OrderUpdate() {
-        Order = new Order();
-        Action = string.Empty;
+        order = new Order();
+        action = string.Empty;
     }
 }
 

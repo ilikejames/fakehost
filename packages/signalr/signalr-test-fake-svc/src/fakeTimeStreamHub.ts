@@ -20,7 +20,7 @@ const clientToServerStreaming: ITimeStreamHub['clientToServerStreaming'] = async
     stream.subscribe({
         next: message => {
             const existing = userMessages.get(this.Connection.id) ?? []
-            userMessages.set(this.Connection.id, existing.concat(message.content))
+            userMessages.set(this.Connection.id, existing.concat(message))
         },
         complete: () => {
             console.log('complete')

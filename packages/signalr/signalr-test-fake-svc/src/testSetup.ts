@@ -1,7 +1,7 @@
 import { createServerSignalr } from '@fakehost/signalr/server'
 import { hubs } from './hubs'
 
-export const protocols = ['messagepack', 'json'] as const
+export const protocols = ['json', 'messagepack'] as const
 export type Protocols = (typeof protocols)[number]
 
 export type TestTarget = 'FAKE' | 'REMOTE'

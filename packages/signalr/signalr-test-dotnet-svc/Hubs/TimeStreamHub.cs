@@ -48,17 +48,17 @@ public class TimeStreamHub : Hub<ITimeStreamHub>, ITimeStreamHub
         return channel.Reader;
     }
 
-    public async Task ClientToServerStreaming(ChannelReader<ClientItem> stream)
+    public async Task ClientToServerStreaming(ChannelReader<string> stream)
     {
         _logger.Log(LogLevel.Information, "{id}: Invoke ClientToServerStreaming", this.Context.ConnectionId);
         await foreach (var item in stream.ReadAllAsync())
         {
-            _logger.Log(LogLevel.Information, "{id}: ClientToServerStreaming Item {item}", this.Context.ConnectionId, item.Content);
+            _logger.Log(LogLevel.Information, "{id}: ClientToServerStreaming Item {item}", this.Context.ConnectionId, item);
             
             var newArray = Uploaded.AddOrUpdate(
                 this.Context.ConnectionId,
-                key => new[] { item.Content },
-                (key, existingArray) => existingArray.Append(item.Content).ToArray()
+                key => new[] { item },
+                (key, existingArray) => existingArray.Append(item).ToArray()
             );
 
             Uploaded.TryUpdate(this.Context.ConnectionId, newArray, Uploaded[this.Context.ConnectionId]);

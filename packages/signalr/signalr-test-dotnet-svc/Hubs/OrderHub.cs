@@ -63,36 +63,36 @@ public class OrderService : IOrderService, IHostedService, IDisposable
         {
             var order = new Order
             {
-                OrderId = new Random().Next(1, int.MaxValue),
-                Price = new Random().Next(1, 100),
-                TotalQuantity = new Random().Next(1, 100),
-                FilledQuantity = 0,
-                Symbol = "BTC",
-                Status = OrderStatus.Open
+                orderId = new Random().Next(1, int.MaxValue),
+                price = new Random().Next(1, 100),
+                totalQuantity = new Random().Next(1, 100),
+                filledQuantity = 0,
+                symbol = "BTC",
+                status = OrderStatus.Open
             };
 
       
             _orders.Add(order);
-            _orderUpdateSubject.OnNext(new OrderUpdate { Action = "create", Order = order });
+            _orderUpdateSubject.OnNext(new OrderUpdate { action = "create", order = order });
 
-            System.Console.WriteLine($"Order added: {order.OrderId}, total orders: {_orders.Count}");
+            System.Console.WriteLine($"Order added: {order.orderId}, total orders: {_orders.Count}");
 
             await Task.Delay(300);
 
             for (int i = 0; i < 5; i++)
             {
-                order.FilledQuantity = (int)order.FilledQuantity + 1 < (int)order.TotalQuantity 
-                    ? new Random().Next((int)order.FilledQuantity + 1, (int)order.TotalQuantity) 
-                    : (int)order.TotalQuantity;
+                order.filledQuantity = (int)order.filledQuantity + 1 < (int)order.totalQuantity 
+                    ? new Random().Next((int)order.filledQuantity + 1, (int)order.totalQuantity) 
+                    : (int)order.totalQuantity;
 
-                if(order.FilledQuantity > 0) {
-                    order.Status = OrderStatus.Partial;   
+                if(order.filledQuantity > 0) {
+                    order.status = OrderStatus.Partial;   
                 }
-                if(order.FilledQuantity == order.TotalQuantity) {
-                    order.Status = OrderStatus.Filled;
+                if(order.filledQuantity == order.totalQuantity) {
+                    order.status = OrderStatus.Filled;
                 }
 
-                _orderUpdateSubject.OnNext(new OrderUpdate { Action = "update", Order = order });
+                _orderUpdateSubject.OnNext(new OrderUpdate { action = "update", order = order });
                 await Task.Delay(600);
             }
         }
