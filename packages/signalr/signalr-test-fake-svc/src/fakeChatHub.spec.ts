@@ -36,7 +36,6 @@ for (const protocol of protocols) {
                 expect(await proxy1.getParticipants()).toEqual(['test-username2'])
                 expect(await proxy2.getParticipants()).toEqual(['test-username2'])
             } finally {
-                await Promise.all([proxy1.leave(), proxy2.leave()])
                 await Promise.all([connection1.stop(), connection2.stop()])
             }
         })
@@ -91,7 +90,6 @@ for (const protocol of protocols) {
                 expect(onLeaveConnection1).toHaveBeenCalledWith('test-username', expect.anything())
                 expect(onLeaveConnection2).toHaveBeenCalledWith('test-username', expect.anything())
             } finally {
-                await Promise.all([proxy1.leave(), proxy2.leave()])
                 await Promise.all([connection1.stop(), connection2.stop()])
             }
         })

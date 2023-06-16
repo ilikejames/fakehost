@@ -23,6 +23,8 @@ type ConnectionState<State = object> = {
     id: ConnectionId
     setState: <Key extends keyof State>(key: Key, value: State[Key]) => void
     getState: <Key extends keyof State>(key: Key) => State[Key] | undefined
+    addEventHandler(event: 'disconnect', handler: () => void): void
+    removeEventHandler(event: 'disconnect', handler: () => void): void
 }
 
 type SignalrInstanceThis<Receiver = object, State = object> = {
@@ -31,6 +33,8 @@ type SignalrInstanceThis<Receiver = object, State = object> = {
 }
 
 const TERMINATING_CHAR = String.fromCharCode(30)
+
+type ConnectionEvents = 'disconnect'
 
 type FormatTarget<Hub extends object, Receiver = object> =
     | 'capitalize'
@@ -48,6 +52,7 @@ export class FakeSignalrHub<
     private handlers = new Map<string, Handler>()
     private host?: Host
     private messageProtocol = new Map<ConnectionId, 'json' | 'messagepack' | string>()
+    private connectionEvents = new Map<`${ConnectionId}.${ConnectionEvents}`, Set<() => void>>()
 
     constructor(
         public readonly path: string,
@@ -105,6 +110,10 @@ export class FakeSignalrHub<
         if (connection.url.pathname !== this.path) return
         this.clients.get(connection.id)?.dispose()
         this.clients.delete(connection.id)
+
+        const handlers = this.connectionEvents.get(`${connection.id}.disconnect`)
+        handlers?.forEach(handler => handler())
+        this.connectionEvents.delete(`${connection.id}.disconnect`)
     }
 
     private handleHandshake(connection: Connection, message: string | Buffer) {
@@ -296,6 +305,20 @@ export class FakeSignalrHub<
                 },
                 getState: key => {
                     return client.state[key]
+                },
+                addEventHandler: (eventName, handler) => {
+                    const handlers =
+                        this.connectionEvents.get(`${currentConnectionId}.${eventName}`) ||
+                        new Set()
+                    handlers.add(handler)
+                    this.connectionEvents.set(`${currentConnectionId}.${eventName}`, handlers)
+                },
+                removeEventHandler: (eventName, handler) => {
+                    const handlers =
+                        this.connectionEvents.get(`${currentConnectionId}.${eventName}`) ||
+                        new Set()
+                    handlers.delete(handler)
+                    this.connectionEvents.set(`${currentConnectionId}.${eventName}`, handlers)
                 },
             },
             Clients: {

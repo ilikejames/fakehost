@@ -24,6 +24,13 @@ const join: IChatHub['join'] = async function (this: typeof chatHub.thisInstance
     members.set(user, this.Connection.id)
     this.Connection.setState('username', user)
     this.Clients.All.onJoin(username, new Date())
+
+    this.Connection.addEventHandler('disconnect', () => {
+        if (members.has(user)) {
+            members.delete(user)
+            this.Clients.All.onLeave(username, new Date())
+        }
+    })
 }
 
 const leave: IChatHub['leave'] = async function (this: typeof chatHub.thisInstance) {
