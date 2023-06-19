@@ -3,3 +3,4 @@
 export * from './Me';
 export * from './NewOrder';
 export * from './Order';
+export * from './ValueWrapper';
