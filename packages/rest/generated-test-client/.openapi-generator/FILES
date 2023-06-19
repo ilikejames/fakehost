@@ -2,6 +2,7 @@
 .npmignore
 README.md
 package.json
+src/apis/KeyValueControllerApi.ts
 src/apis/OrderControllerApi.ts
 src/apis/UserControllerApi.ts
 src/apis/index.ts
@@ -9,6 +10,7 @@ src/index.ts
 src/models/Me.ts
 src/models/NewOrder.ts
 src/models/Order.ts
+src/models/ValueWrapper.ts
 src/models/index.ts
 src/runtime.ts
 tsconfig.json
