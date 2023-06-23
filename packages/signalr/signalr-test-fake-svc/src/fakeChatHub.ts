@@ -21,7 +21,9 @@ const chatHub = new FakeSignalrHub<IChatHub, IChatReceiver, ConnectionState>(
 
 const join: IChatHub['join'] = async function (this: typeof chatHub.thisInstance, username) {
     const user = username as Username
+
     members.set(user, this.Connection.id)
+
     this.Connection.setState('username', user)
     this.Clients.All.onJoin(username, new Date())
 

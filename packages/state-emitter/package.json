@@ -1,6 +1,6 @@
 {
   "name": "@fakehost/state-emitter",
-  "description": "Create a state",
+  "description": "Create a state emitter for CRUD event services",
   "keywords": [
     "fake",
     "testing"
