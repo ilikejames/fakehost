@@ -1,0 +1,17 @@
+<!-- docs/_sidebar.md -->
+
+* [Home](/)
+* [What is a fake?](../overview.md)
+* [Contract Tests](../contract-tests.md)
+* [@fakehost/fake-signalr/fake-signalr](fake-signalr/fake-signalr.md)
+    * [Overview](fake-signalr/fake-signalr?id=overview)
+    * [Creating a fake signalr service](fake-signalr/fake-signalr?id=creating-a-fake-signalr-service)
+    * [this: SignalrInstanceThis\<T\>](fake-signalr/fake-signalr?id=this-signalrinstancethislttgt)
+        * [this.Connection](fake-signalr/fake-signalr?id=thisconnection)
+        * [this.Clients](fake-signalr/fake-signalr?id=thisclients)
+    * [Running as a Localhost Service](fake-signalr/fake-signalr.md?id=running-as-a-localhost-service)
+* [Testing Applications Using Fakes](fake-signalr/fake-signalr?id=testing-applications-using-fakes)
+    * [Setup Playwright](fake-signalr/fake-signalr?id=setup-playwright-and-webdriver-etc)
+    * [Setup Cypress](fake-signalr/fake-signalr?id=setup-cypress)
+    * [Set up Jest, Vitest, @testing-library/react-native](fake-signalr/fake-signalr?id=set-up-jest-vitest-testing-libraryreact-native)
+    * [Testing Disconnection / Reconnection](fake-signalr/fake-signalr?id=testing-disconnection-reconnection)

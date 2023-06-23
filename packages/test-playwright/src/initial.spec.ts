@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 import { createFakes, initPage } from './config'
-import { log, waitUntil } from './helper'
+import { log } from './helper'
 
 test.describe('initial test setup', () => {
     let testEnv: Awaited<ReturnType<typeof createFakes>>

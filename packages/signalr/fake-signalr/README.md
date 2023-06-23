@@ -4,11 +4,14 @@
 
 A fake version of the Signalr protocol. 
 
-- can be run as a service, or bundled within a web browser. 
+- can be run as a localhost service, or bundled within a web browser. 
 - used for testing client side ui code deeply against a known (fake) backend 
 - contract tests to ensure the fake matches the remote
+- supports JSON and message pack wire protocols
 
 Best place to look is the at the [test fake service](https://github.com/ilikejames/fakehost/tree/master/packages/signalr/signalr-test-fake-svc/src)
+
+
 
 
 ## See also
@@ -17,10 +20,9 @@ See [testing in Playwright](https://github.com/ilikejames/fakehost/tree/master/p
 
 See [testing in cypress](https://github.com/ilikejames/fakehost/tree/master/packages/test-cypress) for cypress setup.
 
-See [bundling fakes in a web application](https://github.com/ilikejames/fakehost/tree/master/packages/test-web-app/src/index.tsx) for creating standlone demo apps, or for similar for storybook etc. 
+See [bundling fakes in a web application](https://github.com/ilikejames/fakehost/tree/master/packages/test-web-app/src/index.tsx) for creating standalone demo apps, or similar e.g storybook. 
 
 See [running as a local service](https://github.com/ilikejames/fakehost/tree/master/packages/signalr/signalr-test-fake-svc/src/start.ts)
-
 
 
 ## Tests

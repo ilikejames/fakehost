@@ -1,3 +1,9 @@
+---
+layout: default
+title: "@fakehost"
+permalink: /
+---
+
 # @fakehost
 
 TODO:
