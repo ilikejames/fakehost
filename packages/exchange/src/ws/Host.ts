@@ -1,4 +1,4 @@
-import { Connection, ConnectionId, EventMap } from './types'
+import { Connection, ConnectionId, EventMap } from '../types'
 import { URL } from 'url'
 
 type HandlerMap = {

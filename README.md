@@ -11,7 +11,7 @@ Use contract tests to ensure your fakes matches, and continues to match the real
 
 
 - `@fakehost/fake-rest`: fake out rest calls to a remote service. 
-- `@fakehost/host`: base package for running a websocket based node service, or bundling within a browser for demos.
+- `@fakehost/exchange`: base package for running a websocket based node service, or bundling within a browser for demos.
 - `@fakehost/signalr`: a fully aligned fake signalr WebSocket service. Add your own service implementation and control it from your tests. 
 
 

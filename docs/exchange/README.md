@@ -4,7 +4,7 @@
 
 ## Overview
 
-A basic package for building fake messaging services that communicate over websockets. Can run as a nodejs service, or be bundled inside the browser.
+A basic package for building fake messaging services that communicate over websockets. 
 
 **This library won't give you much on its own.** Instead its used to support running the same fake service code hosted **within the browser** or **running as a node process**. 
 
@@ -136,7 +136,7 @@ DEBUG=@fakehost/exchange
 
 ## Migrating from v0.x
 
-See [Migrating from v0.x](https://ilikejames.github.io/fakehost/#/exchange/migrating-from-v0.md)
+See [Migrating from v0.x](exchange/migrating-from-v0.md)
 
 [npm-image]: https://img.shields.io/npm/v/@fakehost/exchange.svg
 [npm-url]: https://npmjs.org/package/@fakehost/exchange

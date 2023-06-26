@@ -4,8 +4,8 @@ import { Server, WebSocket } from 'mock-socket'
 import { URL } from 'url'
 import { v4 as uuid } from 'uuid'
 import { BaseHost, HostOptions } from './Host'
-import { logger } from './logger'
-import { ConnectionId, Connection } from './types'
+import { logger } from '../logger'
+import { ConnectionId, Connection } from '../types'
 
 export type BrowserWsHostOptions = Partial<HostOptions> & {
     url: URL
@@ -17,7 +17,7 @@ export const MockedSocket = function (url: string | URL, protocols?: string | st
 
 /**
  * For mocking out the websocket inside the browser.
- * For bunding directly in a DOM environment e.g. :
+ * For bundling directly in a DOM environment e.g. :
  *  - unit testing browser code with js-dom for jest or happy-dom in vitest
  *  - bundling within browsers such as for Storybook
  *  - browser hosted tests such as Cypress

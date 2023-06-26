@@ -22,7 +22,7 @@ interface DisconnectionEvent {
     connection: Connection
 }
 
-interface MessageEvent {
+export interface MessageEvent {
     type: 'message'
     connection: Connection
     message: string | Buffer
@@ -34,4 +34,4 @@ export type EventMap = {
     message: MessageEvent
 }
 
-export type Event<T extends EventTypes> = EventMap[T]
+export type ExchangeEvent<T extends EventTypes> = EventMap[T]

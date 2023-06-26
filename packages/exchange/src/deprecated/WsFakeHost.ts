@@ -1,11 +1,17 @@
 import chalk from 'chalk'
 import { AddressInfo } from 'net'
+import { URL } from 'url'
 import WebSocket from 'ws'
 import { v4 as uuid } from 'uuid'
-import { ProtocolHandler } from '../ProtocolHandler'
-import { BaseFakeHost, Connection, ConnectionId, HostOptions } from './BaseFakeHost'
-import { enableLogger, logger } from './logger'
+import { ProtocolHandler } from './ProtocolHandler'
+import { BaseFakeHost, HostOptions } from './BaseFakeHost'
+import { enableLogger, logger } from '../logger'
+import { Connection, ConnectionId } from '../types'
 
+/**
+ * @deprecated The method is deprecated and will be removed in the next major version.
+ * See https://ilikejames.github.io/fakehost/#/migrating-from-v0-to-v1 for more information.
+ */
 export class WsFakeHost extends BaseFakeHost {
     private websocket!: WebSocket.Server
     private serverPort?: number
@@ -40,7 +46,7 @@ export class WsFakeHost extends BaseFakeHost {
             console.log(chalk.green(`${this.options.name}: Listening on ${address.port}`))
         })
 
-        this.websocket.on('connection', socket => {
+        this.websocket.on('connection', async (socket, request) => {
             if (this.refuseNewConnections) {
                 logger(`${this.options.name}: Refusing new connection`)
                 socket.close()
@@ -49,13 +55,15 @@ export class WsFakeHost extends BaseFakeHost {
 
             const id = uuid() as ConnectionId
             this.connections.set(id, socket)
+            const requestUrl = new URL(request.url || '', await this.url)
 
             const connection: Connection = {
                 id,
+                url: requestUrl,
                 close: () => {
                     socket.close()
                 },
-                write: (raw: string) => {
+                write: (raw: string | Buffer) => {
                     socket.send(raw)
                 },
             }

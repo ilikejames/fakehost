@@ -1,6 +1,6 @@
 import { HubMessage, IStreamResult, Subject } from '@microsoft/signalr'
 import { MessagePackHubProtocol } from '@microsoft/signalr-protocol-msgpack'
-import { Connection, ConnectionId, Host } from '@fakehost/host'
+import { Connection, ConnectionId, Host, ExchangeEvent } from '@fakehost/exchange'
 import { Observable } from 'rxjs'
 import { ClientState } from './ClientState'
 import { MessageType, InboundMessage, isHandshakeMessage } from './messageTypes'
@@ -66,8 +66,8 @@ export class FakeSignalrHub<
 
     setHost(host: Host) {
         this.host = host
-        this.host.on('connection', e => this.onConnection.bind(this)(e.connection))
-        this.host.on('disconnection', e => this.onDisconnection.bind(this)(e.connection))
+        this.host.on('connection', this.onConnection.bind(this))
+        this.host.on('disconnection', this.onDisconnection.bind(this))
         this.host.on('message', e => {
             // Message not for this hub
             if (e.connection.url.pathname !== this.path) return
@@ -101,12 +101,12 @@ export class FakeSignalrHub<
         }
     }
 
-    private onConnection(connection: Connection) {
+    private onConnection({ connection }: ExchangeEvent<'connection'>) {
         if (connection.url.pathname !== this.path) return
         this.clients.set(connection.id, new ClientState(connection))
     }
 
-    private onDisconnection(connection: Connection) {
+    private onDisconnection({ connection }: ExchangeEvent<'disconnection'>) {
         if (connection.url.pathname !== this.path) return
         this.clients.get(connection.id)?.dispose()
         this.clients.delete(connection.id)

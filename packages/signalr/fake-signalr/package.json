@@ -56,7 +56,6 @@
   "dependencies": {
     "@fakehost/exchange": "^0.2.0",
     "@fakehost/fake-rest": "^1.0.0",
-    "@fakehost/host": "^1.0.0",
     "@microsoft/signalr-protocol-msgpack": "^7.0.7",
     "@msgpack/msgpack": "^2.8.0",
     "url": "^0.11.0",

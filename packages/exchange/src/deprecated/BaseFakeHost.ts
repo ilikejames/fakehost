@@ -1,17 +1,9 @@
-import { ProtocolHandler } from '../ProtocolHandler'
+import { ProtocolHandler } from './ProtocolHandler'
+import { Connection, ConnectionId } from '../types'
 
 export interface HostOptions {
     name?: string
     debug?: boolean
-}
-
-export type ConnectionId = string
-export interface Connection {
-    close: () => void
-    readonly id: ConnectionId
-    write: (message: string) => void
-    isClosed?: boolean
-    query?: Record<string, string | string[] | undefined>
 }
 
 export interface FakeHost {

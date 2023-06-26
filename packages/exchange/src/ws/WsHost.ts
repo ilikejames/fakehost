@@ -3,8 +3,8 @@ import { URL } from 'url'
 import { v4 as uuid } from 'uuid'
 import { WebSocketServer, ServerOptions, Server } from 'ws'
 import { BaseHost, HostOptions } from './Host'
-import { logger } from './logger'
-import { ConnectionId, Connection } from './types'
+import { logger } from '../logger'
+import { ConnectionId, Connection } from '../types'
 
 export type WsStandaloneOptions = HostOptions & {
     port?: number

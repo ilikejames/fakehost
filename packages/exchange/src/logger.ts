@@ -1,6 +1,6 @@
 import debug from 'debug'
 
-const loggerName = '@fakehost/host'
+const loggerName = '@fakehost/exchange'
 
 export const logger = debug(loggerName)
 

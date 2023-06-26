@@ -1,9 +1,15 @@
 import chalk from 'chalk'
 import { Client, Server, WebSocket as MockedSocket } from 'mock-socket'
-import { ProtocolHandler } from '../ProtocolHandler'
-import { BaseFakeHost, Connection, HostOptions, ConnectionId } from './BaseFakeHost'
-import { enableLogger, logger } from './logger'
+import { URL } from 'url'
+import { ProtocolHandler } from './ProtocolHandler'
+import { BaseFakeHost, HostOptions } from './BaseFakeHost'
+import { Connection, ConnectionId } from '../types'
+import { enableLogger, logger } from '../logger'
 
+/**
+ * @deprecated The method is deprecated and will be removed in the next major version.
+ * See https://ilikejames.github.io/fakehost/#/migrating-from-v0-to-v1 for more information.
+ */
 export class InlineFakeHost extends BaseFakeHost {
     private readonly fakeUrl!: string
     private server?: Server
@@ -55,8 +61,9 @@ export class InlineFakeHost extends BaseFakeHost {
             const connectionId = `fake-${Date.now().toString()}` as ConnectionId
             this.connection = {
                 id: connectionId,
+                url: this.getUrl(client.url),
                 close: client.close,
-                write: (raw: string) => client.send(raw),
+                write: (raw: string | Buffer) => client.send(raw),
             }
 
             super.onConnection(this.connection)
@@ -71,5 +78,13 @@ export class InlineFakeHost extends BaseFakeHost {
                 }
             })
         })
+    }
+
+    private getUrl(url: string): URL {
+        try {
+            return new URL(url)
+        } catch {
+            return new URL(this.fakeUrl)
+        }
     }
 }
