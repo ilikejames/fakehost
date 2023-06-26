@@ -1,4 +1,4 @@
-import { Connection } from '@fakehost/host'
+import { Connection } from '@fakehost/exchange'
 import { ISubscription, Subject } from '@microsoft/signalr'
 import { Subscription } from 'rxjs'
 import { InvocationId } from './messageTypes'

@@ -2,11 +2,16 @@ import chalk from 'chalk'
 import http from 'http'
 import { AddressInfo } from 'net'
 import sockjs, { Connection as InboundConnection, Server } from 'sockjs'
-import Url from 'url'
-import { ProtocolHandler } from '../ProtocolHandler'
-import { BaseFakeHost, Connection, ConnectionId, HostOptions } from './BaseFakeHost'
-import { enableLogger, logger } from './logger'
+import { URL } from 'url'
+import { ProtocolHandler } from './ProtocolHandler'
+import { BaseFakeHost, HostOptions } from './BaseFakeHost'
+import { enableLogger, logger } from '../logger'
+import { Connection, ConnectionId } from '../types'
 
+/**
+ * @deprecated The method is deprecated and will be removed in the next major version.
+ * See https://ilikejames.github.io/fakehost/#/migrating-from-v0-to-v1 for more information.
+ */
 export class SockJsFakeHost extends BaseFakeHost {
     private echo!: Server
     private server!: http.Server
@@ -51,16 +56,16 @@ export class SockJsFakeHost extends BaseFakeHost {
         const connectionId = connection.id as ConnectionId
         this.connections.set(connectionId, connection)
 
-        const url = Url.parse(connection.url, true)
+        const url = new URL(connection.url)
 
         const payload: Connection = {
             id: connectionId,
-            query: url.query,
+            url,
             close: () => {
                 connection.close()
                 connection.destroy()
             },
-            write: (raw: string) => {
+            write: (raw: string | Buffer) => {
                 connection.write(raw)
             },
         }

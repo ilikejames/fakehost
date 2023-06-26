@@ -1,5 +1,5 @@
 import { HttpRestService, enableLogger as restLogger } from '@fakehost/fake-rest/server'
-import { WsHost, Host, enableLogger as wsLogger } from '@fakehost/host'
+import { WsHost, Host, enableLogger as wsLogger } from '@fakehost/exchange'
 import { URL } from 'url'
 import { restRouter } from './restHandshakeRouter'
 import { Signalr } from './types'

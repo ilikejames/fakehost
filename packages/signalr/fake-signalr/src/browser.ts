@@ -3,7 +3,7 @@ import {
     enableLogger as restLogger,
     mockedFetch,
 } from '@fakehost/fake-rest/browser'
-import { BrowserWsHost, enableLogger as wsLogger, Host, MockedSocket } from '@fakehost/host'
+import { BrowserWsHost, enableLogger as wsLogger, Host, MockedSocket } from '@fakehost/exchange'
 import { restRouter } from './restHandshakeRouter'
 import { isFakeSignalrHub, URL, Signalr } from './types'
 

@@ -1,8 +1,10 @@
 {
   "name": "@fakehost/exchange",
+  "description": "A basic package for building fake messaging services that communicate over websockets. Can run as a nodejs service, or be bundled inside the browser.",
+  "keywords": ["fake", "websocket", "mock", "ws"],
   "version": "0.2.0",
   "private": false,
-  "license": "ISC",
+  "license": "MIT",
   "files": [
     "dist"
   ],
@@ -14,6 +16,9 @@
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     }
+  },
+  "browser": {
+    "./browser": "./dist/BrowserWsHost.js"
   },
   "types": "dist/index.d.ts",
   "dependencies": {
@@ -35,7 +40,7 @@
     "ts-node": "^10.4.0"
   },
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm --dts --sourcemap",
+    "build": "tsup --config ./tsup.config.ts",
     "lint": "eslint --ext .tsx --ext .ts src/",
     "typecheck": "tsc --noEmit"
   }
