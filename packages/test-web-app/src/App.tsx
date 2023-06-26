@@ -1,10 +1,9 @@
-import { FC, useEffect, useMemo, useState, useSyncExternalStore } from 'react'
+import { FC, useMemo, useState } from 'react'
 import { ThemeProvider as MuiThemeProvider, createTheme } from '@mui/material/styles'
 import { CssBaseline } from '@mui/material'
 import { ThemeProvider as EmotionThemeProvider } from '@emotion/react'
-import { darkTheme, useTheme, ThemeContext, ThemeMode, defaultTheme } from '@/theme'
+import { darkTheme, ThemeContext, ThemeMode, defaultTheme } from '@/theme'
 import { Main } from '@/components/Main'
-
 
 export const App: FC = () => {
     const [theme, setTheme] = useState<ThemeMode>(defaultTheme)
