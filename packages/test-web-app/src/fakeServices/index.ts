@@ -1,2 +1,4 @@
-export * from './rest'
-export * from './signalr'
+import { restReady } from './rest'
+import { signalrReady } from './signalr'
+
+export const fakeServicesReady = Promise.all([restReady, signalrReady])

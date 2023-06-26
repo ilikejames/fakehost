@@ -8,6 +8,7 @@ import {
 import { bind } from '@react-rxjs/core'
 import { from, map, merge, scan, shareReplay, switchMap, throttleTime } from 'rxjs'
 import { config } from '@/config'
+import { fakeServicesReady } from '@/fakeServices'
 
 const connection = new HubConnectionBuilder()
     .withUrl(new URL('/orderhub', config.signalrUrl).toString())
@@ -15,7 +16,10 @@ const connection = new HubConnectionBuilder()
 
 const service = () => getHubProxyFactory('IOrderHub').createHubProxy(connection)
 
-const connection$ = from(connection.start()).pipe(shareReplay(1))
+const connection$ = from(fakeServicesReady).pipe(
+    switchMap(() => from(connection.start())),
+    shareReplay(1),
+)
 
 const _orders$ = connection$.pipe(
     switchMap(() => streamResultToObservable(service().getAllOrders())),
