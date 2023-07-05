@@ -23,8 +23,9 @@
     "build": "rimraf dist && tsc --noEmit",
     "e2e:base": "cypress run",
     "e2e:open": "CYPRESS_BASE_URL=http://localhost:3000 cypress open",
-    "e2e:ci": "CYPRESS_BASE_URL=http://localhost:3000 cypress run",
-    "e2e:start-server": "yarn --cwd ../test-web-app start --port=3789 --strictPort=true",
-    "e2e": "CYPRESS_BASE_URL=http://localhost:3789 start-server-and-test 'yarn e2e:start-server' 3789/index.html 'yarn --cwd test-cypress e2e:base'"
+    "e2e:ci": "CYPRESS_BASE_URL=http://localhost:3003 cypress run",
+    "e2e:start-server": "yarn --cwd ../test-web-app start --clearScreen=false --port=3789 --strictPort=true",
+    "e2e": "CYPRESS_BASE_URL=http://localhost:3789 start-server-and-test 'yarn e2e:start-server' http://localhost:3789/index.html 'yarn --cwd test-cypress e2e:base'",
+    "typecheck": "tsc --noEmit"
   }
 }

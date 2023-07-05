@@ -1,13 +1,6 @@
 {
     "version": "independent",
     "npmClient": "yarn",
-    "packages": [
-        "packages/*",
-        "packages/devtools",
-        "packages/signalr",
-        "packages/utils"
-    ],
-    "useWorkspaces": true,
     "command": {
         "publish": {
             "message": "chore: publish"

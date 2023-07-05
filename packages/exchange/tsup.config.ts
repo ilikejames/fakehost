@@ -5,7 +5,7 @@ export default defineConfig({
     dts: {
         resolve: true,
     },
-    entry: ['src/index.ts', 'src/ws/BrowserWsHost.ts'],
+    entry: ['src/index.ts', 'src/browser', 'src/server'],
     splitting: true,
     sourcemap: true,
     clean: true,

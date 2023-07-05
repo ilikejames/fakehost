@@ -20,17 +20,14 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
       "require": "./dist/index.cjs"
     },
     "./browser": {
-      "types": "./dist/HijackedRestService.d.ts",
       "import": "./dist/HijackedRestService.js",
       "require": "./dist/HijackedRestService.cjs"
     },
     "./server": {
-      "types": "./dist/HttpRestService.d.ts",
       "import": "./dist/HttpRestService.js",
       "require": "./dist/HttpRestService.cjs"
     },
@@ -69,8 +66,9 @@
     "vitest": "^0.29.8"
   },
   "scripts": {
-    "build": "tsup --config ./tsup.config.ts",
+    "build": "tsup-node --config ./tsup.config.ts",
     "lint": "eslint --ext .tsx --ext .ts src/",
-    "test": "vitest --run"
+    "test": "vitest --run",
+    "typecheck": "tsc --noEmit"
   }
 }

@@ -14,6 +14,7 @@
   ],
   "homepage": "https://github.com/ilikejames/fakehost",
   "main": "dist/index.cjs",
+  "types": "dist/index.d.ts",
   "type": "module",
   "exports": {
     ".": {
@@ -21,7 +22,6 @@
       "require": "./dist/index.cjs"
     }
   },
-  "types": "dist/index.d.ts",
   "peerDependencies": {
     "rxjs": "^7.0.0"
   },
@@ -31,8 +31,9 @@
     "vitest": "^0.29.8"
   },
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm --dts --dts-resolve --sourcemap",
+    "build": "tsup src/index.ts --format cjs,esm --dts --sourcemap",
     "lint": "eslint --ext .tsx --ext .ts src/",
-    "test": "vitest --run"
+    "test": "vitest --run",
+    "typecheck": "tsc --noEmit"
   }
 }
