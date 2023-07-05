@@ -20,7 +20,6 @@
         "rxjs": "^7.8.0"
     },
     "devDependencies": {
-        "tsup": "^6.7.0"
     },
     "scripts": {
         "build": "tsup src/index.ts --format cjs,esm --dts --sourcemap",

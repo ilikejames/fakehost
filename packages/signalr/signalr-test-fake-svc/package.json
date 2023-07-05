@@ -2,7 +2,7 @@
     "name": "@fakehost/signalr-test-fake-svc",
     "description": "Fake versions of the local dotnet test service",
     "version": "1.0.0",
-    "private": true,
+    "private": false,
     "main": "dist/index.cjs",
     "type": "module",
     "exports": {
@@ -30,7 +30,7 @@
         "vitest": "^0.29.8"
     },
     "scripts": {
-        "build": "tsup src/index.ts --format cjs,esm --dts --dts-resolve --sourcemap",
+        "build": "tsup-node src/index.ts --format cjs,esm --dts --sourcemap",
         "lint": "eslint --ext .tsx --ext .ts src/",
         "start:fake": "cross-env NODE_OPTIONS='--experimental-specifier-resolution=node' TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true  ts-node --esm src/start.ts",
         "test": "cross-env TEST_TARGET=FAKE vitest --run",

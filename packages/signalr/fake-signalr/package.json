@@ -7,7 +7,6 @@
     "mock",
     "testing",
     "storybook",
-    "react-native",
     "contact"
   ],
   "version": "1.0.0",
@@ -16,17 +15,14 @@
   "type": "module",
   "exports": {
     ".": {
-      "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "require":  "./dist/index.cjs"
     },
     "./browser": {
-      "types": "./dist/browser.d.ts",
       "import": "./dist/browser.js",
       "require": "./dist/browser.cjs"
     },
     "./server": {
-      "types": "./dist/createServer.d.ts",
       "import": "./dist/createServer.js",
       "require": "./dist/createServer.cjs"
     },
@@ -74,7 +70,8 @@
     "vitest": "^0.29.8"
   },
   "scripts": {
-    "build": "tsup --config ./tsup.config.ts",
-    "lint": "eslint --ext .tsx --ext .ts src/"
+    "build": "tsup-node --config ./tsup.config.ts",
+    "lint": "eslint --ext .tsx --ext .ts src/",
+    "typecheck": "tsc --noEmit"
   }
 }

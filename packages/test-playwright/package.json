@@ -17,6 +17,7 @@
   "devDependencies": {},
   "scripts": {
     "build": "rimraf dist && tsc --noEmit",
-    "e2e": "npx playwright test -c src/config/config.ts"
+    "e2e": "npx playwright test -c src/config/config.ts",
+    "typecheck": "tsc --noEmit"
   }
 }
