@@ -4,6 +4,8 @@
 
 ## Overview
 
+**[See the docs for more info.](https://ilikejames.github.io/fakehost)**
+
 A basic package for building fake messaging services that communicate over websockets. Can run as a nodejs service, or be bundled inside the browser.
 
 **This library won't give you much on its own.** Instead its used to support running the same fake service code hosted **within the browser** or **running as a node process**. 
@@ -17,7 +19,7 @@ Provides two main objects:
 
 ## Example Usage
 
-For a full example see [@fakehost/fake-signalr](../fake-signalr/).
+For a full example see [@fakehost/fake-signalr](https://github.com/ilikejames/fakehost/tree/master/packages/signalr/fake-signalr).
 
 ### Protocol Handler
 

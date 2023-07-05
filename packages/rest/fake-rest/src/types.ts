@@ -25,7 +25,7 @@ export type Handler<T extends string> = (
     req: Request<T>,
     res: Response,
     next: Next,
-) => void | Promise<void> | Response | Promise<Response | undefined>
+) => void | Promise<void> | Response | Promise<Response | undefined | unknown>
 
 type ExtractRouteParams<T> = T extends `${string}/:${infer Param}/${infer Rest}`
     ? { [K in Param | keyof ExtractRouteParams<`/${Rest}`>]: string }

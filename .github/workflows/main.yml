@@ -33,11 +33,11 @@ jobs:
       - name: Lint
         run: yarn lint
 
-      - name: Typecheck
-        run: yarn typecheck
-
       - name: Build libs and test-app
         run: yarn build
+
+      - name: Typecheck
+        run: yarn typecheck
 
       - name: Unit tests
         run: yarn test

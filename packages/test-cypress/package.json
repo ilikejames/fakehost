@@ -6,10 +6,10 @@
   "type": "module",
   "license": "MIT",
   "dependencies": {
-    "@fakehost/fake-rest": "^1.0.0",
+    "@fakehost/fake-rest": "^0.0.0",
     "@fakehost/rest-generated-client-api": "*",
     "@fakehost/rest-test-fake-svc": "^1.0.0",
-    "@fakehost/signalr": "^1.0.0",
+    "@fakehost/signalr": "^0.0.0",
     "@fakehost/signalr-test-fake-svc": "^1.0.0",
     "chai-subset": "^1.6.0",
     "chalk": "^4.0.0",
@@ -22,8 +22,8 @@
   "scripts": {
     "build": "rimraf dist && tsc --noEmit",
     "e2e:base": "cypress run",
-    "e2e:open": "CYPRESS_BASE_URL=http://localhost:3000 cypress open",
-    "e2e:ci": "CYPRESS_BASE_URL=http://localhost:3003 cypress run",
+    "e2e:open": "CYPRESS_BASE_URL=http://localhost:3000/ cypress open",
+    "e2e:ci": "CYPRESS_BASE_URL=http://localhost:3000 cypress run",
     "e2e:start-server": "yarn --cwd ../test-web-app start --clearScreen=false --port=3789 --strictPort=true",
     "e2e": "CYPRESS_BASE_URL=http://localhost:3789 start-server-and-test 'yarn e2e:start-server' http://localhost:3789/index.html 'yarn --cwd test-cypress e2e:base'",
     "typecheck": "tsc --noEmit"

@@ -4,6 +4,9 @@
 
 A fake version of the Signalr protocol. 
 
+**[See the docs for more info.](https://ilikejames.github.io/fakehost/#/fake-signalr/)**
+
+
 - can be run as a localhost service, or bundled within a web browser. 
 - used for testing client side ui code deeply against a known (fake) backend 
 - contract tests to ensure the fake matches the remote
