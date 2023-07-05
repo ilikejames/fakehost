@@ -1,8 +1,8 @@
 import chalk from 'chalk'
 import { Client, Server, WebSocket as MockedSocket } from 'mock-socket'
 import { URL } from 'url'
-import { ProtocolHandler } from './ProtocolHandler'
-import { BaseFakeHost, HostOptions } from './BaseFakeHost'
+import { ProtocolHandler } from '../deprecated/ProtocolHandler'
+import { BaseFakeHost, HostOptions } from '../deprecated/BaseFakeHost'
 import { Connection, ConnectionId } from '../types'
 import { enableLogger, logger } from '../logger'
 

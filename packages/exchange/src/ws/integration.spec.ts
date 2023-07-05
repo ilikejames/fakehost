@@ -1,6 +1,6 @@
 import IsoMorphicWebSocket from 'isomorphic-ws'
 import { describe, it, expect, vi } from 'vitest'
-import { BrowserWsHost } from './BrowserWsHost'
+import { BrowserWsHost } from '../browser/BrowserWsHost'
 import { WsHost } from './WsHost'
 import { Host } from './Host'
 import { enableLogger } from '../logger'
