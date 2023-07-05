@@ -11,8 +11,12 @@ export type SignalrHubCollection<T> = {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const isFakeSignalrHub = (hub: any): hub is FakeSignalrHub<any, any, any> => {
-    // TODO: instanceof is not working, for reasons... so just use path for now
-    return 'path' in hub
+    // HACK: sDue to how cypress runs in different processes, have to perform this super hack
+    return (
+        'constructor' in hub &&
+        'name' in hub.constructor &&
+        hub.constructor.name === 'FakeSignalrHub'
+    )
 }
 
 export const URL = globalThis.URL || Url.URL

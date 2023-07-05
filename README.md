@@ -1,5 +1,8 @@
 # @fakehost
 
+**[See the docs for more info.](https://ilikejames.github.io/fakehost)**
+
+
 A collection of resources for UI development. Fake out your REST, and WebSocket services, 
 control them from your tests (Jest, Vitest, Playwright, Cypress) to provide deep level of testing, including edge-cases, reconnection, error throwing. 
 

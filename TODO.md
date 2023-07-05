@@ -5,9 +5,9 @@
 - [x] playwright test setup
 - [x] cypress test setup
 - [ ] Signalr: reconnection test 
-- [ ] cypress why blank page on 2nd test? 
-- [ ] rest tests. POST json. POST FormData
-- [ ] controlling fakes from tests
+- [x] cypress why blank page on 2nd test? 
+- [x] rest tests. POST json. POST FormData
+- [x] controlling fakes from tests
 
 
 ## fake-signalr
@@ -33,13 +33,13 @@
 - [x] README
 - [ ] docs.github.com with philosophy and examples
 - [x] fake rest? At least some way of running in cypress/storybook
-- [ ] binary format
+- [x] binary format
 
 
 ## Rest
 
 - [x] REST: setHeaders
-- [ ] REST: more verbs
+- [x] REST: more verbs
 - [ ] documentation
 
 

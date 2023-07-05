@@ -18,6 +18,7 @@
     "cross-env": "^7.0.3",
     "lerna": "^7.1.1",
     "prettier": "^2.3.2",
+    "tsup": "^7.1.0",
     "typescript": "^5.0.0"
   },
   "scripts": {
@@ -34,11 +35,5 @@
     "start:fake:rest": "cross-env REST_PORT=5005 yarn --cwd packages/rest/test-fake-svc start:fake",
     "start:fake:signalr": "cross-env SIGNALR_PORT=5002 yarn --cwd packages/signalr/signalr-test-fake-svc start:fake",
     "typecheck": "lerna run typecheck --"
-  },
-  "resolutions": {
-    "whatwg-url": "12.0.1"
-  },
-  "dependencies": {
-    "tsup": "^7.1.0"
   }
 }

@@ -5,7 +5,7 @@ import { hubs } from '@fakehost/signalr-test-fake-svc'
 
 enableLogger()
 
-type FakeEnv<T extends object> = {
+type FakeEnv<T extends Record<string, unknown>> = {
     dispose: () => void
     mockedFetch: typeof mockedFetch
     mockedSocket: typeof MockedSocket
@@ -47,3 +47,4 @@ export const startFakeEnv = async (): Promise<FakeEnv<typeof hubs>> => {
         },
     }
 }
+
