@@ -3,7 +3,7 @@ import chalk from 'chalk'
 import { Server, WebSocket } from 'mock-socket'
 import { URL } from 'url'
 import { v4 as uuid } from 'uuid'
-import { BaseHost, HostOptions } from './Host'
+import { BaseHost, HostOptions } from '../ws/Host'
 import { logger } from '../logger'
 import { ConnectionId, Connection } from '../types'
 
