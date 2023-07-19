@@ -4,7 +4,7 @@ import { AddressInfo } from 'net'
 import sockjs, { Connection as InboundConnection, Server } from 'sockjs'
 import { URL } from 'url'
 import { ProtocolHandler } from './ProtocolHandler'
-import { BaseFakeHost, HostOptions } from './BaseFakeHost'
+import { BaseFakeHost, CloseOptions, HostOptions } from './BaseFakeHost'
 import { enableLogger, logger } from '../logger'
 import { Connection, ConnectionId } from '../types'
 
@@ -108,9 +108,9 @@ export class SockJsFakeHost extends BaseFakeHost {
         })
     }
 
-    disconnect() {
+    disconnect(closeOptions?: CloseOptions) {
         this.connections.forEach((connection: InboundConnection) => {
-            connection.close()
+            connection.close(closeOptions?.code.toString(), closeOptions?.reason)
             connection.destroy()
         })
     }

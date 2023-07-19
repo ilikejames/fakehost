@@ -2,7 +2,7 @@ import chalk from 'chalk'
 import { URL } from 'url'
 import { v4 as uuid } from 'uuid'
 import { WebSocketServer, ServerOptions, Server } from 'ws'
-import { BaseHost, HostOptions } from './Host'
+import { BaseHost, CloseOptions, HostOptions, getCloseOptions } from './Host'
 import { logger } from '../logger'
 import { ConnectionId, Connection } from '../types'
 
@@ -79,8 +79,8 @@ export class WsHost extends BaseHost {
             const connection: Connection = {
                 id,
                 url: requestUrl,
-                close: () => {
-                    socket.close()
+                close: ({ code, reason }) => {
+                    socket.close(code, reason)
                     this.connections.delete(connection.id)
                 },
                 write: (raw: string | Buffer) => {
@@ -110,7 +110,8 @@ export class WsHost extends BaseHost {
         })
     }
 
-    disconnect(path?: string): void {
+    disconnect(options?: CloseOptions): void {
+        const { path, code, reason } = getCloseOptions(options)
         const connections =
             path && this.pathConnections.has(path)
                 ? this.pathConnections.get(path) ?? []
@@ -122,7 +123,7 @@ export class WsHost extends BaseHost {
                 logger(
                     chalk.yellow(`${this.options.name}: Disconnecting connection ${connection.id}`),
                 )
-                connection.close()
+                connection.close({ code, reason })
                 this.connections.delete(connection.id)
             }
         })

@@ -6,6 +6,11 @@ export interface HostOptions {
     debug?: boolean
 }
 
+export interface CloseOptions {
+    code: number
+    reason: string
+}
+
 /**
  * @deprecated The method is deprecated and will be removed in the next major version.
  * See https://ilikejames.github.io/fakehost/#/migrating-from-v0-to-v1 for more information.
@@ -13,7 +18,7 @@ export interface HostOptions {
 export interface FakeHost {
     readonly url: Promise<string>
     dispose: () => Promise<void>
-    disconnect: () => void
+    disconnect: (options?: Partial<CloseOptions>) => void
     getConnections: () => Connection[]
     start: (port?: number) => void
     refuseNewConnections: boolean
@@ -53,7 +58,7 @@ export abstract class BaseFakeHost implements FakeHost {
         })
     }
 
-    abstract disconnect(): void
+    abstract disconnect(options?: Partial<CloseOptions>): void
 
     abstract start(): void
 

@@ -3,7 +3,7 @@ import chalk from 'chalk'
 import { Server, WebSocket } from 'mock-socket'
 import { URL } from 'url'
 import { v4 as uuid } from 'uuid'
-import { BaseHost, HostOptions } from '../ws/Host'
+import { BaseHost, CloseOptions, HostOptions, getCloseOptions } from '../ws/Host'
 import { logger } from '../logger'
 import { ConnectionId, Connection } from '../types'
 
@@ -62,7 +62,7 @@ export class BrowserWsHost extends BaseHost {
             const connection: Connection = {
                 id: connectionId,
                 url: this.options.url,
-                close: client.close,
+                close: ({ code, reason }) => client.close({ code, reason, wasClean: true }),
                 write: (raw: string | Buffer) => {
                     logger(chalk.red('←'), `${raw}`)
                     client.send(raw)
@@ -106,7 +106,8 @@ export class BrowserWsHost extends BaseHost {
         }
     }
 
-    disconnect(path?: string): void {
+    disconnect(options?: Partial<CloseOptions>): void {
+        const { path, code, reason } = getCloseOptions(options)
         // TODO: this cannot be done with mock-socket
         const connectionIds =
             path && this.pathConnections.has(path)
@@ -116,7 +117,7 @@ export class BrowserWsHost extends BaseHost {
             const connection = this.connections.get(connectionId)
             if (!connection) return
             logger(chalk.yellow(`${this.options.name}: Disconnecting connection ${connection.id}`))
-            connection.close()
+            connection.close({ code, reason })
             this.connections.delete(connectionId)
         })
         path && this.pathConnections.delete(path)

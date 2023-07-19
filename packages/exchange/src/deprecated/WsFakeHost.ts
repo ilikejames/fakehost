@@ -4,7 +4,7 @@ import { URL } from 'url'
 import WebSocket from 'ws'
 import { v4 as uuid } from 'uuid'
 import { ProtocolHandler } from './ProtocolHandler'
-import { BaseFakeHost, HostOptions } from './BaseFakeHost'
+import { BaseFakeHost, CloseOptions, HostOptions } from './BaseFakeHost'
 import { enableLogger, logger } from '../logger'
 import { Connection, ConnectionId } from '../types'
 
@@ -111,10 +111,10 @@ export class WsFakeHost extends BaseFakeHost {
         })
     }
 
-    disconnect() {
+    disconnect(closeOptions?: CloseOptions) {
         logger(chalk.yellow(`${this.options.name}: Disconnecting clients.`))
         this.connections.forEach(connection => {
-            connection.close()
+            connection.close(closeOptions?.code, closeOptions?.reason)
         })
     }
 }

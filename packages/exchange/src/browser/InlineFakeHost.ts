@@ -2,7 +2,7 @@ import chalk from 'chalk'
 import { Client, Server, WebSocket as MockedSocket } from 'mock-socket'
 import { URL } from 'url'
 import { ProtocolHandler } from '../deprecated/ProtocolHandler'
-import { BaseFakeHost, HostOptions } from '../deprecated/BaseFakeHost'
+import { BaseFakeHost, CloseOptions, HostOptions } from '../deprecated/BaseFakeHost'
 import { Connection, ConnectionId } from '../types'
 import { enableLogger, logger } from '../logger'
 
@@ -43,8 +43,17 @@ export class InlineFakeHost extends BaseFakeHost {
         return await Promise.resolve()
     }
 
-    disconnect() {
-        this.client?.close()
+    disconnect(options?: Partial<CloseOptions>) {
+        this.client?.close(
+            options
+                ? {
+                      code: 1000,
+                      reason: '',
+                      wasClean: true,
+                      ...options,
+                  }
+                : undefined,
+        )
     }
 
     start() {
@@ -62,7 +71,7 @@ export class InlineFakeHost extends BaseFakeHost {
             this.connection = {
                 id: connectionId,
                 url: this.getUrl(client.url),
-                close: client.close,
+                close: ({ code, reason }) => client.close({ code, reason, wasClean: true }),
                 write: (raw: string | Buffer) => client.send(raw),
             }
 
