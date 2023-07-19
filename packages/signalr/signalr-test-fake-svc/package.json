@@ -27,7 +27,7 @@
         "@microsoft/signalr-protocol-msgpack": "^7.0.7",
         "cross-env": "^7.0.3",
         "rxjs": "^7.4.0",
-        "vitest": "^0.29.8"
+        "vitest": "^0.33.0"
     },
     "scripts": {
         "build": "tsup-node src/index.ts --format cjs,esm --dts --sourcemap",

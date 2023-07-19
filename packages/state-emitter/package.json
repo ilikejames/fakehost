@@ -28,7 +28,7 @@
   "dependencies": {},
   "devDependencies": {
     "rxjs": "^7.8.0",
-    "vitest": "^0.29.8"
+    "vitest": "^0.33.0"
   },
   "scripts": {
     "build": "tsup src/index.ts --format cjs,esm --dts --sourcemap",

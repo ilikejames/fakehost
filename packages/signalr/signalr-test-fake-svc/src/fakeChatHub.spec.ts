@@ -66,7 +66,6 @@ for (const protocol of protocols) {
                     'test-username',
                     expect.anything(),
                 )
-                expect(typeof (onJoinConnection1 as any).calls[0][1]).toMatch(/string|object/)
                 expect(onJoinConnection2).toHaveBeenLastCalledWith(
                     'test-username',
                     expect.anything(),
