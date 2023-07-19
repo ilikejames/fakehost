@@ -67,7 +67,7 @@
     "cross-env": "^7.0.3",
     "debug": "^4.3.4",
     "rxjs": "^7.4.0",
-    "vitest": "^0.29.8"
+    "vitest": "^0.33.0"
   },
   "scripts": {
     "build": "tsup-node --config ./tsup.config.ts",

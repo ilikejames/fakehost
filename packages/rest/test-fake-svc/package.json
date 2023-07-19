@@ -32,7 +32,7 @@
     "cross-env": "^7.0.3",
     "ts-node": "^10.9.1",
     "url": "^0.11.0",
-    "vitest": "^0.30.1"
+    "vitest": "^0.33.0"
   },
   "scripts": {
     "start:fake": "cross-env NODE_OPTIONS='--experimental-specifier-resolution=node' TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true  ts-node --esm src/start.ts",
