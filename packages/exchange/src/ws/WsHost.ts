@@ -2,7 +2,7 @@ import chalk from 'chalk'
 import { URL } from 'url'
 import { v4 as uuid } from 'uuid'
 import { WebSocketServer, ServerOptions, Server } from 'ws'
-import { BaseHost, CloseOptions, HostOptions, getCloseOptions } from './Host'
+import { BaseHost, CloseOptions, Host, HostOptions, getCloseOptions } from './Host'
 import { logger } from '../logger'
 import { ConnectionId, Connection } from '../types'
 
@@ -23,7 +23,7 @@ export type WsHostOptions = WsStandaloneOptions | WsHostedOptions
  *  - command line
  *  - nodejs test frameworks such as jest, Playwright, etc.
  */
-export class WsHost extends BaseHost {
+export class WsHost extends BaseHost implements Host {
     private ws: WebSocketServer
     private options: Partial<WsHostOptions> = {}
     public readonly port: Promise<number>
@@ -79,8 +79,8 @@ export class WsHost extends BaseHost {
             const connection: Connection = {
                 id,
                 url: requestUrl,
-                close: ({ code, reason }) => {
-                    socket.close(code, reason)
+                close: options => {
+                    socket.close(options?.code, options?.reason)
                     this.connections.delete(connection.id)
                 },
                 write: (raw: string | Buffer) => {
@@ -110,8 +110,8 @@ export class WsHost extends BaseHost {
         })
     }
 
-    disconnect(options?: CloseOptions): void {
-        const { path, code, reason } = getCloseOptions(options)
+    disconnect(options?: Partial<CloseOptions>): void {
+        const { path, code, reason, wasClean } = getCloseOptions(options)
         const connections =
             path && this.pathConnections.has(path)
                 ? this.pathConnections.get(path) ?? []
@@ -123,7 +123,7 @@ export class WsHost extends BaseHost {
                 logger(
                     chalk.yellow(`${this.options.name}: Disconnecting connection ${connection.id}`),
                 )
-                connection.close({ code, reason })
+                connection.close({ code, reason, wasClean })
                 this.connections.delete(connection.id)
             }
         })

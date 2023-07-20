@@ -71,7 +71,7 @@ export class InlineFakeHost extends BaseFakeHost {
             this.connection = {
                 id: connectionId,
                 url: this.getUrl(client.url),
-                close: ({ code, reason }) => client.close({ code, reason, wasClean: true }),
+                close: client.close,
                 write: (raw: string | Buffer) => client.send(raw),
             }
 

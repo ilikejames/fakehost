@@ -1,4 +1,4 @@
-import { Connection, ConnectionId, EventMap } from '../types'
+import { CloseConnectionOptions, Connection, ConnectionId, EventMap } from '../types'
 import { URL } from 'url'
 
 type HandlerMap = {
@@ -11,10 +11,8 @@ export type HostOptions = {
     silent: boolean
 }
 
-export type CloseOptions = {
+export type CloseOptions = CloseConnectionOptions & {
     path?: string
-    code: number
-    reason: string
 }
 
 export type Host = {
@@ -65,8 +63,10 @@ export abstract class BaseHost implements Host {
 
 const defaultCloseOptions: CloseOptions = {
     code: 1000,
-    reason: '',
+    reason: 'Service disconnected',
+    wasClean: true,
 }
+
 export function getCloseOptions(options?: Partial<CloseOptions>): CloseOptions {
     return {
         ...defaultCloseOptions,
