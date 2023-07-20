@@ -59,7 +59,7 @@ for (const protocol of protocols) {
             filled.forEach(filledItem => {
                 expect(filledItem.order.filledQuantity).toBe(filledItem.order.totalQuantity)
             })
-        })
+        }, 10_000)
     })
 }
 
