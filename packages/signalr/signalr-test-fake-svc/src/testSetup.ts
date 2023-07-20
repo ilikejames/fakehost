@@ -25,7 +25,7 @@ export type TestEnv = {
 export const testSetup = async (mode: TestTarget): Promise<TestEnv> => {
     switch (mode) {
         case 'FAKE': {
-            const { dispose, url } = await createServerSignalr<typeof hubs>({
+            const { dispose, url, disconnect } = await createServerSignalr<typeof hubs>({
                 hubs: hubs,
                 debug: false,
             })
