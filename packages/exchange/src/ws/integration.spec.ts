@@ -120,7 +120,7 @@ for (const host of hosts) {
 
                 closeEvents.forEach(evt => {
                     expect(evt.code).toEqual(1000)
-                    expect(evt.reason).toEqual('')
+                    expect(evt.reason).toEqual('Service disconnected')
                 })
             } finally {
                 await service.dispose()

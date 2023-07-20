@@ -1,5 +1,5 @@
 import { HttpRestService, enableLogger as restLogger } from '@fakehost/fake-rest/server'
-import { WsHost, Host, enableLogger as wsLogger } from '@fakehost/exchange'
+import { CloseConnectionOptions, WsHost, Host, enableLogger as wsLogger } from '@fakehost/exchange'
 import { URL } from 'url'
 import { restRouter } from './restHandshakeRouter'
 import { isFakeSignalrHub } from './types'
@@ -16,7 +16,7 @@ type CreateServerSignalr<T extends object> = {
     dispose: () => Promise<void>
     url: URL
     host: Host
-    disconnect: (hub: keyof T) => void
+    disconnect: (hub: keyof T, options?: CloseConnectionOptions) => void
 }
 
 const objectKeys = <T extends Record<string, unknown>>(x: T) => Object.keys(x) as (keyof T)[]
@@ -42,7 +42,7 @@ export const createServerSignalr = async <T extends Record<string, unknown>>(
         if (isFakeSignalrHub(hub)) {
             hub.setHost(wsHost)
             acc[hubName] = {
-                disconnect: () => wsHost.disconnect(hub.path),
+                disconnect: () => wsHost.disconnect({ path: hub.path }),
             }
         }
         return acc
@@ -56,8 +56,8 @@ export const createServerSignalr = async <T extends Record<string, unknown>>(
 
     return {
         host: wsHost,
-        disconnect: (key: keyof T) => {
-            return hubResult[key].disconnect()
+        disconnect: (hub: keyof T, options?: CloseConnectionOptions) => {
+            return hubResult[hub].disconnect(options)
         },
         url: url,
         dispose: async () => {

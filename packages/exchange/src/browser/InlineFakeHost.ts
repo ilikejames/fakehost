@@ -5,6 +5,7 @@ import { ProtocolHandler } from '../deprecated/ProtocolHandler'
 import { BaseFakeHost, CloseOptions, HostOptions } from '../deprecated/BaseFakeHost'
 import { Connection, ConnectionId } from '../types'
 import { enableLogger, logger } from '../logger'
+import { getBrowserCloseEvent } from './browserCloseEvent'
 
 /**
  * @deprecated The method is deprecated and will be removed in the next major version.
@@ -71,7 +72,7 @@ export class InlineFakeHost extends BaseFakeHost {
             this.connection = {
                 id: connectionId,
                 url: this.getUrl(client.url),
-                close: ({ code, reason }) => client.close({ code, reason, wasClean: true }),
+                close: options => getBrowserCloseEvent(options),
                 write: (raw: string | Buffer) => client.send(raw),
             }
 
