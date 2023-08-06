@@ -1,7 +1,7 @@
 {
     "name": "@fakehost/signalr-test-fake-svc",
     "description": "Fake versions of the local dotnet test service",
-    "version": "1.0.0",
+    "version": "1.0.0-beta.0",
     "private": true,
     "main": "dist/index.cjs",
     "type": "module",
@@ -17,9 +17,9 @@
     ],
     "license": "MIT",
     "dependencies": {
-        "@fakehost/signalr": "^0.0.0",
-        "@fakehost/signalr-test-client-api": "^1.0.0",
-        "@fakehost/state-emitter": "^0.0.0",
+        "@fakehost/signalr": "^1.0.0-beta.0",
+        "@fakehost/signalr-test-client-api": "^1.0.0-beta.0",
+        "@fakehost/state-emitter": "^1.0.0-beta.0",
         "@faker-js/faker": "^7.6.0"
     },
     "devDependencies": {

@@ -1,6 +1,6 @@
 {
   "name": "@fakehost/rest-generated-client-api",
-  "version": "1.0.0",
+  "version": "1.0.0-beta.0",
   "description": "OpenAPI client for @fakehost/rest-generated-client-api",
   "author": "OpenAPI-Generator",
   "private": true,

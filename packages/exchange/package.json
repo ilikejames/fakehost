@@ -1,8 +1,13 @@
 {
   "name": "@fakehost/exchange",
   "description": "A basic package for building fake messaging services that communicate over websockets. Can run as a nodejs service, or be bundled inside the browser.",
-  "keywords": ["fake", "websocket", "mock", "ws"],
-  "version": "0.2.0",
+  "keywords": [
+    "fake",
+    "websocket",
+    "mock",
+    "ws"
+  ],
+  "version": "1.0.0-beta.0",
   "private": false,
   "license": "MIT",
   "files": [
