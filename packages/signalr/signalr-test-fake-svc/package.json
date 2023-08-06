@@ -2,7 +2,7 @@
     "name": "@fakehost/signalr-test-fake-svc",
     "description": "Fake versions of the local dotnet test service",
     "version": "1.0.0",
-    "private": false,
+    "private": true,
     "main": "dist/index.cjs",
     "type": "module",
     "exports": {
