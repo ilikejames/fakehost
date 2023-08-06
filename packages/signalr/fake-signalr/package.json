@@ -9,14 +9,14 @@
     "storybook",
     "contact"
   ],
-  "version": "0.0.0",
+  "version": "1.0.0-beta.0",
   "private": false,
   "main": "dist/index.cjs",
   "type": "module",
   "exports": {
     ".": {
       "import": "./dist/index.js",
-      "require":  "./dist/index.cjs"
+      "require": "./dist/index.cjs"
     },
     "./browser": {
       "import": "./dist/browser.js",
@@ -50,8 +50,8 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@fakehost/exchange": "^0.2.0",
-    "@fakehost/fake-rest": "^0.0.0",
+    "@fakehost/exchange": "^1.0.0-beta.0",
+    "@fakehost/fake-rest": "^1.0.0-beta.0",
     "@microsoft/signalr-protocol-msgpack": "^7.0.7",
     "@msgpack/msgpack": "^2.8.0",
     "url": "^0.11.0",
@@ -59,7 +59,7 @@
     "ws": "^8.13.0"
   },
   "devDependencies": {
-    "@fakehost/signalr-test-client-api": "*",
+    "@fakehost/signalr-test-client-api": "^2.0.0-beta.0",
     "@microsoft/signalr": "^7.0.5",
     "@types/uuid": "^9.0.1",
     "@types/ws": "^8.5.4",

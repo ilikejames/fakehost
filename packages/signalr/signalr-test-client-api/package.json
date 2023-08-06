@@ -1,6 +1,6 @@
 {
     "name": "@fakehost/signalr-test-client-api",
-    "version": "1.0.0",
+    "version": "2.0.0-beta.0",
     "private": true,
     "main": "dist/index.cjs",
     "type": "module",
@@ -18,8 +18,6 @@
     "dependencies": {
         "@microsoft/signalr": "^7.0.5",
         "rxjs": "^7.8.0"
-    },
-    "devDependencies": {
     },
     "scripts": {
         "build": "tsup src/index.ts --format cjs,esm --dts --sourcemap",

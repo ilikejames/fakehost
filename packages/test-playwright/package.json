@@ -1,20 +1,19 @@
 {
   "name": "@fakehost/test-playwright",
-  "version": "1.0.0",
+  "version": "2.0.0-beta.0",
   "description": "e2e test in playwright",
   "private": true,
   "license": "MIT",
   "dependencies": {
-    "@fakehost/fake-rest": "^0.0.0",
-    "@fakehost/rest-generated-client-api": "*",
-    "@fakehost/rest-test-fake-svc": "^1.0.0",
-    "@fakehost/signalr": "^0.0.0",
-    "@fakehost/signalr-test-fake-svc": "^1.0.0",
+    "@fakehost/fake-rest": "^1.0.0-beta.0",
+    "@fakehost/rest-generated-client-api": "^2.0.0-beta.0",
+    "@fakehost/rest-test-fake-svc": "^2.0.0-beta.0",
+    "@fakehost/signalr": "^1.0.0-beta.0",
+    "@fakehost/signalr-test-fake-svc": "^2.0.0-beta.0",
     "@playwright/test": "^1.32.3",
     "chalk": "^4.0.0",
     "url": "^0.11.0"
   },
-  "devDependencies": {},
   "scripts": {
     "build": "rimraf dist && tsc --noEmit",
     "e2e": "npx playwright test -c src/config/config.ts",
