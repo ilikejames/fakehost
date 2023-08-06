@@ -1,6 +1,12 @@
 import { HubMessage, IStreamResult, Subject } from '@microsoft/signalr'
 import { MessagePackHubProtocol } from '@microsoft/signalr-protocol-msgpack'
-import { Connection, ConnectionId, Host, ExchangeEvent } from '@fakehost/exchange'
+import {
+    CloseConnectionOptions,
+    Connection,
+    ConnectionId,
+    Host,
+    ExchangeEvent,
+} from '@fakehost/exchange'
 import { Observable } from 'rxjs'
 import { ClientState } from './ClientState'
 import { MessageType, InboundMessage, isHandshakeMessage } from './messageTypes'
@@ -60,8 +66,8 @@ export class FakeSignalrHub<
         private format?: FormatTarget<Hub, Receiver>,
     ) {}
 
-    disconnect() {
-        this.host?.disconnect(this.path)
+    disconnect(options?: CloseConnectionOptions) {
+        this.host?.disconnect({ path: this.path, ...options })
     }
 
     setHost(host: Host) {
@@ -125,7 +131,7 @@ export class FakeSignalrHub<
 
         if (!isHandshakeMessage(parsed)) {
             console.error('Expected initial handshake message, but none was received.')
-            connection.close()
+            connection.close({ code: 1002, reason: 'No handshake supplied' })
             return
         }
 

@@ -1,4 +1,4 @@
-import { Connection, ConnectionId, EventMap } from '../types'
+import { CloseConnectionOptions, Connection, ConnectionId, EventMap } from '../types'
 import { URL } from 'url'
 
 type HandlerMap = {
@@ -11,10 +11,14 @@ export type HostOptions = {
     silent: boolean
 }
 
+export type CloseOptions = CloseConnectionOptions & {
+    path?: string
+}
+
 export type Host = {
     on: <Key extends keyof EventMap>(e: Key, handler: (e: EventMap[Key]) => void) => void
     off: <Key extends keyof EventMap>(e: Key, handler: (e: EventMap[Key]) => void) => void
-    disconnect: (path?: string) => void
+    disconnect: (options?: Partial<CloseOptions>) => void
     dispose: () => Promise<void>
     get refuseNewConnections(): boolean
     set refuseNewConnections(refuse: boolean)
@@ -52,7 +56,19 @@ export abstract class BaseHost implements Host {
         this._refuseNewConnections = refuse
     }
 
-    abstract disconnect(): void
+    abstract disconnect(options?: Partial<CloseOptions>): void
     abstract dispose(): Promise<void>
     abstract get url(): Promise<URL>
+}
+
+const defaultCloseOptions: CloseOptions = {
+    code: 1000,
+    reason: 'Service disconnected',
+}
+
+export function getCloseOptions(options?: Partial<CloseOptions>): CloseOptions {
+    return {
+        ...defaultCloseOptions,
+        ...options,
+    }
 }

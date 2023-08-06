@@ -112,11 +112,47 @@ for (const host of hosts) {
                 expect(service.connectionCount).toBe(2)
 
                 service.disconnect()
-                await Promise.all([
-                    new Promise(resolve => client1.addEventListener('close', resolve)),
-                    new Promise(resolve => client2.addEventListener('close', resolve)),
+                const closeEvents = await Promise.all([
+                    new Promise<CloseEvent>(resolve => client1.addEventListener('close', resolve)),
+                    new Promise<CloseEvent>(resolve => client2.addEventListener('close', resolve)),
                 ])
                 expect(service.connectionCount).toBe(0)
+
+                closeEvents.forEach(evt => {
+                    expect(evt.code).toEqual(1000)
+                    expect(evt.reason).toEqual('Service disconnected')
+                })
+            } finally {
+                await service.dispose()
+            }
+        })
+
+        it('service disconnecting clients with a specific code', async () => {
+            const service = getService(host)
+            try {
+                expect(service.connectionCount).toBe(0)
+
+                const client1 = new globalThis.WebSocket(await service.url)
+                const client2 = new globalThis.WebSocket(await service.url)
+
+                await Promise.all([
+                    new Promise(resolve => client1.addEventListener('open', resolve)),
+                    new Promise(resolve => client2.addEventListener('open', resolve)),
+                ])
+                expect(service.connectionCount).toBe(2)
+
+                const closeOptions = { code: 4012, reason: 'Too many connections ' }
+                service.disconnect(closeOptions)
+                const closeEvents = await Promise.all([
+                    new Promise<CloseEvent>(resolve => client1.addEventListener('close', resolve)),
+                    new Promise<CloseEvent>(resolve => client2.addEventListener('close', resolve)),
+                ])
+                expect(service.connectionCount).toBe(0)
+
+                closeEvents.forEach(evt => {
+                    expect(evt.code).toEqual(closeOptions.code)
+                    expect(evt.reason).toEqual(closeOptions.reason)
+                })
             } finally {
                 await service.dispose()
             }

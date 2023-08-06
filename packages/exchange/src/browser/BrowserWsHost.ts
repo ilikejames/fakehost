@@ -3,9 +3,10 @@ import chalk from 'chalk'
 import { Server, WebSocket } from 'mock-socket'
 import { URL } from 'url'
 import { v4 as uuid } from 'uuid'
-import { BaseHost, HostOptions } from '../ws/Host'
+import { BaseHost, CloseOptions, Host, HostOptions, getCloseOptions } from '../ws/Host'
 import { logger } from '../logger'
 import { ConnectionId, Connection } from '../types'
+import { getBrowserCloseEvent } from './browserCloseEvent'
 
 export type BrowserWsHostOptions = Partial<HostOptions> & {
     url: URL
@@ -22,7 +23,7 @@ export const MockedSocket = function (url: string | URL, protocols?: string | st
  *  - bundling within browsers such as for Storybook
  *  - browser hosted tests such as Cypress
  */
-export class BrowserWsHost extends BaseHost {
+export class BrowserWsHost extends BaseHost implements Host {
     private options: BrowserWsHostOptions
     public readonly WebSocket = MockedSocket
     private server: Server
@@ -62,7 +63,7 @@ export class BrowserWsHost extends BaseHost {
             const connection: Connection = {
                 id: connectionId,
                 url: this.options.url,
-                close: client.close,
+                close: options => client.close(getBrowserCloseEvent(options)),
                 write: (raw: string | Buffer) => {
                     logger(chalk.red('←'), `${raw}`)
                     client.send(raw)
@@ -106,7 +107,8 @@ export class BrowserWsHost extends BaseHost {
         }
     }
 
-    disconnect(path?: string): void {
+    disconnect(options?: Partial<CloseOptions>): void {
+        const { path, code, reason } = getCloseOptions(options)
         // TODO: this cannot be done with mock-socket
         const connectionIds =
             path && this.pathConnections.has(path)
@@ -116,7 +118,7 @@ export class BrowserWsHost extends BaseHost {
             const connection = this.connections.get(connectionId)
             if (!connection) return
             logger(chalk.yellow(`${this.options.name}: Disconnecting connection ${connection.id}`))
-            connection.close()
+            connection.close({ code, reason })
             this.connections.delete(connectionId)
         })
         path && this.pathConnections.delete(path)
