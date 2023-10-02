@@ -1,9 +1,11 @@
 {
   "name": "@fakehost/state-emitter",
-  "description": "Create a state emitter for CRUD event services",
+  "description": "Create a state emitter for CRUD event fake services",
   "keywords": [
     "fake",
-    "testing"
+    "testing",
+    "state",
+    "crud"
   ],
   "version": "1.0.0-beta.1",
   "private": false,
