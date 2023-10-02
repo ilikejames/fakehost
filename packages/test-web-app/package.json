@@ -1,6 +1,6 @@
 {
   "name": "@fakehost/test-web-app",
-  "version": "1.0.0-beta.1",
+  "version": "1.0.0-beta.2",
   "description": "Test web application for fakes in a browser",
   "private": "true",
   "license": "MIT",
@@ -25,7 +25,7 @@
     "@fakehost/rest-test-fake-svc": "^1.0.0-beta.1",
     "@fakehost/signalr": "^1.0.0-beta.1",
     "@fakehost/signalr-test-client-api": "^1.0.0-beta.1",
-    "@fakehost/signalr-test-fake-svc": "^1.0.0-beta.1",
+    "@fakehost/signalr-test-fake-svc": "^1.0.0-beta.2",
     "@types/numeral": "^2.0.2",
     "@types/react": "^18.0.35",
     "@types/react-dom": "^18.0.11",
