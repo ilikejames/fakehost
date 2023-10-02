@@ -1,7 +1,7 @@
 {
     "name": "@fakehost/utils-app-server",
     "description": "Host an existing local app with injected runtime variables for running automated tests against. ",
-    "version": "1.0.0-beta.0",
+    "version": "1.0.0-beta.1",
     "private": false,
     "license": "ISC",
     "files": [
