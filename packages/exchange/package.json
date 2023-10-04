@@ -31,6 +31,7 @@
   "main": "./dist/index.cjs",
   "types": "./dist/index.d.ts",
   "dependencies": {
+    "blob-util": "^2.0.2",
     "chalk": "^4.0.0",
     "debug": "^4.3.3",
     "mock-socket": "^9.1.5",
