@@ -9,7 +9,7 @@
     "storybook",
     "contact"
   ],
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.3",
   "private": false,
   "main": "dist/index.cjs",
   "type": "module",
@@ -51,7 +51,7 @@
   "license": "MIT",
   "dependencies": {
     "@fakehost/exchange": "^1.0.0-beta.2",
-    "@fakehost/fake-rest": "^1.0.0-beta.2",
+    "@fakehost/fake-rest": "^1.0.0-beta.3",
     "@microsoft/signalr-protocol-msgpack": "^7.0.7",
     "@msgpack/msgpack": "^2.8.0",
     "url": "^0.11.0",
