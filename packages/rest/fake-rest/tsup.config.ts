@@ -5,7 +5,11 @@ export default defineConfig({
     dts: {
         resolve: true,
     },
-    entry: ['src/index.ts', 'src/HijackedRestService.ts', 'src/HttpRestService.ts'],
+    entry: {
+        index: 'src/index.ts',
+        server: 'src/HttpRestService.ts',
+        browser: 'src/HijackedRestService.ts',
+    },
     splitting: true,
     sourcemap: true,
     clean: true,

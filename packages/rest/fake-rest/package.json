@@ -25,17 +25,17 @@
       "require": "./dist/index.cjs"
     },
     "./browser": {
-      "import": "./dist/HijackedRestService.js",
-      "require": "./dist/HijackedRestService.cjs"
+      "import": "./dist/browser.js",
+      "require": "./dist/browser.cjs"
     },
     "./server": {
-      "import": "./dist/HttpRestService.js",
-      "require": "./dist/HttpRestService.cjs"
+      "import": "./dist/server.js",
+      "require": "./dist/server.cjs"
     },
     "./package.json": "./package.json"
   },
   "browser": {
-    "./browser": "./dist/HijackedRestService.js"
+    "./browser": "./dist/browser.js"
   },
   "typesVersions": {
     "*": {
@@ -43,10 +43,10 @@
         "./dist/index.d.ts"
       ],
       "browser": [
-        "./dist/HijackedRestService.d.ts"
+        "./dist/browser.d.ts"
       ],
       "server": [
-        "./dist/HttpRestService.d.ts"
+        "./dist/server.d.ts"
       ]
     }
   },
