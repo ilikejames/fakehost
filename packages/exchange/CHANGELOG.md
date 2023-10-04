@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.2](https://github.com/ilikejames/fakehost/compare/@fakehost/exchange@1.0.0-beta.1...@fakehost/exchange@1.0.0-beta.2) (2023-10-04)
+
+**Note:** Version bump only for package @fakehost/exchange
+
+
+
+
+
 # 1.0.0-beta.1 (2023-10-02)
 
 

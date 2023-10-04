@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.3](https://github.com/ilikejames/fakehost/compare/@fakehost/signalr-test-fake-svc@1.0.0-beta.2...@fakehost/signalr-test-fake-svc@1.0.0-beta.3) (2023-10-04)
+
+**Note:** Version bump only for package @fakehost/signalr-test-fake-svc
+
+
+
+
+
 # [1.0.0-beta.2](https://github.com/ilikejames/fakehost/compare/@fakehost/signalr-test-fake-svc@1.0.0-beta.1...@fakehost/signalr-test-fake-svc@1.0.0-beta.2) (2023-10-02)
 
 **Note:** Version bump only for package @fakehost/signalr-test-fake-svc
