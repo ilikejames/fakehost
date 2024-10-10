@@ -1,23 +1,18 @@
 {
-  "name": "@fakehost/fake-rest",
-  "description": "A fake REST server that can run as a service or bundled within a browser, for testing and demoing",
+  "name": "@fakehost/host",
+  "description": "A basic package for building fake messaging services that communicate over websockets. Can run as a nodejs service, or be bundled inside the browser.",
   "keywords": [
     "fake",
-    "rest",
-    "browser",
-    "react-native",
-    "mock"
+    "websocket",
+    "mock",
+    "ws"
   ],
-  "version": "1.0.0-beta.3",
+  "version": "0.0.0",
   "private": false,
-  "license": "ISC",
+  "license": "MIT",
   "files": [
-    "dist",
-    "README.md"
+    "dist"
   ],
-  "homepage": "https://github.com/ilikejames/fakehost",
-  "main": "dist/index.cjs",
-  "types": "./dist/index.d.ts",
   "type": "module",
   "exports": {
     "browser": {
@@ -29,23 +24,30 @@
       "require": "./dist/index.cjs"
     }
   },
+  "main": "./dist/index.cjs",
+  "types": "./dist/index.d.ts",
   "browser": {
     "./index.js": "./dist/browser.js"
   },
   "dependencies": {
-    "buffer": "^6.0.3",
+    "blob-util": "^2.0.2",
     "chalk": "^4.0.0",
     "debug": "^4.3.3",
-    "isomorphic-fetch": "^3.0.0",
-    "path-to-regexp": "^6.2.1",
-    "streams": "^0.0.11",
+    "mock-socket": "^9.1.5",
     "url": "^0.11.0",
-    "uuid": "^9.0.0"
+    "uuid": "^9.0.0",
+    "ws": "^8.9.0"
   },
   "devDependencies": {
     "@types/debug": "^4.1.7",
-    "@types/isomorphic-fetch": "^0.0.36",
+    "@types/sockjs": "^0.3.33",
+    "@types/sockjs-node": "^0.3.28",
     "@types/uuid": "^8.3.4",
+    "@types/ws": "^8.5.3",
+    "cross-env": "^7.0.3",
+    "isomorphic-ws": "^5.0.0",
+    "sockjs": "^0.3.0",
+    "ts-node": "^10.4.0",
     "vitest": "^0.33.0"
   },
   "scripts": {

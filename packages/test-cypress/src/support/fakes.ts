@@ -1,5 +1,5 @@
-import { MockedSocket, createInBrowserSignalr } from '@fakehost/signalr/browser'
-import { HijackedRestService, enableLogger, mockedFetch } from '@fakehost/fake-rest/browser'
+import { MockedSocket, createBrowserSignalr } from '@fakehost/signalr'
+import { HijackedRestService, enableLogger, mockedFetch } from '@fakehost/fake-rest'
 import { router } from '@fakehost/rest-test-fake-svc'
 import { hubs } from '@fakehost/signalr-test-fake-svc'
 
@@ -10,7 +10,7 @@ type FakeEnv<T extends Record<string, unknown>> = {
     mockedFetch: typeof mockedFetch
     mockedSocket: typeof MockedSocket
     restHost: HijackedRestService
-    signalr: Awaited<ReturnType<typeof createInBrowserSignalr<T>>>
+    signalr: Awaited<ReturnType<typeof createBrowserSignalr<T>>>
 }
 
 const REST_URL = 'http://rest.com'
@@ -26,7 +26,7 @@ export const startFakeEnv = async (): Promise<FakeEnv<typeof hubs>> => {
     })
 
     // setup fake signalr service
-    const fakeSignalr = await createInBrowserSignalr<typeof hubs>({
+    const fakeSignalr = await createBrowserSignalr<typeof hubs>({
         hubs: hubs,
         url: new URL(SIGNALR_URL),
     })
@@ -47,4 +47,3 @@ export const startFakeEnv = async (): Promise<FakeEnv<typeof hubs>> => {
         },
     }
 }
-

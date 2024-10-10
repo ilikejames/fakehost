@@ -1,6 +1,14 @@
 import Url from 'url'
 import { FakeSignalrHub } from './FakeSignalrHub'
 
+export type ServerOptions<T extends Record<string, unknown>> = {
+    url: URL
+    name?: string
+    silent?: boolean
+    debug?: boolean
+    hubs: T
+}
+
 export type Signalr<T> = T extends FakeSignalrHub<infer H, infer R, infer S>
     ? FakeSignalrHub<H, R, S>
     : never

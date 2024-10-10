@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { mockedFetch } from '../HijackedRestService'
+import { mockedFetch } from '../host/HijackedRestService'
 import { echoRouter, getHost } from './helper'
 
 describe(`mockFetch`, () => {

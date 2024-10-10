@@ -1,2 +1,6 @@
 export { FakeSignalrHub } from './FakeSignalrHub'
-export type { ConnectionId } from '@fakehost/exchange'
+export type { ConnectionId } from '@fakehost/host'
+export * from './create/serverSignalr'
+export * from './create/browserSignalr'
+export type { ServerOptions } from './types'
+export { enableLogger } from './create/logger'

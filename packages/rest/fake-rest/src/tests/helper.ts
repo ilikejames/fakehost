@@ -1,5 +1,5 @@
-import { HijackedRestService } from '../HijackedRestService'
-import { HttpRestService } from '../HttpRestService'
+import { HijackedRestService } from '../host/HijackedRestService'
+import { HttpRestService } from '../host/HttpRestService'
 import { createRouter } from '../createRouter'
 import { type Methods } from '../methods'
 import { RestRouter } from '../types'

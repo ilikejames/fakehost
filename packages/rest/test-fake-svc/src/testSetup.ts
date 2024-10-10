@@ -1,4 +1,4 @@
-import { HttpRestService, createRouter } from '@fakehost/fake-rest/server'
+import { HttpRestService, createRouter } from '@fakehost/fake-rest'
 import { Configuration } from '@fakehost/rest-generated-client-api'
 import { URL } from 'url'
 

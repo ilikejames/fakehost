@@ -8,13 +8,11 @@ import {
     useReactTable
 } from '@tanstack/react-table'
 import { Subscribe } from '@react-rxjs/core'
-import React, { FC, ComponentProps } from 'react'
+import React, { FC } from 'react'
 import { useVirtual } from 'react-virtual'
 import { orders$, useOrders } from '@/api/orders'
 import { OrderStatusBadge } from './OrderStatusBadge'
 import { PercentFilled } from './PercentFilled'
-import { TextField } from '@mui/material'
-
 
 export const OrderGrid: FC = () => {
     return (
