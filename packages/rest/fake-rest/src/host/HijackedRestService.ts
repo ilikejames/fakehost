@@ -201,20 +201,21 @@ const parseInput = (input: RequestInfo | URL, init?: RequestInit) => {
 }
 
 const compareInstance = (
-    body: any,
+    body: unknown,
     klass: { new (): FormData } | { new (): URLSearchParams } | { new (): Blob },
 ) => {
     if (body instanceof klass) return true
+    if (!body || typeof body !== 'object') return false
     // In cypress we are comparing across different window instances.
     return 'constructor' in body && body.constructor.toString() === klass.toString()
 }
 
-const isURLSearchParams = (body: any): body is URLSearchParams =>
+const isURLSearchParams = (body: unknown): body is URLSearchParams =>
     compareInstance(body, URLSearchParams)
 
-const isFormData = (body: any): body is FormData => compareInstance(body, FormData)
+const isFormData = (body: unknown): body is FormData => compareInstance(body, FormData)
 
-const isBlob = (body: any): body is Blob => compareInstance(body, Blob)
+const isBlob = (body: unknown): body is Blob => compareInstance(body, Blob)
 
 const getBody = (input: RequestInfo | URL, init?: RequestInit) => {
     const body = parseInput(input, init)

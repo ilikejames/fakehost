@@ -34,7 +34,7 @@
   ],
   "license": "MIT",
   "dependencies": {
-    "@fakehost/exchange": "^1.0.0-beta.2",
+    "@fakehost/host": "^0.0.0",
     "@fakehost/fake-rest": "^1.0.0-beta.3",
     "@microsoft/signalr-protocol-msgpack": "^7.0.7",
     "@msgpack/msgpack": "^2.8.0",
