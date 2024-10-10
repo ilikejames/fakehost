@@ -3,21 +3,12 @@ import chalk from 'chalk'
 import { createServer } from 'http'
 import { AddressInfo } from 'net'
 import { URL } from 'url'
-import { createRouter, isHandler } from './createRouter'
-import { logger, enableLogger } from './logger'
-import { type Methods } from './methods'
-import { RestRouter, Request, Response, HttpHeader } from './types'
-import { getRouteParams, handleServiceError } from './utils'
-
-export { createRouter }
-export { enableLogger }
-
-type HttpRestServiceOptions = {
-    name: string
-    port: number
-    path: string
-    silent: boolean
-}
+import { isHandler } from '../createRouter'
+import { logger } from '../logger'
+import { type Methods } from '../methods'
+import { RestRouter, Request, Response, HttpHeader } from '../types'
+import { getRouteParams, handleServiceError } from '../utils'
+import { HttpRest, HttpRestServiceOptions } from './types'
 
 const collect = <T>(stream: NodeJS.ReadableStream): Promise<T[]> => {
     const chunks: T[] = []
@@ -70,7 +61,7 @@ const getBody = async (contentType: string, stream: NodeJS.ReadableStream) => {
     return body
 }
 
-export class HttpRestService {
+export class HttpRestService implements HttpRest {
     public readonly server: ReturnType<typeof createServer>
     private options: Partial<HttpRestServiceOptions>
     public readonly url: Promise<URL>
@@ -210,6 +201,7 @@ export class HttpRestService {
     }
 
     private isOpen = false
+
     dispose() {
         if (!this.isOpen) return Promise.resolve()
         return new Promise<void>((resolve, reject) => {

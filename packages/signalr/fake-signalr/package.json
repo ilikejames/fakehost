@@ -15,34 +15,18 @@
   "type": "module",
   "exports": {
     ".": {
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
-    },
-    "./browser": {
-      "import": "./dist/browser.js",
-      "require": "./dist/browser.cjs"
-    },
-    "./server": {
-      "import": "./dist/createServer.js",
-      "require": "./dist/createServer.cjs"
-    },
-    "./package.json": "./package.json"
+      "browser": {
+        "import": "./dist/browser.js",
+        "require": "./dist/browser.cjs"
+      },
+      "default": {
+        "import": "./dist/index.js",
+        "require": "./dist/index.cjs"
+      }
+    }
   },
   "browser": {
-    "./browser": "./dist/browser.js"
-  },
-  "typesVersions": {
-    "*": {
-      "*": [
-        "./dist/index.d.ts"
-      ],
-      "browser": [
-        "./dist/browser.d.ts"
-      ],
-      "server": [
-        "./dist/createServer.d.ts"
-      ]
-    }
+    "./index.js": "./dist/browser.js"
   },
   "files": [
     "dist",

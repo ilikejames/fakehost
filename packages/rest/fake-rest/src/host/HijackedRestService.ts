@@ -1,14 +1,12 @@
-import { createRouter, isHandler } from './createRouter'
-import { enableLogger, logger } from './logger'
-import { type Methods } from './methods'
-import { Response, Request, RestRouter, HttpHeader } from './types'
-import { getMethod, getRouteParams, getUrl, handleServiceError } from './utils'
-import { FetchCollection } from './FetchCollection'
+import { isHandler } from '../createRouter'
+import { logger } from '../logger'
+import { type Methods } from '../methods'
+import { Response, Request, RestRouter, HttpHeader } from '../types'
+import { getMethod, getRouteParams, getUrl, handleServiceError } from '../utils'
+import { FetchCollection } from '../FetchCollection'
+import { HttpRest } from './types'
 
-export { createRouter }
-export { enableLogger }
-
-type HijackedRestServiceOptions = {
+export type HijackedRestServiceOptions = {
     name: string
     path: string
     silent: boolean
@@ -21,10 +19,11 @@ export const mockedFetch = (...args: Parameters<typeof fetch>) => {
 /**
  * Hijacks the fetch/XmlRequest calls and returns the data from the router.
  */
-export class HijackedRestService {
+export class HijackedRestService implements HttpRest {
     private options: Partial<HijackedRestServiceOptions>
     private isActive = true
     private readonly hijackedFetch: typeof fetch
+    public readonly url: Promise<URL>
 
     constructor(
         host: URL,
@@ -35,7 +34,7 @@ export class HijackedRestService {
             name: 'HijackedRestService',
             ...options,
         }
-
+        this.url = Promise.resolve(host)
         logger(`${this.options.name}: Starting...`)
 
         this.hijackedFetch = globalThis.fetch = async (

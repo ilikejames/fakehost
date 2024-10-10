@@ -1,4 +1,4 @@
-import { ConnectionId } from '@fakehost/exchange'
+import { ConnectionId } from '@fakehost/host'
 import { createRouter, cors } from '@fakehost/fake-rest'
 import { v4 as uuid } from 'uuid'
 
