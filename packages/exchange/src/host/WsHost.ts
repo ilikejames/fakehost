@@ -1,21 +1,12 @@
 import chalk from 'chalk'
-import { URL } from 'url'
 import { v4 as uuid } from 'uuid'
-import { WebSocketServer, ServerOptions, Server } from 'ws'
-import { BaseHost, CloseOptions, Host, HostOptions, getCloseOptions } from './Host'
-import { logger } from '../logger'
-import { ConnectionId, Connection } from '../types'
-
-export type WsStandaloneOptions = HostOptions & {
-    port?: number
-    path?: string
-}
-
-export type WsHostedOptions = HostOptions & {
-    server: ServerOptions['server']
-}
-
-export type WsHostOptions = WsStandaloneOptions | WsHostedOptions
+import WebSocket from 'isomorphic-ws'
+import { WebSocketServer, Server } from 'ws'
+import { BaseHost, getCloseOptions } from './host'
+import { CloseOptions, Host } from '../types/host'
+import { WsHostOptions } from '../types/wsHost'
+import { logger } from './logger'
+import { ConnectionId, ClientConnection } from '../types/connection'
 
 /**
  * A service host that uses websockets to communicate with clients over the local network
@@ -32,6 +23,7 @@ export class WsHost extends BaseHost implements Host {
 
     constructor(options?: Partial<WsHostOptions>) {
         super()
+        globalThis.WebSocket = globalThis.WebSocket ?? WebSocket
         this.options = {
             name: 'WsHost',
             ...options,
@@ -76,7 +68,7 @@ export class WsHost extends BaseHost implements Host {
             const pathConnections = this.pathConnections.get(requestUrl.pathname) || []
             this.pathConnections.set(requestUrl.pathname, [...pathConnections, id])
 
-            const connection: Connection = {
+            const connection: ClientConnection = {
                 id,
                 url: requestUrl,
                 close: options => {

@@ -7,7 +7,7 @@
     "state",
     "crud"
   ],
-  "version": "1.0.0-beta.2",
+  "version": "1.0.0-beta.4",
   "private": false,
   "license": "MIT",
   "files": [
@@ -15,9 +15,9 @@
     "README.md"
   ],
   "homepage": "https://github.com/ilikejames/fakehost",
+  "type": "module",
   "main": "dist/index.cjs",
   "types": "dist/index.d.ts",
-  "type": "module",
   "exports": {
     ".": {
       "import": "./dist/index.js",
@@ -32,6 +32,7 @@
     "vitest": "^0.33.0"
   },
   "scripts": {
+    "attw": "attw --pack",
     "build": "tsup src/index.ts --format cjs,esm --dts --sourcemap",
     "lint": "eslint --ext .tsx --ext .ts src/",
     "test": "vitest --run",

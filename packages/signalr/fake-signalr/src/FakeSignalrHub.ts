@@ -2,7 +2,7 @@ import { HubMessage, IStreamResult, Subject } from '@microsoft/signalr'
 import { MessagePackHubProtocol } from '@microsoft/signalr-protocol-msgpack'
 import {
     CloseConnectionOptions,
-    Connection,
+    ClientConnection,
     ConnectionId,
     Host,
     ExchangeEvent,
@@ -122,7 +122,7 @@ export class FakeSignalrHub<
         this.connectionEvents.delete(`${connection.id}.disconnect`)
     }
 
-    private handleHandshake(connection: Connection, message: string | Buffer) {
+    private handleHandshake(connection: ClientConnection, message: string | Buffer) {
         const [parsed] = message
             .toString()
             .split(TERMINATING_CHAR)
@@ -139,7 +139,7 @@ export class FakeSignalrHub<
         connection.write(JSON.stringify({ type: 0 }) + TERMINATING_CHAR)
     }
 
-    private serialize(connection: Connection, message: unknown) {
+    private serialize(connection: ClientConnection, message: unknown) {
         switch (this.messageProtocol.get(connection.id)) {
             case 'json':
                 return JSON.stringify(message) + TERMINATING_CHAR
@@ -151,7 +151,7 @@ export class FakeSignalrHub<
     }
 
     private deserialize(
-        connection: Connection,
+        connection: ClientConnection,
         message: string | Buffer,
     ): Array<InboundMessage<Hub>> {
         switch (this.messageProtocol.get(connection.id)) {
@@ -170,8 +170,8 @@ export class FakeSignalrHub<
         }
     }
 
-    private async onMessage(connection: Connection, message: InboundMessage<Hub>) {
-        const connectionId = connection.id as ConnectionId
+    private async onMessage(connection: ClientConnection, message: InboundMessage<Hub>) {
+        const connectionId = connection.id
         const client = this.clients.get(connectionId)
         if (!client) return
 

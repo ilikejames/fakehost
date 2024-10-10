@@ -1,4 +1,4 @@
-import { Connection } from '@fakehost/exchange'
+import { ClientConnection } from '@fakehost/exchange'
 import { ISubscription, Subject } from '@microsoft/signalr'
 import { Subscription } from 'rxjs'
 import { InvocationId } from './messageTypes'
@@ -10,7 +10,7 @@ export class ClientState<T = object> {
     // streams client -> service
     public readonly subjects = new Map<InvocationId, Subject<unknown>>()
 
-    constructor(public readonly connection: Connection) {}
+    constructor(public readonly connection: ClientConnection) {}
 
     private unsubscribe(id: InvocationId) {
         const subscription = this.subscriptions.get(id)

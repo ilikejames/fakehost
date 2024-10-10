@@ -13,18 +13,22 @@
     "packages/utils/*"
   ],
   "devDependencies": {
+    "@arethetypeswrong/cli": "^0.17.0",
     "@types/node": "^18.0.0",
     "concurrently": "^8.0.1",
     "cross-env": "^7.0.3",
     "lerna": "^7.1.1",
     "prettier": "^2.3.2",
-    "tsup": "^7.1.0",
-    "typescript": "^5.0.0"
+    "rimraf": "^5.0.0",
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.3"
   },
   "scripts": {
+    "attw": "lerna run attw --",
     "build:libs": "lerna run build",
     "build:app": "lerna run  build:app",
     "build": "yarn build:libs && yarn build:app",
+    "clean": "rimraf packages/*/dist",
     "lint": "lerna run  lint --",
     "test": "lerna run test --",
     "e2e": "lerna run --stream e2e --",
@@ -34,6 +38,8 @@
     "start:fakes": "concurrently \"yarn start:fake:rest\" \"yarn start:fake:signalr\"",
     "start:fake:rest": "cross-env REST_PORT=5005 yarn --cwd packages/rest/test-fake-svc start:fake",
     "start:fake:signalr": "cross-env SIGNALR_PORT=5002 yarn --cwd packages/signalr/signalr-test-fake-svc start:fake",
-    "typecheck": "lerna run typecheck --"
+    "typecheck": "lerna run typecheck --",
+    "prepublish:verdaccio": "yarn build:libs",
+    "publish:verdaccio": "lerna publish --conventional-commits --conventional-prerelease --registry http://localhost:4873/ --no-push"
   }
 }

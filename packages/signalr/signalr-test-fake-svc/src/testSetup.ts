@@ -1,5 +1,13 @@
-import { createServerSignalr } from '@fakehost/signalr/server'
-import { hubs } from './hubs'
+import { createServerSignalr } from '@fakehost/signalr'
+import { chatHub } from './fakeChatHub'
+import { orderHub } from './fakeOrderHub'
+import { timeHub } from './fakeTimeStreamHub'
+
+const hubs = {
+    chatHub,
+    orderHub,
+    timeHub,
+}
 
 export const protocols = ['json', 'messagepack'] as const
 export type Protocols = (typeof protocols)[number]
@@ -25,7 +33,8 @@ export type TestEnv = {
 export const testSetup = async (mode: TestTarget): Promise<TestEnv> => {
     switch (mode) {
         case 'FAKE': {
-            const { dispose, url } = await createServerSignalr<typeof hubs>({
+            const { dispose, url } = await createServerSignalr({
+                url: new URL('http://localhost:0'),
                 hubs: hubs,
                 debug: false,
             })

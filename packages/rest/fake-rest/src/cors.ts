@@ -1,6 +1,6 @@
 import { Request, Response, Next } from './types'
 
-type CorsOptions = {
+export type CorsOptions = {
     allowHeaders?: string[]
     allowMethods?: string[]
 }

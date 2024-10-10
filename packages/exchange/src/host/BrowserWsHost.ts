@@ -1,11 +1,11 @@
 import { blobToArrayBuffer } from 'blob-util'
 import chalk from 'chalk'
 import { Server, WebSocket } from 'mock-socket'
-import { URL } from 'url'
 import { v4 as uuid } from 'uuid'
-import { BaseHost, CloseOptions, Host, HostOptions, getCloseOptions } from '../ws/Host'
-import { logger } from '../logger'
-import { ConnectionId, Connection } from '../types'
+import { BaseHost, getCloseOptions } from './host'
+import { CloseOptions, Host, HostOptions } from '../types/host'
+import { logger } from './logger'
+import { ConnectionId, ClientConnection } from '../types/connection'
 import { getBrowserCloseEvent } from './browserCloseEvent'
 
 export type BrowserWsHostOptions = Partial<HostOptions> & {
@@ -13,7 +13,7 @@ export type BrowserWsHostOptions = Partial<HostOptions> & {
 }
 
 export const MockedSocket = function (url: string | URL, protocols?: string | string[]) {
-    return new WebSocket(url, protocols)
+    return new WebSocket(url.toString(), protocols)
 }
 
 /**
@@ -60,7 +60,7 @@ export class BrowserWsHost extends BaseHost implements Host {
             this.pathConnections.set(url.pathname, [...pathConnections, connectionId])
 
             logger(`${this.options.name}: New connection ${connectionId}`)
-            const connection: Connection = {
+            const connection: ClientConnection = {
                 id: connectionId,
                 url: this.options.url,
                 close: options => client.close(getBrowserCloseEvent(options)),
@@ -109,11 +109,8 @@ export class BrowserWsHost extends BaseHost implements Host {
 
     disconnect(options?: Partial<CloseOptions>): void {
         const { path, code, reason } = getCloseOptions(options)
-        // TODO: this cannot be done with mock-socket
-        const connectionIds =
-            path && this.pathConnections.has(path)
-                ? this.pathConnections.get(path) ?? []
-                : [...this.connections.keys()]
+        // TODO: tearing down connection by path
+        const connectionIds = [...this.connections.keys()]
         connectionIds.forEach(connectionId => {
             const connection = this.connections.get(connectionId)
             if (!connection) return

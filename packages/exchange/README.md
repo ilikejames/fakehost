@@ -2,6 +2,11 @@
 
 [![NPM Version][npm-image]][npm-url]
 
+## Migrating from v0.x
+
+See [Migrating from v0.x](https://ilikejames.github.io/fakehost/#/exchange/migrating-from-v0.md)
+
+
 ## Overview
 
 **[See the docs for more info.](https://ilikejames.github.io/fakehost)**
@@ -44,7 +49,7 @@ Messages are all in JSON, so we can easily inspect what the service is doing by 
 An extremely basic protocol that only supports simple request/response messages could look like:
 
 ```typescript
-import { Host, ConnectionId, Connection, ExchangeEvent } from '@fakehost/exchange'
+import { Host, ConnectionId, ClientConnection, ExchangeEvent } from '@fakehost/exchange'
 
 type MessageHandler = (payload: unknown) => unknown
 
@@ -135,10 +140,6 @@ DEBUG=@fakehost/exchange
 
 @fakehost/exchange is licensed under the [MIT License](https://mit-license.org/).
 
-
-## Migrating from v0.x
-
-See [Migrating from v0.x](https://ilikejames.github.io/fakehost/#/exchange/migrating-from-v0.md)
 
 [npm-image]: https://img.shields.io/npm/v/@fakehost/exchange.svg
 [npm-url]: https://npmjs.org/package/@fakehost/exchange

@@ -5,10 +5,10 @@
 ### Previously...
 
 ```typescript
-import { ProtocolHandler, WsFakeHost } from '@fakehost/exchange'
+import { Connection, ProtocolHandler, WsFakeHost } from '@fakehost/exchange'
 
-type IncomingMessage = {}
-type OutgoingMessage = {}
+type IncomingMessage = {/*...*/}
+type OutgoingMessage = {/*...*/}
 
 export class MyProtocolHandler implements ProtocolHandler<IncomingMessage, OutgoingMessage> {
     path?: string
@@ -23,27 +23,25 @@ export class MyProtocolHandler implements ProtocolHandler<IncomingMessage, Outgo
 And to initialise:
 
 ```typescript
-const myHandler = new MyProtocolHandler()
+const protocol = new MyProtocolHandler()
 // WsFakeHost or InlineFakeHost
 const host = new WsFakeHost(myHandler, 5560, '/json', { debug: true, name: 'FakeTestSvc' })
 
 services.forEach(svc => {
-    myHandler.subscribe(svc)
+    protocol.subscribe(svc)
 })
 ```
 
-### Now
+### Now...
 
 ```typescript
-import { Connection, ConnectionId, Host, ExchangeEvent } from '@fakehost/exchange'
+import { ClientConnection, ConnectionId, Host, ExchangeEvent } from '@fakehost/exchange'
 import { Subscription } from 'rxjs'
 
-export class MyProtocolHandler {
+type IncomingMessage = {/*...*/}
+type OutgoingMessage = {/*...*/}
 
-    // Any references to connection ids used to be a string, but now it has a branded type
-    // for added type safety. You can still cast a `ConnectionId` to a string but it is recommended
-    // to use the branded type.
-    private connectionSubscriptions = new Map<ConnectionId, Subscription>()
+export class ProtocolHandler {
 
     constructor(private host: Host) {
         host.on('connection', this.onConnection.bind(this))
@@ -51,13 +49,21 @@ export class MyProtocolHandler {
         host.on('message', this.onMessage.bind(this)
     }
 
-    onConnection({ connection }: ExchangeEvent<'connection'>) {...}
+    private onConnection({ connection }: ExchangeEvent<'connection'>) {...}
 
-    onDisconnection({ connection} : ExchangeEvent<'disconnection'>) {...}
+    private onDisconnection({ connection} : ExchangeEvent<'disconnection'>) {...}
 
-    onMessage({ connection, message } : ExchangeEvent<'message'>) {
-        // e.g. 
+    private onMessage({ connection, message } : ExchangeEvent<'message'>) {
         const parsedMessage = this.deserialize(message)
+        /*...*/
+    }
+
+    private serialize: (message: OutgoingMessage) => {/*...*/}
+
+    private deserialize: (message: string | Buffer): IncomingMessage => {/*...*/}
+
+    subscribe(service: Handler) {
+        /*...*/
     }
 }
 ```
@@ -72,9 +78,8 @@ const host = new WsHost({
     port: 5560,
     path: '/json'
 })
-const myProtocolHandler = new MyProtocolHandler(host)
+const protocol = new ProtocolHandler(host)
 services.forEach(svc => {
-    myProtocolHandler.subscribe(svc)
+    protocol.subscribe(svc))
 })
 ```
-

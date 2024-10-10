@@ -1,6 +1,6 @@
 {
     "name": "@fakehost/signalr-test-client-api",
-    "version": "1.0.0-beta.1",
+    "version": "1.0.0-beta.2",
     "private": true,
     "main": "dist/index.cjs",
     "type": "module",
@@ -20,7 +20,7 @@
         "rxjs": "^7.8.0"
     },
     "scripts": {
-        "build": "tsup src/index.ts --format cjs,esm --dts --sourcemap",
+        "build": "tsup-node --config ./tsup.config.ts",
         "lint": "eslint --ext .tsx --ext .ts src/",
         "generate:api": "./generate-api.sh"
     }

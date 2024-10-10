@@ -3,6 +3,34 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.5](https://github.com/ilikejames/fakehost/compare/@fakehost/exchange@1.0.0-beta.4...@fakehost/exchange@1.0.0-beta.5) (2024-11-20)
+
+**Note:** Version bump only for package @fakehost/exchange
+
+
+
+
+
+# [1.0.0-beta.4](https://github.com/ilikejames/fakehost/compare/@fakehost/exchange@1.0.0-beta.3...@fakehost/exchange@1.0.0-beta.4) (2024-11-15)
+
+**Note:** Version bump only for package @fakehost/exchange
+
+
+
+
+
+# [1.0.0-beta.3](https://github.com/ilikejames/fakehost/compare/@fakehost/exchange@1.0.0-beta.2...@fakehost/exchange@1.0.0-beta.3) (2024-10-24)
+
+
+### Bug Fixes
+
+* browser/node imports ([c140330](https://github.com/ilikejames/fakehost/commit/c1403306e99ab1e4bf4884c42cfde9baa890ac4e))
+* embedded types ([d9d456f](https://github.com/ilikejames/fakehost/commit/d9d456f3bb2cf4d41979a6ede4786b41c6108649))
+
+
+
+
+
 # [1.0.0-beta.2](https://github.com/ilikejames/fakehost/compare/@fakehost/exchange@1.0.0-beta.1...@fakehost/exchange@1.0.0-beta.2) (2023-10-04)
 
 **Note:** Version bump only for package @fakehost/exchange
