@@ -88,13 +88,3 @@ const parseMessage = <Hub extends object>(input: Uint8Array): InboundMessage<Hub
             return null
     }
 }
-
-type MessageHeaders = Record<string, string>
-
-// const readHeaders = (properties: any): MessageHeaders => {
-//     const headers: MessageHeaders = properties[1] as MessageHeaders
-//     if (typeof headers !== 'object') {
-//         throw new Error('Invalid headers.')
-//     }
-//     return headers
-// }

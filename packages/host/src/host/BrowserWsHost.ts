@@ -14,7 +14,7 @@ export type BrowserWsHostOptions = Partial<HostOptions> & {
 }
 
 export const MockedSocket = function (url: string | URL, protocols?: string | string[]) {
-    return new WebSocket(url, protocols)
+    return new WebSocket(url.toString(), protocols)
 }
 
 /**

@@ -15,9 +15,9 @@
     "README.md"
   ],
   "homepage": "https://github.com/ilikejames/fakehost",
+  "type": "module",
   "main": "dist/index.cjs",
   "types": "dist/index.d.ts",
-  "type": "module",
   "exports": {
     ".": {
       "import": "./dist/index.js",

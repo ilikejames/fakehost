@@ -1,3 +1,4 @@
+import { URL } from 'url'
 import { CloseOptions, Host } from '../types/host'
 import { Connection, ConnectionId } from '../types/connection'
 import { EventMap, HandlerMap } from '../types/events'

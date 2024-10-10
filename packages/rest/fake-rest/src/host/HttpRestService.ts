@@ -43,7 +43,7 @@ const parseMultipartFormData = (body: string, boundary: string): Record<string, 
 }
 
 const getBody = async (contentType: string, stream: NodeJS.ReadableStream) => {
-    const chunks = await collect<Buffer>(stream)
+    const chunks = await collect<Uint8Array>(stream)
     const body = Buffer.concat(chunks).toString()
 
     if (!body.length) {

@@ -73,7 +73,7 @@ export class InlineFakeHost extends BaseFakeHost {
                 id: connectionId,
                 url: this.getUrl(client.url),
                 close: options => getBrowserCloseEvent(options),
-                write: (raw: string | Buffer) => client.send(raw),
+                write: raw => client.send(raw),
             }
 
             super.onConnection(this.connection)

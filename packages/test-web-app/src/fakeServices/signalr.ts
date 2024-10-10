@@ -7,13 +7,19 @@ export const signalrReady = new Promise<void>(async resolve => {
          * embedded in the web app.
          */
         const { createBrowserSignalr } = await import('@fakehost/signalr')
-        const { hubs, state } = await import('@fakehost/signalr-test-fake-svc')
-        await createBrowserSignalr<typeof hubs>({
+        const { orderState, chatHub, orderHub, timeHub } = await import(
+            '@fakehost/signalr-test-fake-svc'
+        )
+        await createBrowserSignalr({
             url: new URL(config.signalrUrl),
-            hubs,
+            hubs: {
+                chatHub,
+                orderHub,
+                timeHub,
+            },
         })
         // Start state generators
-        state.orderState.generator.start()
+        orderState.generator.start()
         resolve()
     } else {
         resolve()

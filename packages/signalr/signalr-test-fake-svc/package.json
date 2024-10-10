@@ -6,7 +6,7 @@
     "main": "dist/index.cjs",
     "type": "module",
     "exports": {
-        ".": {
+        "default": {
             "import": "./dist/index.js",
             "require": "./dist/index.cjs"
         }
@@ -17,9 +17,9 @@
     ],
     "license": "MIT",
     "dependencies": {
-        "@fakehost/signalr": "^1.0.0-beta.3",
-        "@fakehost/signalr-test-client-api": "^1.0.0-beta.1",
-        "@fakehost/state-emitter": "^1.0.0-beta.2",
+        "@fakehost/signalr": "1.0.0-beta.3",
+        "@fakehost/signalr-test-client-api": "1.0.0-beta.1",
+        "@fakehost/state-emitter": "1.0.0-beta.2",
         "@faker-js/faker": "^7.6.0"
     },
     "devDependencies": {
@@ -30,7 +30,7 @@
         "vitest": "^0.33.0"
     },
     "scripts": {
-        "build": "tsup-node src/index.ts --format cjs,esm --dts --sourcemap",
+        "build": "tsup-node --config ./tsup.config.ts",
         "lint": "eslint --ext .tsx --ext .ts src/",
         "start:fake": "cross-env NODE_OPTIONS='--experimental-specifier-resolution=node' TS_NODE_FILES=true TS_NODE_TRANSPILE_ONLY=true  ts-node --esm src/start.ts",
         "test": "cross-env TEST_TARGET=FAKE vitest --run",

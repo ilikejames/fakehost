@@ -1,5 +1,13 @@
 import { createServerSignalr } from '@fakehost/signalr'
-import { hubs } from './hubs'
+import { chatHub } from './fakeChatHub'
+import { orderHub } from './fakeOrderHub'
+import { timeHub } from './fakeTimeStreamHub'
+
+const hubs = {
+    chatHub,
+    orderHub,
+    timeHub,
+}
 
 export const protocols = ['json', 'messagepack'] as const
 export type Protocols = (typeof protocols)[number]

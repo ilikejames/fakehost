@@ -1,3 +1,4 @@
+import { URL } from 'url'
 export type HttpRestServiceOptions = {
     name: string
     port: number
