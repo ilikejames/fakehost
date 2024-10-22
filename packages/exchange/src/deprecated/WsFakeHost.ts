@@ -63,7 +63,7 @@ export class WsFakeHost extends BaseFakeHost {
                 close: () => {
                     socket.close()
                 },
-                write: (raw: string | Buffer) => {
+                write: raw => {
                     socket.send(raw)
                 },
             }

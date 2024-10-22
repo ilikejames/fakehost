@@ -11,7 +11,7 @@ export interface Connection {
     url: URL
     close: (options?: CloseConnectionOptions) => void
     readonly id: ConnectionId
-    write: (message: string | Buffer) => void
+    write: (message: string | Uint8Array) => void
     isClosed?: boolean
 }
 

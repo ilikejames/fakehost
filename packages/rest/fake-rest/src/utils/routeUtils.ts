@@ -1,4 +1,4 @@
-import URL from 'url'
+import { URL } from 'url'
 import { Route } from '../types'
 
 export const getRouteParams = (route: Route, requestUrl: URL) => {

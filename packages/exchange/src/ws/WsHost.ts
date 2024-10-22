@@ -83,7 +83,7 @@ export class WsHost extends BaseHost implements Host {
                     socket.close(options?.code, options?.reason)
                     this.connections.delete(connection.id)
                 },
-                write: (raw: string | Buffer) => {
+                write: raw => {
                     logger(chalk.red('←'), `${raw}`)
                     socket.send(raw)
                 },

@@ -13,7 +13,7 @@ export type BrowserWsHostOptions = Partial<HostOptions> & {
 }
 
 export const MockedSocket = function (url: string | URL, protocols?: string | string[]) {
-    return new WebSocket(url, protocols)
+    return new WebSocket(url.toString(), protocols)
 }
 
 /**
@@ -64,7 +64,7 @@ export class BrowserWsHost extends BaseHost implements Host {
                 id: connectionId,
                 url: this.options.url,
                 close: options => client.close(getBrowserCloseEvent(options)),
-                write: (raw: string | Buffer) => {
+                write: raw => {
                     logger(chalk.red('←'), `${raw}`)
                     client.send(raw)
                 },

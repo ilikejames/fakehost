@@ -20,7 +20,7 @@
         "rxjs": "^7.8.0"
     },
     "scripts": {
-        "build": "tsup src/index.ts --format cjs,esm --dts --sourcemap",
+        "build": "tsup-node --config ./tsup.config.ts",
         "lint": "eslint --ext .tsx --ext .ts src/",
         "generate:api": "./generate-api.sh"
     }

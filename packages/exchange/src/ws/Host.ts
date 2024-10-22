@@ -20,10 +20,9 @@ export type Host = {
     off: <Key extends keyof EventMap>(e: Key, handler: (e: EventMap[Key]) => void) => void
     disconnect: (options?: Partial<CloseOptions>) => void
     dispose: () => Promise<void>
-    get refuseNewConnections(): boolean
-    set refuseNewConnections(refuse: boolean)
-    get connectionCount(): number
-    get url(): Promise<URL>
+    refuseNewConnections: boolean
+    readonly connectionCount: number
+    readonly url: Promise<URL>
 }
 
 export abstract class BaseHost implements Host {

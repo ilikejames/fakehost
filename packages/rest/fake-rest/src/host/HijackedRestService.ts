@@ -1,14 +1,12 @@
-import { createRouter, isHandler } from './createRouter'
-import { enableLogger, logger } from './logger'
-import { type Methods } from './methods'
-import { Response, Request, RestRouter, HttpHeader } from './types'
-import { getMethod, getRouteParams, getUrl, handleServiceError } from './utils'
-import { FetchCollection } from './FetchCollection'
+import { isHandler } from '../createRouter'
+import { logger } from '../logger'
+import { type Methods } from '../methods'
+import { Response, Request, RestRouter, HttpHeader } from '../types'
+import { getMethod, getRouteParams, getUrl, handleServiceError } from '../utils'
+import { FetchCollection } from '../FetchCollection'
+import { HttpRest } from './types'
 
-export { createRouter }
-export { enableLogger }
-
-type HijackedRestServiceOptions = {
+export type HijackedRestServiceOptions = {
     name: string
     path: string
     silent: boolean
@@ -21,10 +19,11 @@ export const mockedFetch = (...args: Parameters<typeof fetch>) => {
 /**
  * Hijacks the fetch/XmlRequest calls and returns the data from the router.
  */
-export class HijackedRestService {
+export class HijackedRestService implements HttpRest {
     private options: Partial<HijackedRestServiceOptions>
     private isActive = true
     private readonly hijackedFetch: typeof fetch
+    public readonly url: Promise<URL>
 
     constructor(
         host: URL,
@@ -35,7 +34,7 @@ export class HijackedRestService {
             name: 'HijackedRestService',
             ...options,
         }
-
+        this.url = Promise.resolve(host)
         logger(`${this.options.name}: Starting...`)
 
         this.hijackedFetch = globalThis.fetch = async (
@@ -202,20 +201,21 @@ const parseInput = (input: RequestInfo | URL, init?: RequestInit) => {
 }
 
 const compareInstance = (
-    body: any,
+    body: unknown,
     klass: { new (): FormData } | { new (): URLSearchParams } | { new (): Blob },
 ) => {
     if (body instanceof klass) return true
+    if (!body || typeof body !== 'object') return false
     // In cypress we are comparing across different window instances.
     return 'constructor' in body && body.constructor.toString() === klass.toString()
 }
 
-const isURLSearchParams = (body: any): body is URLSearchParams =>
+const isURLSearchParams = (body: unknown): body is URLSearchParams =>
     compareInstance(body, URLSearchParams)
 
-const isFormData = (body: any): body is FormData => compareInstance(body, FormData)
+const isFormData = (body: unknown): body is FormData => compareInstance(body, FormData)
 
-const isBlob = (body: any): body is Blob => compareInstance(body, Blob)
+const isBlob = (body: unknown): body is Blob => compareInstance(body, Blob)
 
 const getBody = (input: RequestInfo | URL, init?: RequestInit) => {
     const body = parseInput(input, init)

@@ -65,7 +65,7 @@ export class SockJsFakeHost extends BaseFakeHost {
                 connection.close()
                 connection.destroy()
             },
-            write: (raw: string | Buffer) => {
+            write: (raw: string | Uint8Array) => {
                 connection.write(raw)
             },
         }

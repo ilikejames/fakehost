@@ -1,0 +1,59 @@
+{
+  "name": "@fakehost/host",
+  "description": "A basic package for building fake messaging services that communicate over websockets. Can run as a nodejs service, or be bundled inside the browser.",
+  "keywords": [
+    "fake",
+    "websocket",
+    "mock",
+    "ws"
+  ],
+  "version": "0.0.0",
+  "private": false,
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "exports": {
+    "browser": {
+      "import": "./dist/browser.js",
+      "require": "./dist/browser.cjs"
+    },
+    "default": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "main": "./dist/index.cjs",
+  "types": "./dist/index.d.ts",
+  "browser": {
+    "./index.js": "./dist/browser.js"
+  },
+  "dependencies": {
+    "blob-util": "^2.0.2",
+    "chalk": "^4.0.0",
+    "debug": "^4.3.3",
+    "mock-socket": "^9.1.5",
+    "url": "^0.11.0",
+    "uuid": "^9.0.0",
+    "ws": "^8.9.0"
+  },
+  "devDependencies": {
+    "@types/debug": "^4.1.7",
+    "@types/sockjs": "^0.3.33",
+    "@types/sockjs-node": "^0.3.28",
+    "@types/uuid": "^8.3.4",
+    "@types/ws": "^8.5.3",
+    "cross-env": "^7.0.3",
+    "isomorphic-ws": "^5.0.0",
+    "sockjs": "^0.3.0",
+    "ts-node": "^10.4.0",
+    "vitest": "^0.33.0"
+  },
+  "scripts": {
+    "build": "tsup-node --config ./tsup.config.ts",
+    "lint": "eslint --ext .tsx --ext .ts src/",
+    "test": "vitest --run",
+    "typecheck": "tsc --noEmit"
+  }
+}

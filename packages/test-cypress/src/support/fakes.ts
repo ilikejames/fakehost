@@ -1,7 +1,7 @@
-import { MockedSocket, createInBrowserSignalr } from '@fakehost/signalr/browser'
-import { HijackedRestService, enableLogger, mockedFetch } from '@fakehost/fake-rest/browser'
+import { MockedSocket, createBrowserSignalr } from '@fakehost/signalr'
+import { HijackedRestService, enableLogger, mockedFetch } from '@fakehost/fake-rest'
 import { router } from '@fakehost/rest-test-fake-svc'
-import { hubs } from '@fakehost/signalr-test-fake-svc'
+import { chatHub, orderHub, timeHub } from '@fakehost/signalr-test-fake-svc'
 
 enableLogger()
 
@@ -10,11 +10,17 @@ type FakeEnv<T extends Record<string, unknown>> = {
     mockedFetch: typeof mockedFetch
     mockedSocket: typeof MockedSocket
     restHost: HijackedRestService
-    signalr: Awaited<ReturnType<typeof createInBrowserSignalr<T>>>
+    signalr: Awaited<ReturnType<typeof createBrowserSignalr<T>>>
 }
 
 const REST_URL = 'http://rest.com'
 const SIGNALR_URL = 'http://signalr.com'
+
+const hubs = {
+    chatHub,
+    orderHub,
+    timeHub,
+}
 
 export const startFakeEnv = async (): Promise<FakeEnv<typeof hubs>> => {
     Cypress.on('window:before:load', async win => {
@@ -26,8 +32,8 @@ export const startFakeEnv = async (): Promise<FakeEnv<typeof hubs>> => {
     })
 
     // setup fake signalr service
-    const fakeSignalr = await createInBrowserSignalr<typeof hubs>({
-        hubs: hubs,
+    const fakeSignalr = await createBrowserSignalr<typeof hubs>({
+        hubs,
         url: new URL(SIGNALR_URL),
     })
 
@@ -47,4 +53,3 @@ export const startFakeEnv = async (): Promise<FakeEnv<typeof hubs>> => {
         },
     }
 }
-

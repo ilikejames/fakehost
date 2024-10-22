@@ -29,8 +29,6 @@ public class OrderService : IOrderService, IHostedService, IDisposable
     {
     }
     
-    //  private readonly TaskCompletionSource<bool> _backgroundTaskStarted = new TaskCompletionSource<bool>();
-
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         // Start the background task and return immediately

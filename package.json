@@ -18,13 +18,15 @@
     "cross-env": "^7.0.3",
     "lerna": "^7.1.1",
     "prettier": "^2.3.2",
-    "tsup": "^7.1.0",
-    "typescript": "^5.0.0"
+    "rimraf": "^5.0.0",
+    "tsup": "^8.3.0",
+    "typescript": "^5.6.3"
   },
   "scripts": {
     "build:libs": "lerna run build",
     "build:app": "lerna run  build:app",
     "build": "yarn build:libs && yarn build:app",
+    "clean": "rimraf packages/*/dist",
     "lint": "lerna run  lint --",
     "test": "lerna run test --",
     "e2e": "lerna run --stream e2e --",

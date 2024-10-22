@@ -1,33 +1,19 @@
-import { HttpRestService, enableLogger as restLogger } from '@fakehost/fake-rest/server'
-import { CloseConnectionOptions, WsHost, Host, enableLogger as wsLogger } from '@fakehost/exchange'
+import { HttpRestService, enableLogger as restLogger } from '@fakehost/fake-rest'
+import { CloseConnectionOptions, WsHost, Host, enableLogger as wsLogger } from '@fakehost/host'
 import { URL } from 'url'
-import { restRouter } from './restHandshakeRouter'
-import { isFakeSignalrHub } from './types'
-
-export type ServerOptions<T extends Record<string, unknown>> = {
-    port?: number
-    name?: string
-    silent?: boolean
-    debug?: boolean
-    hubs: T
-}
-
-type CreateServerSignalr<T extends object> = {
-    dispose: () => Promise<void>
-    url: URL
-    host: Host
-    disconnect: (hub: keyof T, options?: CloseConnectionOptions) => void
-}
+import { restRouter } from '../restHandshakeRouter'
+import { isFakeSignalrHub, ServerOptions } from '../types'
+import { ServerSignalr } from './types'
 
 const objectKeys = <T extends Record<string, unknown>>(x: T) => Object.keys(x) as (keyof T)[]
 
 export const createServerSignalr = async <T extends Record<string, unknown>>(
     options: ServerOptions<T>,
-): Promise<CreateServerSignalr<T>> => {
+): Promise<ServerSignalr<T>> => {
     // hijack the http requests to serve the signalr handshake response
     const rest = new HttpRestService(restRouter, {
         name: `http://${options?.name}`,
-        port: options?.port,
+        port: options?.url.port ? parseInt(options?.url.port) : 0,
         silent: true,
     })
 

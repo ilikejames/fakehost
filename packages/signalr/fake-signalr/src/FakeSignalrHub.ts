@@ -6,7 +6,7 @@ import {
     ConnectionId,
     Host,
     ExchangeEvent,
-} from '@fakehost/exchange'
+} from '@fakehost/host'
 import { Observable } from 'rxjs'
 import { ClientState } from './ClientState'
 import { MessageType, InboundMessage, isHandshakeMessage } from './messageTypes'
