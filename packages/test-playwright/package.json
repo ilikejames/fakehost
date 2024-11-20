@@ -1,15 +1,15 @@
 {
   "name": "@fakehost/test-playwright",
-  "version": "1.0.0-beta.15",
+  "version": "1.0.0-beta.16",
   "description": "e2e test in playwright",
   "private": true,
   "license": "MIT",
   "dependencies": {
-    "@fakehost/fake-rest": "^1.0.0-beta.6",
-    "@fakehost/rest-generated-client-api": "^1.0.0-beta.2",
-    "@fakehost/rest-test-fake-svc": "^1.0.0-beta.6",
-    "@fakehost/signalr": "^1.0.0-beta.14",
-    "@fakehost/signalr-test-fake-svc": "^1.0.0-beta.15",
+    "@fakehost/fake-rest": "^1.0.0-beta.7",
+    "@fakehost/rest-generated-client-api": "^1.0.0-beta.3",
+    "@fakehost/rest-test-fake-svc": "^1.0.0-beta.7",
+    "@fakehost/signalr": "^1.0.0-beta.15",
+    "@fakehost/signalr-test-fake-svc": "^1.0.0-beta.16",
     "@playwright/test": "^1.32.3",
     "chalk": "^4.0.0"
   },

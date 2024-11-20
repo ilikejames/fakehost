@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.7](https://github.com/ilikejames/fakehost/compare/@fakehost/rest-test-fake-svc@1.0.0-beta.3...@fakehost/rest-test-fake-svc@1.0.0-beta.7) (2024-11-20)
+
+
+### Bug Fixes
+
+* browser/node imports ([ce50379](https://github.com/ilikejames/fakehost/commit/ce50379a12e51cface4ac324e73b5cfb021f62da))
+
+
+
+
+
 # [1.0.0-beta.6](https://github.com/ilikejames/fakehost/compare/@fakehost/rest-test-fake-svc@1.0.0-beta.5...@fakehost/rest-test-fake-svc@1.0.0-beta.6) (2024-11-20)
 
 **Note:** Version bump only for package @fakehost/rest-test-fake-svc

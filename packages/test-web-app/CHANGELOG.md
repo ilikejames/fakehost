@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.16](https://github.com/ilikejames/fakehost/compare/@fakehost/test-web-app@1.0.0-beta.4...@fakehost/test-web-app@1.0.0-beta.16) (2024-11-20)
+
+
+### Bug Fixes
+
+* browser/node imports ([ce50379](https://github.com/ilikejames/fakehost/commit/ce50379a12e51cface4ac324e73b5cfb021f62da))
+
+
+
+
+
 # [1.0.0-beta.15](https://github.com/ilikejames/fakehost/compare/@fakehost/test-web-app@1.0.0-beta.14...@fakehost/test-web-app@1.0.0-beta.15) (2024-11-20)
 
 **Note:** Version bump only for package @fakehost/test-web-app
