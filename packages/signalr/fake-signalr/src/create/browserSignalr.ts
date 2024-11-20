@@ -1,7 +1,7 @@
 import { HijackedRestService, enableLogger as restLogger, mockedFetch } from '@fakehost/fake-rest'
 import { BrowserWsHost, enableLogger as wsLogger, Host, MockedSocket } from '@fakehost/exchange'
 import { restRouter } from '../restHandshakeRouter'
-import { isFakeSignalrHub, URL, ServerOptions } from '../types'
+import { isFakeSignalrHub, ServerOptions } from '../types'
 
 export { MockedSocket }
 

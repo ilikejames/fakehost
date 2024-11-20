@@ -8,11 +8,13 @@ import { logger } from './logger'
 import { ConnectionId, ClientConnection } from '../types/connection'
 import { getBrowserCloseEvent } from './browserCloseEvent'
 
+type StringUrl = `${'ws' | 'http'}://${string}` & string
+
 export type BrowserWsHostOptions = Partial<HostOptions> & {
-    url: URL
+    url: URL | StringUrl
 }
 
-export const MockedSocket = function (url: string | URL, protocols?: string | string[]) {
+export const MockedSocket = function (url: StringUrl | URL, protocols?: string | string[]) {
     return new WebSocket(url.toString(), protocols)
 }
 
@@ -36,8 +38,9 @@ export class BrowserWsHost extends BaseHost implements Host {
             ...options,
             name: `ws:${options.name}` || 'BrowserWsHost',
         }
-
+        this.options.url = this.getUrlFromOptions()
         this.url = Promise.resolve(this.options.url)
+
         this.server = new Server(this.options.url.toString(), {})
         if (!options.silent) {
             console.log(
@@ -62,7 +65,7 @@ export class BrowserWsHost extends BaseHost implements Host {
             logger(`${this.options.name}: New connection ${connectionId}`)
             const connection: ClientConnection = {
                 id: connectionId,
-                url: this.options.url,
+                url,
                 close: options => client.close(getBrowserCloseEvent(options)),
                 write: (raw: string | Buffer) => {
                     logger(chalk.red('←'), `${raw}`)
@@ -103,8 +106,12 @@ export class BrowserWsHost extends BaseHost implements Host {
         try {
             return new URL(url)
         } catch {
-            return this.options.url
+            return this.getUrlFromOptions()
         }
+    }
+
+    private getUrlFromOptions(): URL {
+        return typeof this.options.url === 'string' ? new URL(this.options.url) : this.options.url
     }
 
     disconnect(options?: Partial<CloseOptions>): void {

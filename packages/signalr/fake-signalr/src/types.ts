@@ -25,5 +25,3 @@ export const isFakeSignalrHub = (hub: any): hub is FakeSignalrHub<any, any, any>
         hub.constructor.name === 'FakeSignalrHub'
     )
 }
-
-export const URL = globalThis.URL
