@@ -1,18 +1,17 @@
 {
   "name": "@fakehost/test-playwright",
-  "version": "1.0.0-beta.4",
+  "version": "1.0.0-beta.19",
   "description": "e2e test in playwright",
   "private": true,
   "license": "MIT",
   "dependencies": {
-    "@fakehost/fake-rest": "^1.0.0-beta.3",
-    "@fakehost/rest-generated-client-api": "^1.0.0-beta.1",
-    "@fakehost/rest-test-fake-svc": "^1.0.0-beta.3",
-    "@fakehost/signalr": "^1.0.0-beta.3",
-    "@fakehost/signalr-test-fake-svc": "^1.0.0-beta.4",
+    "@fakehost/fake-rest": "^1.0.0-beta.10",
+    "@fakehost/rest-generated-client-api": "^1.0.0-beta.3",
+    "@fakehost/rest-test-fake-svc": "^1.0.0-beta.10",
+    "@fakehost/signalr": "^1.0.0-beta.18",
+    "@fakehost/signalr-test-fake-svc": "^1.0.0-beta.19",
     "@playwright/test": "^1.32.3",
-    "chalk": "^4.0.0",
-    "url": "^0.11.0"
+    "chalk": "^4.0.0"
   },
   "scripts": {
     "build": "rimraf dist && tsc --noEmit",

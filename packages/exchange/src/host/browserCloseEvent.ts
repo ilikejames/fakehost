@@ -1,4 +1,4 @@
-import { CloseConnectionOptions } from '../types'
+import { CloseConnectionOptions } from '../types/connection'
 
 const CLOSE_NORMAL = 1000
 const CLOSE_NO_STATUS = 1005

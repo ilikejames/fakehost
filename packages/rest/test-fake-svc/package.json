@@ -8,7 +8,7 @@
     "react-native",
     "mock"
   ],
-  "version": "1.0.0-beta.3",
+  "version": "1.0.0-beta.10",
   "private": true,
   "license": "ISC",
   "files": [
@@ -25,13 +25,12 @@
   },
   "types": "dist/index.d.ts",
   "dependencies": {
-    "@fakehost/fake-rest": "^1.0.0-beta.3",
-    "@fakehost/rest-generated-client-api": "^1.0.0-beta.1"
+    "@fakehost/fake-rest": "^1.0.0-beta.10",
+    "@fakehost/rest-generated-client-api": "^1.0.0-beta.3"
   },
   "devDependencies": {
     "cross-env": "^7.0.3",
     "ts-node": "^10.9.1",
-    "url": "^0.11.0",
     "vitest": "^0.33.0"
   },
   "scripts": {

@@ -1,9 +1,10 @@
 <!-- docs/_sidebar.md -->
 
 * [Home](/)
-* [What is a fake?](../overview.md)
-* [Contract Tests](../contract-tests.md)
-* [@fakehost/exchange](exchange/)
+* [What is a fake?](/overview.md)
+* [Contract Tests](/contract-tests.md)
+* [@fakehost/exchange](/exchange/)
+* [@fakehost/fake-rest](/fake-rest/)
 * [@fakehost/fake-signalr](fake-signalr/)
     * [Overview](#overview)
     * [Creating a fake signalr service](#creating-a-fake-signalr-service)
@@ -16,4 +17,4 @@
         * [Setup Cypress](#setup-cypress)
         * [Set up Jest, Vitest, @testing-library/react-native](#set-up-jest-vitest-testing-libraryreact-native)
         * [Testing Disconnection / Reconnection](#testing-disconnection-reconnection)
-* [@fakehost/state-emitter](state-emitter/)
+* [@fakehost/state-emitter](/state-emitter/)

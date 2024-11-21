@@ -78,6 +78,7 @@ test.describe('order grid', () => {
     test('orders are removed', async ({ page }) => {
         log.when('Before:')
         const locator = page.locator('table')
+        await waitForTableRows(locator, 3)
         const before = await orderTable(locator, 3)
         before.forEach(row => log.data(row))
 

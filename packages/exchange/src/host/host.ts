@@ -1,33 +1,9 @@
-import { CloseConnectionOptions, Connection, ConnectionId, EventMap } from '../types'
-import { URL } from 'url'
-
-type HandlerMap = {
-    [Key in keyof EventMap]: Set<(e: EventMap[Key]) => void>
-}
-
-export type HostOptions = {
-    name: string
-    debug: boolean
-    silent: boolean
-}
-
-export type CloseOptions = CloseConnectionOptions & {
-    path?: string
-}
-
-export type Host = {
-    on: <Key extends keyof EventMap>(e: Key, handler: (e: EventMap[Key]) => void) => void
-    off: <Key extends keyof EventMap>(e: Key, handler: (e: EventMap[Key]) => void) => void
-    disconnect: (options?: Partial<CloseOptions>) => void
-    dispose: () => Promise<void>
-    get refuseNewConnections(): boolean
-    set refuseNewConnections(refuse: boolean)
-    get connectionCount(): number
-    get url(): Promise<URL>
-}
+import { CloseOptions, Host } from '../types/host'
+import { ClientConnection, ConnectionId } from '../types/connection'
+import { EventMap, HandlerMap } from '../types/events'
 
 export abstract class BaseHost implements Host {
-    protected connections = new Map<ConnectionId, Connection>()
+    protected connections = new Map<ConnectionId, ClientConnection>()
     private _refuseNewConnections = false
 
     protected readonly handlers: HandlerMap = {

@@ -3,6 +3,36 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.5](https://github.com/ilikejames/fakehost/compare/@fakehost/state-emitter@1.0.0-beta.2...@fakehost/state-emitter@1.0.0-beta.5) (2024-11-20)
+
+
+### Bug Fixes
+
+* browser/node imports ([ce50379](https://github.com/ilikejames/fakehost/commit/ce50379a12e51cface4ac324e73b5cfb021f62da))
+
+
+
+
+
+# [1.0.0-beta.4](https://github.com/ilikejames/fakehost/compare/@fakehost/state-emitter@1.0.0-beta.3...@fakehost/state-emitter@1.0.0-beta.4) (2024-11-20)
+
+**Note:** Version bump only for package @fakehost/state-emitter
+
+
+
+
+
+# [1.0.0-beta.3](https://github.com/ilikejames/fakehost/compare/@fakehost/state-emitter@1.0.0-beta.2...@fakehost/state-emitter@1.0.0-beta.3) (2024-10-24)
+
+
+### Bug Fixes
+
+* embedded types ([d9d456f](https://github.com/ilikejames/fakehost/commit/d9d456f3bb2cf4d41979a6ede4786b41c6108649))
+
+
+
+
+
 # [1.0.0-beta.2](https://github.com/ilikejames/fakehost/compare/@fakehost/state-emitter@1.0.0-beta.1...@fakehost/state-emitter@1.0.0-beta.2) (2023-10-02)
 
 **Note:** Version bump only for package @fakehost/state-emitter

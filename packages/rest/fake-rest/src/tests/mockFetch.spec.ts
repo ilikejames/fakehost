@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest'
-import { mockedFetch } from '../HijackedRestService'
+import { mockedFetch } from '../host/HijackedRestService'
 import { echoRouter, getHost } from './helper'
 
 describe(`mockFetch`, () => {
@@ -11,9 +11,10 @@ describe(`mockFetch`, () => {
     })
 
     test('mockFetch will call the fake', async () => {
-        const { host, url } = await getHost('FakeHijacked', echoRouter('GET', '/echo'), {
+        const host = await getHost('FakeHijacked', echoRouter('GET', '/echo'), {
             port: 9000,
         })
+        const url = await host.url
 
         try {
             const fetch = mockedFetch

@@ -11,7 +11,8 @@ for (const target of targets) {
     for (const method of BODY_METHODS) {
         describe(`${target}: http ${method}`, () => {
             test(`${method} to plain endpoint`, async () => {
-                const { host, url } = await getHost(target, echoRouter(method, '/echo'))
+                const host = await getHost(target, echoRouter(method, '/echo'))
+                const url = await host.url
                 try {
                     const response = await globalThis.fetch(new URL('/echo', url), {
                         method: method.toUpperCase(),
@@ -30,10 +31,9 @@ for (const target of targets) {
             })
 
             test(`${method} to param endpoint`, async () => {
-                const { host, url } = await getHost(
-                    target,
-                    echoRouter(method, '/echo/user/:userId/:name'),
-                )
+                const host = await getHost(target, echoRouter(method, '/echo/user/:userId/:name'))
+                const url = await host.url
+
                 try {
                     const endpoint = '/echo/user/23/the-name'
                     const response = await globalThis.fetch(new URL(endpoint, url), {
@@ -52,10 +52,9 @@ for (const target of targets) {
             })
 
             test(`${method} with querystring`, async () => {
-                const { host, url } = await getHost(
-                    target,
-                    echoRouter(method, '/echo/user/:userId/:name'),
-                )
+                const host = await getHost(target, echoRouter(method, '/echo/user/:userId/:name'))
+                const url = await host.url
+
                 try {
                     const endpoint = '/echo/user/23/the-name?foo=bar&baz=qux'
                     const response = await globalThis.fetch(new URL(endpoint, url), {
@@ -74,7 +73,8 @@ for (const target of targets) {
             })
 
             test('response text()', async () => {
-                const { host, url } = await getHost(target, echoRouter(method, '/echo'))
+                const host = await getHost(target, echoRouter(method, '/echo'))
+                const url = await host.url
                 try {
                     const response = await globalThis.fetch(new URL('/echo', url), {
                         method: method.toUpperCase(),
@@ -97,7 +97,8 @@ for (const target of targets) {
 
     describe(`${target}: http HEAD`, () => {
         test('response text() should be empty', async () => {
-            const { host, url } = await getHost(target, echoRouter('HEAD', '/echo'))
+            const host = await getHost(target, echoRouter('HEAD', '/echo'))
+            const url = await host.url
             try {
                 const response = await globalThis.fetch(new URL('/echo', url), {
                     method: 'HEAD',
@@ -109,7 +110,9 @@ for (const target of targets) {
         })
 
         test('response json() should throw', async () => {
-            const { host, url } = await getHost(target, echoRouter('HEAD', '/echo'))
+            const host = await getHost(target, echoRouter('HEAD', '/echo'))
+            const url = await host.url
+
             try {
                 const response = await globalThis.fetch(new URL('/echo', url), {
                     method: 'HEAD',

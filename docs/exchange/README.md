@@ -2,11 +2,15 @@
 
 [![NPM Version][npm-image]][npm-url]
 
+## Migrating from v0.x
+
+See [Migrating from v0.x](exchange/migrating-from-v0.md)
+
 ## Overview
 
-A basic package for building fake messaging services that communicate over websockets. 
+A package for building fake messaging services that communicate over websockets. 
 
-**This library won't give you much on its own.** Instead its used to support running the same fake service code hosted **within the browser** or **running as a node process**. 
+**This library won't give you much on its own.** Instead its used to support running the same fake service code hosted **within the browser** or **running as a node process**, for Playwright, jest, vitest, Cypress, React Native testing.
 
 Provides two main objects:
 
@@ -133,10 +137,6 @@ DEBUG=@fakehost/exchange
 
 @fakehost/exchange is licensed under the [MIT License](https://mit-license.org/).
 
-
-## Migrating from v0.x
-
-See [Migrating from v0.x](exchange/migrating-from-v0.md)
 
 [npm-image]: https://img.shields.io/npm/v/@fakehost/exchange.svg
 [npm-url]: https://npmjs.org/package/@fakehost/exchange

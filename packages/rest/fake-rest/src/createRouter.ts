@@ -1,7 +1,7 @@
-import { pathToRegexp, Key } from 'path-to-regexp'
+import { pathToRegexp } from 'path-to-regexp'
 import { type Methods } from './methods'
 import {
-    Handler,
+    RestHandler,
     RestRouter,
     UseHandler,
     UseRouter,
@@ -37,8 +37,7 @@ export const createRouter = (): RestRouter => {
             if (childRouter) {
                 childRouter.routes.forEach(route => {
                     const fullPath = cleanPath(`${path}/${route.path}`)
-                    const keys: Key[] = []
-                    const regexp = pathToRegexp(fullPath, keys)
+                    const { regexp, keys } = pathToRegexp(fullPath)
                     routes.push({
                         handler: route.handler,
                         method: route.method,
@@ -58,12 +57,11 @@ export const createRouter = (): RestRouter => {
             return router
         },
         METHOD: (method, path, handler) => {
-            const keys: Key[] = []
-            const regexp = pathToRegexp(path, keys)
+            const { regexp, keys } = pathToRegexp(path)
             routes.push({
                 method: method.toUpperCase() as Methods,
                 path,
-                handler: handler as Handler<string>,
+                handler: handler as RestHandler<string>,
                 regexp,
                 keys,
             })
@@ -80,12 +78,23 @@ export const createRouter = (): RestRouter => {
     return router
 }
 
-const isRestRouter = (o: RestRouter | string | Handler<string>): o is RestRouter => {
+const isRestRouter = (o: RestRouter | string | RestHandler<string>): o is RestRouter => {
     return typeof o !== 'string' && 'routes' in o
 }
 
-export const isHandler = (o: RestRouter | string | Handler<string>): o is Handler<string> => {
+export const isHandler = (
+    o: RestRouter | string | RestHandler<string>,
+): o is RestHandler<string> => {
     return typeof o !== 'string' && !('routes' in o)
 }
 
-const cleanPath = (s: string) => s.replace(/\/\//g, '/')
+const cleanPath = (s: string) => {
+    // remove double slashes
+    let result = s.replace(/\/\//g, '/')
+
+    // remove trailing slash
+    if (result.endsWith('/')) {
+        result = result.slice(0, -1)
+    }
+    return result
+}

@@ -1,7 +1,7 @@
 {
     "name": "@fakehost/utils-app-server",
     "description": "Host an existing local app with injected runtime variables for running automated tests against. ",
-    "version": "1.0.0-beta.1",
+    "version": "1.0.0-beta.3",
     "private": false,
     "license": "ISC",
     "files": [
@@ -27,6 +27,7 @@
         "@types/express-http-proxy": "^1.6.2"
     },
     "scripts": {
+        "attw": "attw --pack",
         "build": "tsup src/index.ts --format cjs,esm --dts --sourcemap",
         "lint": "eslint --ext .tsx --ext .ts src/",
         "typecheck": "tsc --noEmit"

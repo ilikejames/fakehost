@@ -1,19 +1,21 @@
 import { blobToArrayBuffer } from 'blob-util'
 import chalk from 'chalk'
 import { Server, WebSocket } from 'mock-socket'
-import { URL } from 'url'
 import { v4 as uuid } from 'uuid'
-import { BaseHost, CloseOptions, Host, HostOptions, getCloseOptions } from '../ws/Host'
-import { logger } from '../logger'
-import { ConnectionId, Connection } from '../types'
+import { BaseHost, getCloseOptions } from './host'
+import { CloseOptions, Host, HostOptions } from '../types/host'
+import { logger } from './logger'
+import { ConnectionId, ClientConnection } from '../types/connection'
 import { getBrowserCloseEvent } from './browserCloseEvent'
 
+type StringUrl = `${'ws' | 'http'}://${string}` & string
+
 export type BrowserWsHostOptions = Partial<HostOptions> & {
-    url: URL
+    url: URL | StringUrl
 }
 
-export const MockedSocket = function (url: string | URL, protocols?: string | string[]) {
-    return new WebSocket(url, protocols)
+export const MockedSocket = function (url: StringUrl | URL, protocols?: string | string[]) {
+    return new WebSocket(url.toString(), protocols)
 }
 
 /**
@@ -36,8 +38,9 @@ export class BrowserWsHost extends BaseHost implements Host {
             ...options,
             name: `ws:${options.name}` || 'BrowserWsHost',
         }
-
+        this.options.url = this.getUrlFromOptions()
         this.url = Promise.resolve(this.options.url)
+
         this.server = new Server(this.options.url.toString(), {})
         if (!options.silent) {
             console.log(
@@ -60,9 +63,9 @@ export class BrowserWsHost extends BaseHost implements Host {
             this.pathConnections.set(url.pathname, [...pathConnections, connectionId])
 
             logger(`${this.options.name}: New connection ${connectionId}`)
-            const connection: Connection = {
+            const connection: ClientConnection = {
                 id: connectionId,
-                url: this.options.url,
+                url,
                 close: options => client.close(getBrowserCloseEvent(options)),
                 write: (raw: string | Buffer) => {
                     logger(chalk.red('←'), `${raw}`)
@@ -103,17 +106,18 @@ export class BrowserWsHost extends BaseHost implements Host {
         try {
             return new URL(url)
         } catch {
-            return this.options.url
+            return this.getUrlFromOptions()
         }
+    }
+
+    private getUrlFromOptions(): URL {
+        return typeof this.options.url === 'string' ? new URL(this.options.url) : this.options.url
     }
 
     disconnect(options?: Partial<CloseOptions>): void {
         const { path, code, reason } = getCloseOptions(options)
-        // TODO: this cannot be done with mock-socket
-        const connectionIds =
-            path && this.pathConnections.has(path)
-                ? this.pathConnections.get(path) ?? []
-                : [...this.connections.keys()]
+        // TODO: tearing down connection by path
+        const connectionIds = [...this.connections.keys()]
         connectionIds.forEach(connectionId => {
             const connection = this.connections.get(connectionId)
             if (!connection) return

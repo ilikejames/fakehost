@@ -6,14 +6,20 @@ export const signalrReady = new Promise<void>(async resolve => {
          * Hijack the websocket for signalr and point to the fake service
          * embedded in the web app.
          */
-        const { createInBrowserSignalr } = await import('@fakehost/signalr/browser')
-        const { hubs, state } = await import('@fakehost/signalr-test-fake-svc')
-        await createInBrowserSignalr<typeof hubs>({
+        const { createBrowserSignalr } = await import('@fakehost/signalr')
+        const { orderState, chatHub, orderHub, timeHub } = await import(
+            '@fakehost/signalr-test-fake-svc'
+        )
+        await createBrowserSignalr({
             url: new URL(config.signalrUrl),
-            hubs,
+            hubs: {
+                chatHub,
+                orderHub,
+                timeHub,
+            },
         })
         // Start state generators
-        state.orderState.generator.start()
+        orderState.generator.start()
         resolve()
     } else {
         resolve()

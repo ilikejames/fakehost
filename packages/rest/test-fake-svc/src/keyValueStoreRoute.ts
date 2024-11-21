@@ -20,7 +20,7 @@ export const keyValueStoreRoute = createRouter()
         if (store.has(req.params.key)) {
             return res.status(409).send('Already exists')
         }
-        store.set(req.params.key, req.body?.value as string)
+        store.set(req.params.key, req.body?.value ?? '')
         return res.status(201).send('Created')
     })
     .patch('/:key', async (req, res) => {

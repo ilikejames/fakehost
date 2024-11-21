@@ -1,4 +1,3 @@
-export type { FakeHost } from './BaseFakeHost'
-export * from './SockJsFakeHost'
-export * from './WsFakeHost'
-export * from './ProtocolHandler'
+export { InlineFakeHost } from './InlineFakeHost'
+export { WsFakeHost } from './WsFakeHost'
+export type { Connection, ProtocolHandler, ServiceDefinition } from './types'
