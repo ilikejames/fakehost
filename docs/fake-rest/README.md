@@ -130,6 +130,7 @@ const router = createRouter()
 
 The REST router supports middleware to enhance its functionality and handle common use cases. Middleware can be added using the `.use()` method of the router.
 
+Like all routes, its first come first served. So its typical to have most middleware initialized first within a router. The exception to this would be for a `404 Not found` error handler which should be the last item in the router.
 
 ### Usage
 To use middleware with your REST router:

@@ -11,7 +11,7 @@ for (const target of targets) {
                 .use((req, _, next) => {
                     // set a property on the request for downstream routes to use
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    ;(req as any).foo = 'bar'
+                    (req as any).foo = 'bar'
                     next()
                 })
                 .get('/echo', (req, res) => {
@@ -40,7 +40,7 @@ for (const target of targets) {
                     await new Promise<void>(resolve => {
                         setTimeout(() => {
                             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                            ;(req as any).foo = 'bar'
+                            (req as any).foo = 'bar'
                             resolve()
                         }, 100)
                     })
@@ -51,7 +51,7 @@ for (const target of targets) {
                     await new Promise<void>(resolve => {
                         setTimeout(() => {
                             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                            ;(req as any).baz = 'quz'
+                            (req as any).baz = 'quz'
                             resolve()
                         }, 100)
                     })

@@ -6,6 +6,8 @@ A fake REST server that can run as a service or bundled within a browser, for te
 
 **This is not a production server.**
 
+**[See the docs](https://ilikejames.github.io/fakehost/#/fake-rest)**
+
 
 ## Example use cases
 

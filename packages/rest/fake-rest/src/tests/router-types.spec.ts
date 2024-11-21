@@ -40,8 +40,8 @@ describe('router types', () => {
         type TestHandler = RestHandler<'/api/endpoint/?id=:id'>
         type ParamRequest = Parameters<TestHandler>[0]
         type TestQuery = ParamRequest['query']
-        expectTypeOf<TestQuery>().toEqualTypeOf<ExtendableRecord<{ id: string }>>()
-        expectTypeOf<TestQuery['id']>().toEqualTypeOf<string>()
+        expectTypeOf<TestQuery>().toEqualTypeOf<ExtendableRecord<{ id: string | undefined }>>()
+        expectTypeOf<TestQuery['id']>().toEqualTypeOf<string | undefined>()
         expectTypeOf<TestQuery['unknown']>().toEqualTypeOf<string | undefined>()
     })
 
@@ -49,9 +49,11 @@ describe('router types', () => {
         type TestHandler = RestHandler<'/api/endpoint/?id=:id&name=:name'>
         type ParamRequest = Parameters<TestHandler>[0]
         type TestQuery = ParamRequest['query']
-        expectTypeOf<TestQuery>().toEqualTypeOf<ExtendableRecord<{ id: string; name: string }>>()
-        expectTypeOf<TestQuery['id']>().toEqualTypeOf<string>()
-        expectTypeOf<TestQuery['name']>().toEqualTypeOf<string>()
+        expectTypeOf<TestQuery>().toEqualTypeOf<
+            ExtendableRecord<{ id: string | undefined; name: string | undefined }>
+        >()
+        expectTypeOf<TestQuery['id']>().toEqualTypeOf<string | undefined>()
+        expectTypeOf<TestQuery['name']>().toEqualTypeOf<string | undefined>()
         expectTypeOf<TestQuery['unknown']>().toEqualTypeOf<string | undefined>()
     })
 
@@ -62,6 +64,8 @@ describe('router types', () => {
         type TestQuery = ParamRequest['query']
 
         expectTypeOf<TestParams>().toEqualTypeOf<{ id: string; name: string }>()
-        expectTypeOf<TestQuery>().toEqualTypeOf<ExtendableRecord<{ ts: string; v: string }>>()
+        expectTypeOf<TestQuery>().toEqualTypeOf<
+            ExtendableRecord<{ ts: string | undefined; v: string | undefined }>
+        >()
     })
 })
