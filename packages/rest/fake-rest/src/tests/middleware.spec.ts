@@ -1,6 +1,7 @@
 import { describe, expect, test } from 'vitest'
 import { createRouter } from '../createRouter'
 import { getHost, targets } from './helper'
+import { trailingSlash } from '../trailingSlash'
 
 // Tests run across both the node service and the browser hijacked fetch
 for (const target of targets) {
@@ -10,7 +11,7 @@ for (const target of targets) {
                 .use((req, _, next) => {
                     // set a property on the request for downstream routes to use
                     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    (req as any).foo = 'bar'
+                    ;(req as any).foo = 'bar'
                     next()
                 })
                 .get('/echo', (req, res) => {
@@ -39,7 +40,7 @@ for (const target of targets) {
                     await new Promise<void>(resolve => {
                         setTimeout(() => {
                             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                            (req as any).foo = 'bar'
+                            ;(req as any).foo = 'bar'
                             resolve()
                         }, 100)
                     })
@@ -50,7 +51,7 @@ for (const target of targets) {
                     await new Promise<void>(resolve => {
                         setTimeout(() => {
                             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                            (req as any).baz = 'quz'
+                            ;(req as any).baz = 'quz'
                             resolve()
                         }, 100)
                     })
@@ -75,6 +76,59 @@ for (const target of targets) {
                 expect(json).toEqual({ foo: 'bar', baz: 'quz' })
             } finally {
                 host.dispose()
+            }
+        })
+
+        describe('trailing slashes', () => {
+            const subRoute = createRouter()
+                .get('/', (req, res) => {
+                    res.json({ path: '/', fullPath: req.url })
+                })
+                .get('/:id', (req, res) => {
+                    res.json({ path: `/${req.params.id}`, fullPath: req.url })
+                })
+
+            const router = createRouter()
+                .use('/store', subRoute)
+                .get('/user', (req, res) => {
+                    res.json({ path: '/user', fullPath: req.url })
+                })
+
+            const slashRequests = [
+                { path: '/user', fullPath: '/user', removedTrailing: '/user' },
+                { path: '/user/', fullPath: '/user/', removedTrailing: '/user' },
+                { path: '/store', fullPath: '/store', removedTrailing: '/store' },
+                { path: '/store/', fullPath: '/store/', removedTrailing: '/store' },
+                { path: '/store/23', fullPath: '/store/23', removedTrailing: '/store/23' },
+                { path: '/store/23/', fullPath: '/store/23/', removedTrailing: '/store/23' },
+            ]
+
+            for (const { path, fullPath, removedTrailing } of slashRequests) {
+                test(`slash handling: ${path}`, async () => {
+                    const host = await getHost(target, router)
+                    const response = await fetch(new URL(path, await host.url))
+                    expect(await response.json()).toMatchObject({ fullPath })
+                })
+
+                test('slash handling with "trailingSlash" removed middleware', async () => {
+                    const host = await getHost(
+                        target,
+                        createRouter().use(trailingSlash()).use(router),
+                    )
+                    const response = await fetch(new URL(path, await host.url))
+                    expect(await response.json()).toMatchObject({ fullPath: removedTrailing })
+                })
+
+                test('slash handling with "trailingSlash" enfored middleware', async () => {
+                    const host = await getHost(
+                        target,
+                        createRouter()
+                            .use(trailingSlash({ enforceTrailingSlash: true }))
+                            .use(router),
+                    )
+                    const response = await fetch(new URL(path, await host.url))
+                    expect(await response.json()).toMatchObject({ fullPath: removedTrailing + '/' })
+                })
             }
         })
     })

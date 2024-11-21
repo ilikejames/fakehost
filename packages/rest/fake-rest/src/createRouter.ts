@@ -88,4 +88,13 @@ export const isHandler = (
     return typeof o !== 'string' && !('routes' in o)
 }
 
-const cleanPath = (s: string) => s.replace(/\/\//g, '/')
+const cleanPath = (s: string) => {
+    // remove double slashes
+    let result = s.replace(/\/\//g, '/')
+
+    // remove trailing slash
+    if (result.endsWith('/')) {
+        result = result.slice(0, -1)
+    }
+    return result
+}

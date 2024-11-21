@@ -52,13 +52,13 @@ type ExtractQueryParams<T extends string> = string extends T
     ? U extends `${infer Query}&${infer Rest}`
         ? Record<
               Query extends `${infer Key}=${string}` ? Key : never,
-              Query extends `${string}=${string}` ? string : never
+              Query extends `${string}=${string}` ? string | undefined : never
           > &
               ExtractQueryParams<`?${Rest}`>
         : U extends `${infer Query}`
         ? Record<
               Query extends `${infer Key}=${string}` ? Key : never,
-              Query extends `${string}=${string}` ? string : never
+              Query extends `${string}=${string}` ? string | undefined : never
           >
         : Record<string, string>
     : Record<string, string>
