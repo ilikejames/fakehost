@@ -3,6 +3,17 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.9](https://github.com/ilikejames/fakehost/compare/@fakehost/fake-rest@1.0.0-beta.8...@fakehost/fake-rest@1.0.0-beta.9) (2024-11-21)
+
+
+### Features
+
+* **fake-rest:** trailingSlash handling ([f036e44](https://github.com/ilikejames/fakehost/commit/f036e448bc96cd91a1cffb07bc0caf4e77c3719f))
+
+
+
+
+
 # [1.0.0-beta.8](https://github.com/ilikejames/fakehost/compare/@fakehost/fake-rest@1.0.0-beta.7...@fakehost/fake-rest@1.0.0-beta.8) (2024-11-21)
 
 **Note:** Version bump only for package @fakehost/fake-rest

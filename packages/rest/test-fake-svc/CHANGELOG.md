@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.9](https://github.com/ilikejames/fakehost/compare/@fakehost/rest-test-fake-svc@1.0.0-beta.8...@fakehost/rest-test-fake-svc@1.0.0-beta.9) (2024-11-21)
+
+**Note:** Version bump only for package @fakehost/rest-test-fake-svc
+
+
+
+
+
 # [1.0.0-beta.8](https://github.com/ilikejames/fakehost/compare/@fakehost/rest-test-fake-svc@1.0.0-beta.7...@fakehost/rest-test-fake-svc@1.0.0-beta.8) (2024-11-21)
 
 **Note:** Version bump only for package @fakehost/rest-test-fake-svc
