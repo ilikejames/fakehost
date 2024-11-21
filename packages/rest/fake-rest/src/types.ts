@@ -1,12 +1,18 @@
 import { Key } from 'path-to-regexp'
 import { type Methods } from './methods'
 
-export type Request<T extends string> = {
+export type ExtendableRecord<T extends object> = Prettify<
+    T & {
+        [key: string]: string | undefined
+    }
+>
+
+export type Request<T extends string = string> = {
     method: Methods
     url: string
     host: string
-    query: ExtractQueryParams<RemoveParentheses<T>>
-    params: ExtractRouteParams<RemoveParentheses<T>>
+    query: ExtendableRecord<ExtractQueryParams<RemoveParentheses<`?${ExtractQuerySection<T>}`>>>
+    params: ExtractRouteParams<RemoveParentheses<ExtractRouteSection<T>>>
     headers: HttpHeader
     body: Record<string, string> | null
 }
@@ -21,11 +27,14 @@ export type Response = {
 
 export type Next = () => void
 
-export type Handler<T extends string> = (
+export type RestHandler<T extends string = string> = (
     req: Request<T>,
     res: Response,
     next: Next,
 ) => void | Promise<void> | Response | Promise<Response | undefined | unknown>
+
+export type ExtractQuerySection<T extends string> = T extends `${string}?${infer U}` ? U : ''
+export type ExtractRouteSection<T extends string> = T extends `${infer U}?${string}` ? U : T
 
 type ExtractRouteParams<T> = T extends `${string}/:${infer Param}/${infer Rest}`
     ? { [K in Param | keyof ExtractRouteParams<`/${Rest}`>]: string }
@@ -43,13 +52,13 @@ type ExtractQueryParams<T extends string> = string extends T
     ? U extends `${infer Query}&${infer Rest}`
         ? Record<
               Query extends `${infer Key}=${string}` ? Key : never,
-              Query extends `${string}=${infer Value}` ? Value : never
+              Query extends `${string}=${string}` ? string : never
           > &
               ExtractQueryParams<`?${Rest}`>
         : U extends `${infer Query}`
         ? Record<
               Query extends `${infer Key}=${string}` ? Key : never,
-              Query extends `${string}=${infer Value}` ? Value : never
+              Query extends `${string}=${string}` ? string : never
           >
         : Record<string, string>
     : Record<string, string>
@@ -60,7 +69,7 @@ export type HttpHeader = {
     [key: string]: string | string[] | undefined
 }
 
-export type UseHandler<T extends string> = (handler: Handler<T>) => RestRouter
+export type UseHandler<T extends string> = (handler: RestHandler<T>) => RestRouter
 export type UseRouterWithPath<T extends string> = (path: T, router: RestRouter) => RestRouter
 export type UseRouter = (router: RestRouter) => RestRouter
 export type ErrorHandler = (
@@ -75,7 +84,7 @@ export type UseErrorHandler = (handler: ErrorHandler) => RestRouter
 export type Route = {
     method?: Methods
     path: string | null
-    handler: Handler<string> | RestRouter
+    handler: RestHandler<string> | RestRouter
     regexp: RegExp
     keys: Key[]
 }
@@ -85,15 +94,26 @@ export type RestRouter = {
     get errorHandlers(): ErrorHandler[]
     use: UseHandler<string> & UseRouter & UseRouterWithPath<string>
     useError: UseErrorHandler
-    METHOD: <Path extends string>(method: Methods, path: Path, handler: Handler<Path>) => RestRouter
-    delete: <Path extends string>(path: Path, handler: Handler<Path>) => RestRouter
-    get: <Path extends string>(path: Path, handler: Handler<Path>) => RestRouter
-    head: <Path extends string>(path: Path, handler: Handler<Path>) => RestRouter
-    options: <Path extends string>(path: Path, handler: Handler<Path>) => RestRouter
-    patch: <Path extends string>(path: Path, handler: Handler<Path>) => RestRouter
-    post: <Path extends string>(path: Path, handler: Handler<Path>) => RestRouter
-    put: <Path extends string>(path: Path, handler: Handler<Path>) => RestRouter
+    METHOD: <Path extends string>(
+        method: Methods,
+        path: Path,
+        handler: RestHandler<Path>,
+    ) => RestRouter
+    delete: <Path extends string>(path: Path, handler: RestHandler<Path>) => RestRouter
+    get: <Path extends string>(path: Path, handler: RestHandler<Path>) => RestRouter
+    head: <Path extends string>(path: Path, handler: RestHandler<Path>) => RestRouter
+    options: <Path extends string>(path: Path, handler: RestHandler<Path>) => RestRouter
+    patch: <Path extends string>(path: Path, handler: RestHandler<Path>) => RestRouter
+    post: <Path extends string>(path: Path, handler: RestHandler<Path>) => RestRouter
+    put: <Path extends string>(path: Path, handler: RestHandler<Path>) => RestRouter
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AnyFunction = (...args: any[]) => any
+
+// eslint-disable-next-line @typescript-eslint/ban-types
+type EmptyObject = {}
+
+type Prettify<T> = {
+    [K in keyof T]: T[K] extends object ? Prettify<T[K]> & EmptyObject : T[K]
+} & EmptyObject

@@ -11,9 +11,9 @@ for (const target of targets) {
                 res.setHeader('x-baz', 'qux')
                 res.status(200).send('ok')
             })
-            const { host, url } = await getHost(target, router)
+            const host = await getHost(target, router)
             try {
-                const response = await fetch(new URL('/echo', url))
+                const response = await fetch(new URL('/echo', await host.url))
                 expect(response.headers.get('x-foo')).toEqual('bar')
                 expect(response.headers.get('x-baz')).toEqual('qux')
             } finally {

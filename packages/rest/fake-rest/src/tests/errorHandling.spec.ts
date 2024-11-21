@@ -14,13 +14,13 @@ for (const target of targets) {
                 .use((_, res) => {
                     res.status(404).send('Not found')
                 })
-            const { host, url } = await getHost(target, router)
+            const host = await getHost(target, router)
             try {
-                const response = await fetch(new URL('/not-found', url))
+                const response = await fetch(new URL('/not-found', await host.url))
                 expect(await response.text()).toEqual('Not found')
                 expect(await response.status).toEqual(404)
 
-                const non404Response = await fetch(new URL('/echo', url))
+                const non404Response = await fetch(new URL('/echo', await host.url))
                 expect(await non404Response.status).toEqual(200)
             } finally {
                 host.dispose()
@@ -31,9 +31,9 @@ for (const target of targets) {
             const router = createRouter().get('/broken', () => {
                 throw new Error('Broken')
             })
-            const { host, url } = await getHost(target, router)
+            const host = await getHost(target, router)
             try {
-                const response = await fetch(new URL('/broken', url))
+                const response = await fetch(new URL('/broken', await host.url))
                 expect(await response.status).toEqual(500)
                 expect(await response.text()).toContain('Internal server error')
             } finally {
@@ -51,10 +51,10 @@ for (const target of targets) {
                 })
                 .useError(errorHandler)
 
-            const { host, url } = await getHost(target, router)
+            const host = await getHost(target, router)
 
             try {
-                const response = await fetch(new URL('/broken', url))
+                const response = await fetch(new URL('/broken', await host.url))
                 expect(response.status).toEqual(500)
                 expect(await response.text()).toEqual('Broken')
             } finally {
@@ -70,10 +70,10 @@ for (const target of targets) {
                 .get('/broken-promise', () => Promise.reject('Broken promise'))
                 .useError(errorHandler)
 
-            const { host, url } = await getHost(target, router)
+            const host = await getHost(target, router)
 
             try {
-                const response = await fetch(new URL('/broken-promise', url))
+                const response = await fetch(new URL('/broken-promise', await host.url))
                 expect(response.status).toEqual(500)
                 expect(await response.text()).toEqual('Broken promise')
             } finally {

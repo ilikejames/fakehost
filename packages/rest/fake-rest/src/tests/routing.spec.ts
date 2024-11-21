@@ -6,7 +6,7 @@ import { echoRouter, getHost, targets } from './helper'
 for (const target of targets) {
     describe(`${target}: routing to specific hosts only`, () => {
         test('requests to out-of-scope urls should pass through', async () => {
-            const { host } = await getHost(target, createRouter())
+            const host = await getHost(target, createRouter())
             try {
                 const result = await globalThis.fetch('http://example.com')
                 const html = await result.text()
@@ -17,20 +17,14 @@ for (const target of targets) {
         })
 
         test(`requests are directed to the correct host of many`, async () => {
-            const { host: host9000, url: url9000 } = await getHost(
-                target,
-                echoRouter('GET', '/echo'),
-                {
-                    port: 9000,
-                },
-            )
-            const { host: host9001, url: url9001 } = await getHost(
-                target,
-                echoRouter('GET', '/echo'),
-                {
-                    port: 9001,
-                },
-            )
+            const host9000 = await getHost(target, echoRouter('GET', '/echo'), {
+                port: 9000,
+            })
+            const host9001 = await getHost(target, echoRouter('GET', '/echo'), {
+                port: 9001,
+            })
+            const url9000 = await host9000.url
+            const url9001 = await host9001.url
 
             try {
                 const response9000_1 = await fetch(new URL('/echo', url9000))
@@ -41,7 +35,7 @@ for (const target of targets) {
                 expect((await response9001_1.json()).host).toBe(url9001.host)
                 expect(await responseReal_1.text()).toContain('Example')
 
-                // tear down host 9000
+                // tear down host 9000 (slow)
                 await host9000.dispose()
 
                 // and can not longer be reached
@@ -54,7 +48,7 @@ for (const target of targets) {
                 const responseReal_2 = await fetch(new URL('http://example.com'))
                 expect(await responseReal_2.text()).toContain('Example')
 
-                // until we tear it down too
+                // until we tear it down too (slow)
                 await host9001.dispose()
                 // and 9001 cannot be reached any more
                 await expect(fetch(new URL('/echo', url9001))).rejects.toThrow()

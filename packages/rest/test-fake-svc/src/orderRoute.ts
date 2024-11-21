@@ -1,4 +1,4 @@
-import { createRouter, Handler, Request } from '@fakehost/fake-rest'
+import { createRouter, RestHandler, Request } from '@fakehost/fake-rest'
 import { NewOrder, OrderControllerApi, OrderSideEnum } from '@fakehost/rest-generated-client-api'
 
 const validSymbols = ['AAPL', 'TSLA', 'GME']
@@ -28,13 +28,13 @@ const parseBody = (req: Request<string>): NewOrder => {
     }
 }
 
-const postOrderHandler: Handler<string> = (req, res) => {
+const postOrderHandler: RestHandler = (req, res) => {
     if (controls.shouldThrowUnexpected) {
         res.status(400).json({ message: 'Unexpected error occurred' })
         return
     }
-    const newOrder = parseBody(req)
     try {
+        const newOrder = parseBody(req)
         const order = placeOrder({ newOrder })
         res.status(201).json(order)
     } catch (ex: any) {

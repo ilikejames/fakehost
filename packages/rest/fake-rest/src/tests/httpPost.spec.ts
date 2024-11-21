@@ -12,9 +12,9 @@ for (const target of targets) {
                 })
                 res.end()
             })
-            const { host, url } = await getHost(target, router)
+            const host = await getHost(target, router)
             try {
-                const response = await fetch(new URL('/echo', url), {
+                const response = await fetch(new URL('/echo', await host.url), {
                     method: 'POST',
                 })
                 const json = await response.json()
@@ -33,9 +33,9 @@ for (const target of targets) {
                 })
                 res.end()
             })
-            const { host, url } = await getHost(target, router)
+            const host = await getHost(target, router)
             try {
-                const response = await fetch(new URL('/echo', url), {
+                const response = await fetch(new URL('/echo', await host.url), {
                     method: 'POST',
                     body: JSON.stringify({ foo: 'bar' }),
                     headers: {
@@ -57,13 +57,13 @@ for (const target of targets) {
                 })
                 res.end()
             })
-            const { host, url } = await getHost(target, router)
+            const host = await getHost(target, router)
             try {
                 const formData = new FormData()
                 Object.entries(payload).forEach(([key, value]) => {
                     formData.append(key, value)
                 })
-                const response = await fetch(new URL('/echo', url), {
+                const response = await fetch(new URL('/echo', await host.url), {
                     method: 'POST',
                     body: formData,
                 })
@@ -80,9 +80,9 @@ for (const target of targets) {
                 res.json({ payload: req.body })
                 res.end()
             })
-            const { host, url } = await getHost(target, router)
+            const host = await getHost(target, router)
             try {
-                const response = await fetch(new URL('/echo', url), {
+                const response = await fetch(new URL('/echo', await host.url), {
                     method: 'POST',
                     body: new URLSearchParams(payload),
                 })

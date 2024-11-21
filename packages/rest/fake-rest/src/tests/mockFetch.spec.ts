@@ -11,9 +11,10 @@ describe(`mockFetch`, () => {
     })
 
     test('mockFetch will call the fake', async () => {
-        const { host, url } = await getHost('FakeHijacked', echoRouter('GET', '/echo'), {
+        const host = await getHost('FakeHijacked', echoRouter('GET', '/echo'), {
             port: 9000,
         })
+        const url = await host.url
 
         try {
             const fetch = mockedFetch

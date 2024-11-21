@@ -36,16 +36,18 @@
   "dependencies": {
     "@fakehost/exchange": "^1.0.0-beta.6",
     "@fakehost/fake-rest": "^1.0.0-beta.7",
-    "@microsoft/signalr-protocol-msgpack": "^7.0.7",
+    "@microsoft/signalr-protocol-msgpack": "^7.0.0",
     "@msgpack/msgpack": "^2.8.0",
-    "uuid": "^9.0.0",
-    "ws": "^8.13.0"
+    "uuid": "^9.0.0"
+  },
+  "peerDependencies": {
+    "@microsoft/signalr": "^7.0.0",
+    "rxjs": "^7.0.0"
   },
   "devDependencies": {
     "@microsoft/signalr": "^7.0.5",
     "@types/uuid": "^9.0.1",
     "@types/ws": "^8.5.4",
-    "chalk": "^5.2.0",
     "cross-env": "^7.0.3",
     "debug": "^4.3.4",
     "rxjs": "^7.4.0",

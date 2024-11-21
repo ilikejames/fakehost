@@ -21,7 +21,9 @@ for (const target of targets) {
                     })
                 })
 
-            const { host, url } = await getHost(target, router)
+            const host = await getHost(target, router)
+            const url = await host.url
+
             try {
                 const response = await fetch(new URL('/echo', url))
                 expect(await response.json()).toEqual({ foo: 'bar' })
@@ -64,7 +66,9 @@ for (const target of targets) {
                     })
                 })
 
-            const { host, url } = await getHost(target, router)
+            const host = await getHost(target, router)
+            const url = await host.url
+
             try {
                 const response = await fetch(new URL('/echo', url))
                 const json = await response.json()
