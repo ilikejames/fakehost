@@ -1,0 +1,17 @@
+<!-- docs/_sidebar.md -->
+
+* [Home](/)
+* [What is a fake?](../overview.md)
+* [Contract Tests](../contract-tests.md)
+* [@fakehost/exchange](exchange/)
+* [@fakehost/fake-rest](fake-rest/)
+    * [Motivation](fake-rest/#Motivation)
+    * [Router](fake-rest/#Router)
+    * [Hosting](fake-rest/#Hosting)
+    * [QueryString](fake-rest/#QueryString)
+    * [Middleware](fake-rest/#Middleware)
+        * [cors](fake-rest/#cors)
+        * [trailingSlash](fake-rest/#trailingSlash)
+    * [Test Setup](fake-rest/#Test-Setup)
+* [@fakehost/fake-signalr](../fake-signalr/)
+* [@fakehost/state-emitter](../state-emitter/)

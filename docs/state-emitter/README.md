@@ -120,6 +120,5 @@ The `EntityState` has a `generator` property:
 
 
 
-
-<!-- [npm-image]: https://img.shields.io/npm/v/ag-grid-column-builder.svg
-[npm-url]: https://npmjs.org/package/ag-grid-column-builder -->
+[npm-image]: https://img.shields.io/npm/v/@fakehost/state-emitter.svg
+[npm-url]: https://npmjs.org/package/@fakehost/state-emitter

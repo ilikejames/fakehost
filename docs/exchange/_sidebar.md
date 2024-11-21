@@ -9,5 +9,6 @@
     * [Debug](exchange/#debug)
     * [License](exchange/#license)
     * [Migrating from 0.x](exchange/migrating-from-v0.md)
+* [@fakehost/fake-rest](fake-rest/)
 * [@fakehost/fake-signalr](../fake-signalr/)
 * [@fakehost/state-emitter](../state-emitter/)

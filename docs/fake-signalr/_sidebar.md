@@ -4,6 +4,7 @@
 * [What is a fake?](../overview.md)
 * [Contract Tests](../contract-tests.md)
 * [@fakehost/exchange](exchange/)
+* [@fakehost/fake-rest](fake-rest/)
 * [@fakehost/fake-signalr](fake-signalr/)
     * [Overview](#overview)
     * [Creating a fake signalr service](#creating-a-fake-signalr-service)
