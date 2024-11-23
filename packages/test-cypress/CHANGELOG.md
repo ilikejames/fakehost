@@ -3,6 +3,14 @@
 All notable changes to this project will be documented in this file.
 See [Conventional Commits](https://conventionalcommits.org) for commit guidelines.
 
+# [1.0.0-beta.20](https://github.com/ilikejames/fakehost/compare/@fakehost/test-cypress@1.0.0-beta.19...@fakehost/test-cypress@1.0.0-beta.20) (2024-11-23)
+
+**Note:** Version bump only for package @fakehost/test-cypress
+
+
+
+
+
 # [1.0.0-beta.19](https://github.com/ilikejames/fakehost/compare/@fakehost/test-cypress@1.0.0-beta.18...@fakehost/test-cypress@1.0.0-beta.19) (2024-11-21)
 
 **Note:** Version bump only for package @fakehost/test-cypress
