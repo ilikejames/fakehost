@@ -23,7 +23,14 @@ export const cors =
         ]
         res.setHeader('Access-Control-Allow-Headers', allowHeaders.join(', '))
 
-        const allowMethods = options.allowMethods ?? ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']
+        const allowMethods = options.allowMethods ?? [
+            'GET',
+            'POST',
+            'PATCH',
+            'PUT',
+            'DELETE',
+            'OPTIONS',
+        ]
         res.setHeader('Access-Control-Allow-Methods', allowMethods.join(', '))
 
         res.setHeader('Access-Control-Max-Age', '86400')

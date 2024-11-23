@@ -164,7 +164,7 @@ Includes any headers sent via the `Access-Control-Request-Headers`.
 - `allowMethods` (optional):
 
 An array of HTTP methods allowed in the `Access-Control-Allow-Methods` response.
-Defaults to: `['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS']`
+Defaults to: `['GET', 'POST', 'PATCH', 'PUT', 'DELETE', 'OPTIONS']`
 
 
 ### trailingSlash
