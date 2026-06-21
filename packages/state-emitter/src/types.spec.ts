@@ -1,5 +1,11 @@
-import { describe, test } from 'vitest'
-import { PickFromDotNotation, RequiredFromDotNotation } from './types'
+import { describe, test, expectTypeOf } from 'vitest'
+import {
+    AddToUnion,
+    PickFromDotNotation,
+    RemoveFromUnion,
+    RequiredFromDotNotation,
+    RemoveNever,
+} from './types'
 
 // Not a unit test, just type checking
 type Entity = {
@@ -13,29 +19,23 @@ type Entity = {
     }
 }
 
-/* eslint-disable @typescript-eslint/no-unused-vars */
-
 describe('type checking', () => {
-    // Only type checking in here, no assertions
-
     describe('PickFromDotNotation', () => {
         test('shallow required field', () => {
             type T = PickFromDotNotation<Entity, 'id'>
-            type Assert = Expect<Equal<T, { id: bigint }>>
-            // @ts-expect-error wrong type
-            type ShouldFail = Expect<Equal<T, { id: number }>>
+            expectTypeOf<T>().toEqualTypeOf<{ id: bigint }>()
+            expectTypeOf<T>().not.toEqualTypeOf<{ id: number }>()
         })
 
         test('deeper required field', () => {
             type T = PickFromDotNotation<Entity, 'payload.orderId'>
-            type Assert = Expect<Equal<T, { payload: { orderId: bigint } }>>
-            // @ts-expect-error wrong type
-            type ShouldFail = Expect<Equal<T, { payload: { orderId: string } }>>
+            expectTypeOf<T>().toEqualTypeOf<{ payload: { orderId: bigint } }>()
+            expectTypeOf<T>().not.toEqualTypeOf<{ payload: { orderId: string } }>()
         })
 
         test('incorrect path', () => {
             type T = PickFromDotNotation<Entity, 'payload.orderId2'>
-            type Assert = Expect<Equal<T, { payload: never }>>
+            expectTypeOf<T>().toEqualTypeOf<{ payload: never }>()
         })
     })
 
@@ -68,16 +68,24 @@ describe('type checking', () => {
             })
         })
     })
+
+    describe('unions', () => {
+        test('RemoveFromUnion', () => {
+            type T = 'a' | 'b' | 'c'
+            expectTypeOf<RemoveFromUnion<T, 'b'>>().toEqualTypeOf<'a' | 'c'>()
+            expectTypeOf<RemoveFromUnion<T, 'b' | 'a'>>().toEqualTypeOf<'c'>()
+        })
+
+        test('AddToUnion', () => {
+            type T = 'a' | 'b' | 'c'
+            expectTypeOf<AddToUnion<T, 'd'>>().toEqualTypeOf<'a' | 'b' | 'c' | 'd'>()
+            expectTypeOf<AddToUnion<T, 'd' | 'e'>>().toEqualTypeOf<'a' | 'b' | 'c' | 'd' | 'e'>()
+        })
+    })
+
+    test('RemoveNever', () => {
+        type Test1 = RemoveNever<{ a: 1; b: never }>
+        expectTypeOf<Test1>().toEqualTypeOf<{ a: 1 }>()
+        expectTypeOf<Test1>().not.toEqualTypeOf<{ a: 1; b: never }>()
+    })
 })
-/* eslint-enable @typescript-eslint/no-unused-vars */
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type Compute<T> = T extends (...args: any[]) => any ? T : { [K in keyof T]: Compute<T[K]> }
-
-export type Equal<X, Y> = (<T>() => T extends Compute<X> ? 1 : 2) extends <
-    T,
->() => T extends Compute<Y> ? 1 : 2
-    ? true
-    : false
-
-export type Expect<T extends true> = T extends true ? true : never

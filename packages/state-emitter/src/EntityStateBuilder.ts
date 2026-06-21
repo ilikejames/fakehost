@@ -17,15 +17,22 @@ type GeneratorOptions<T, K extends string> = [
     GeneratorIntervalOptions<T, K> | CreationOptions,
 ]
 
-export class EntityStateBuilder<T, K extends string> {
+type EntityStateBuilderRequiresEntityFactory<T, K extends string> = {
+    entityFactory: (factory: EntityFactory<T, K>) => EntityStateBuilder<T, K, false>
+}
+
+export class EntityStateBuilder<T, K extends string, THasEntityCreator extends boolean = false> {
     private _initialState?: InitialState<T, K>
     private _entityFactory?: EntityFactory<T, K>
     private _generatorOptions?: GeneratorOptions<T, K>
 
-    private idFactory: IdFactory<T, K>
+    private idFactory: IdFactory<T, K> | undefined
+
+    private _instance: EntityStateBuilder<T, K>
 
     constructor(private idField: K) {
-        this.idFactory = createNumberIdGenerator(0) as unknown as () => At<T, K>
+        this._instance = this
+        // this.idFactory = createNumberIdGenerator(0) as unknown as () => At<T, K>
     }
 
     public initialState(state: InitialState<T, K>) {
@@ -33,9 +40,16 @@ export class EntityStateBuilder<T, K extends string> {
         return this
     }
 
+    public createInitialItems(count: number) {
+        if (!this._entityFactory) {
+            return this as EntityStateBuilderRequiresEntityFactory<T, K>
+        }
+        return this
+    }
+
     public entityFactory(factory: EntityFactory<T, K>) {
         this._entityFactory = factory
-        return this
+        return this as EntityStateBuilder<T, K, true>
     }
 
     public nextIdFactory(factory: IdFactory<T, K>) {

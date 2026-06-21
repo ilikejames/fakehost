@@ -9,3 +9,22 @@ export const createEntityState = <T>() => {
         },
     }
 }
+
+type KeyValue = {
+    key: string
+    value: number
+}
+
+const state0 = createEntityState<KeyValue>().idField('key')
+type Test0 = typeof state0
+
+const state1 = createEntityState<KeyValue>()
+    .idField('key')
+    .createInitialItems(100)
+    .entityFactory((symbol, defaults, state) => ({ key: symbol, value: 0 }))
+
+const state2 = createEntityState<KeyValue>()
+    .idField('key')
+    .entityFactory((symbol, defaults, state) => ({ key: symbol, value: 0 }))
+
+type Test2 = typeof state2

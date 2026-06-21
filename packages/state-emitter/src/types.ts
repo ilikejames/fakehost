@@ -21,7 +21,7 @@ export type At<T, K extends string> = K extends keyof T
 // eslint-disable-next-line @typescript-eslint/ban-types
 type EmptyObject = {}
 
-type Prettify<T> = {
+export type Prettify<T> = {
     [K in keyof T]: T[K] extends object ? Prettify<T[K]> & EmptyObject : T[K]
 } & EmptyObject
 
@@ -37,3 +37,14 @@ export type RequiredFromDotNotation<T, Path extends string> = Prettify<
     DeepPartial<T> & PickFromDotNotation<T, Path>
 > &
     EmptyObject
+
+export type RemoveFromUnion<TUnion, TRemove> = Exclude<TUnion, TRemove>
+export type AddToUnion<TUnion, TAdd> = TUnion | TAdd
+
+export type RemoveNever<T> = {
+    [K in keyof T as T[K] extends never ? never : K]: T[K]
+}
+
+export type Assign<A, B = Partial<A>> = Partial<Prettify<Omit<A, keyof B> & B>>
+
+type Test1 = Assign<{ a?: boolean; b: boolean }, { a: true }>

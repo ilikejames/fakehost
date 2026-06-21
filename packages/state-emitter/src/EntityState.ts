@@ -4,9 +4,26 @@ import { getValueByDotNotation } from './helper'
 import { merge } from './merge'
 import { At, DotNotation, DeepPartial, RequiredFromDotNotation } from './types'
 
-export type EntityFactory<T, K extends string> = (id: At<T, K>, defaults?: DeepPartial<T>) => T
+export type EntityFactory<T, K extends string> = (id: At<T, K>, defaults: DeepPartial<T> | undefined, state: EntityState<T, K>) => T
 
 export type IdFactory<T, K extends string> = (prev?: At<T, K>) => At<T, K>
+
+type IdFactoryParams<T, K extends string> = {
+    /**
+     * The previous id created (if any)
+     */
+    prev?: At<T, K>
+    /**
+     * The current size of the collection
+     */
+    size: number
+    /**
+     * The total number of created items. This will be greater than `size` if items have been deleted
+     */
+    created: number
+}
+
+export type IdFactory2<T, K extends string> = (args: IdFactoryParams<T, K>) => At<T, K>
 
 export type InitialState<T, K extends string = DotNotation<T, keyof T>> =
     | { count: number }
@@ -59,6 +76,10 @@ export class EntityState<T, K extends string> {
         )
     }
 
+    public has(id: At<T, K>) {
+        this.state.has(id)
+    }
+
     public get(id: At<T, K>) {
         return this.state.get(id)
     }
@@ -77,7 +98,7 @@ export class EntityState<T, K extends string> {
 
     public create(defaults?: DeepPartial<T>) {
         this.lastId = this.options.idFactory(this.lastId)
-        const entity = this.options.entityFactory(this.lastId, defaults)
+        const entity = this.options.entityFactory(this.lastId, defaults, this)
         if (entity) {
             this.state.set(this.lastId, entity)
             this.mutation.next(['create', entity])
@@ -127,7 +148,7 @@ export class EntityState<T, K extends string> {
     private generateCount(count: number) {
         Array.from({ length: count }).forEach(() => {
             this.lastId = this.options.idFactory(this.lastId)
-            const entity = this.options.entityFactory(this.lastId)
+            const entity = this.options.entityFactory(this.lastId, undefined, this)
             if (entity) {
                 this.state.set(this.lastId, entity)
             }
@@ -139,6 +160,7 @@ export class EntityState<T, K extends string> {
             const id = getValueByDotNotation(item, this.options.idField)
             if (id) {
                 this.state.set(id, item)
+                this.lastId = id;
             }
         }
     }
