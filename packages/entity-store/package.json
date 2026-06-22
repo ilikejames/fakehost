@@ -1,0 +1,31 @@
+{
+  "name": "@fakehost/entity-store",
+  "description": "Typed entity collections with observable mutations — for faking CRUD state in tests",
+  "keywords": ["fake", "testing", "state", "crud", "observable"],
+  "version": "0.0.1",
+  "private": false,
+  "license": "MIT",
+  "files": ["dist", "README.md"],
+  "homepage": "https://github.com/ilikejames/fakehost",
+  "type": "module",
+  "main": "dist/index.cjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "peerDependencies": {
+    "rxjs": "^7.0.0"
+  },
+  "devDependencies": {
+    "rxjs": "^7.8.0",
+    "vitest": "^0.33.0"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts --sourcemap",
+    "test": "vitest --run",
+    "typecheck": "tsc --noEmit"
+  }
+}
